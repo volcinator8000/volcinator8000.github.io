@@ -1,120 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khalil Almwakeh (volcinator8000)</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- PyScript to run Python in browser -->
-    <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css" />
-    <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Khalil Almwakeh (volcinator8000)</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css" />
+  <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
 </head>
 <body>
-    <!-- Boot Screen -->
-    <div id="boot-screen">
-        <div class="terminal-text">
-            <p>> KERNEL: Linux x86_64</p>
-            <p>> USER: volcinator8000 (Khalil Almwakeh)</p>
-            <p>> MOUNTING: /home/khalil...</p>
-            <p class="blink">_</p>
-        </div>
+  <div id="boot-screen">
+    <div class="terminal-text">
+      <p>> KERNEL: Linux x86_64</p>
+      <p>> USER: volcinator8000 (Khalil Almwakeh)</p>
+      <p>> MOUNTING: /home/khalil...</p>
+      <p class="blink">_</p>
+    </div>
+  </div>
+
+  <div id="desktop" style="display: none;">
+    <div class="icon-container">
+      <button class="icon" type="button" onclick="openWindow('about-window')">
+        <div class="icon-img terminal-icon"></div>
+        <span>readme.txt</span>
+      </button>
+
+      <button class="icon" type="button" onclick="openWindow('projects-window')">
+        <div class="icon-img folder-icon"></div>
+        <span>projects/</span>
+      </button>
+
+      <button class="icon" type="button" onclick="openWindow('python-window')">
+        <div class="icon-img python-icon"></div>
+        <span>script.py</span>
+      </button>
+
+      <button class="icon" type="button" onclick="window.open('https://github.com/volcinator8000', '_blank')">
+        <div class="icon-img github-icon"></div>
+        <span>github</span>
+      </button>
     </div>
 
-    <!-- Main Desktop -->
-    <div id="desktop" style="display: none;">
-        <!-- Icons -->
-        <div class="icon-container">
-            <div class="icon" onclick="openWindow('about-window')">
-                <div class="icon-img terminal-icon"></div>
-                <span>readme.txt</span>
-            </div>
-            <div class="icon" onclick="openWindow('projects-window')">
-                <div class="icon-img folder-icon"></div>
-                <span>projects/</span>
-            </div>
-            <div class="icon" onclick="openWindow('python-window')">
-                <div class="icon-img python-icon"></div>
-                <span>script.py</span>
-            </div>
-            <div class="icon" onclick="window.open('https://github.com/volcinator8000', '_blank')">
-                <div class="icon-img github-icon"></div>
-                <span>github</span>
-            </div>
+    <div id="about-window" class="window" onmousedown="focusWindow(this)">
+      <div class="title-bar">
+        <span>vim /home/khalil/readme.txt</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" onclick="closeWindow('about-window')">x</button>
         </div>
+      </div>
 
-        <!-- 1. About Window -->
-        <div id="about-window" class="window" onmousedown="focusWindow(this)">
-            <div class="title-bar">
-                <span>vim /home/khalil/readme.txt</span>
-                <div class="window-controls">
-                    <button class="close-btn" onclick="closeWindow('about-window')">x</button>
-                </div>
-            </div>
-            <div class="content terminal-content">
-                <p><span class="green">volcinator8000@arch</span>: <span class="blue">~</span>$ cat readme.txt</p>
-                <br>
-                <p>USER: Khalil Almwakeh</p>
-                <p>ROLE: Epitech Student (1st Year)</p>
-                <p>STACK: C, Linux, Python, Bash</p>
-                <br>
-                <p>Currently building systems and simulations.</p>
-                <p class="blink">_</p>
-            </div>
+      <div class="content terminal-content">
+        <p><span class="green">volcinator8000@arch</span>: <span class="blue">~</span>$ cat readme.txt</p>
+        <br />
+        <p>USER: Khalil Almwakeh</p>
+        <p>ROLE: Epitech Student (1st Year)</p>
+        <p>STACK: C, Linux, Python, Bash</p>
+        <br />
+        <p>Currently building systems and simulations.</p>
+        <p class="blink">_</p>
+      </div>
+    </div>
+
+    <div id="projects-window" class="window" onmousedown="focusWindow(this)">
+      <div class="title-bar">
+        <span>~/projects</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" onclick="closeWindow('projects-window')">x</button>
         </div>
+      </div>
 
-        <!-- 2. Projects Window -->
-        <div id="projects-window" class="window" onmousedown="focusWindow(this)">
-            <div class="title-bar">
-                <span>~/projects</span>
-                <div class="window-controls">
-                    <button class="close-btn" onclick="closeWindow('projects-window')">x</button>
-                </div>
-            </div>
-            <div class="content explorer-content">
-                <div class="file-entry" onclick="window.open('https://github.com/volcinator8000/my_radar', '_blank')">
-                    <span class="file-icon">Binary</span>
-                    <span class="file-name">my_radar</span>
-                    <span class="file-desc">Air traffic simulation (C/CSFML)</span>
-                </div>
-                <div class="file-entry" onclick="window.open('https://github.com/volcinator8000/organised', '_blank')">
-                    <span class="file-icon">Shell</span>
-                    <span class="file-name">organised</span>
-                    <span class="file-desc">File sorting system</span>
-                </div>
-                <!-- Placeholder for future projects -->
-                <div class="file-entry disabled">
-                    <span class="file-icon">Lock</span>
-                    <span class="file-name">linkedin_setup</span>
-                    <span class="file-desc">Coming soon...</span>
-                </div>
-            </div>
+      <div class="content explorer-content">
+        <button class="file-entry" type="button" onclick="window.open('https://github.com/volcinator8000/my_radar', '_blank')">
+          <span class="file-icon">📦</span>
+          <span class="file-meta">
+            <span class="file-name">my_radar</span>
+            <span class="file-desc">Air traffic simulation (C / CSFML)</span>
+          </span>
+        </button>
+
+        <button class="file-entry" type="button" onclick="window.open('https://github.com/volcinator8000/organised', '_blank')">
+          <span class="file-icon">📁</span>
+          <span class="file-meta">
+            <span class="file-name">organised</span>
+            <span class="file-desc">File sorting system</span>
+          </span>
+        </button>
+
+        <div class="file-entry disabled" aria-disabled="true">
+          <span class="file-icon">🔒</span>
+          <span class="file-meta">
+            <span class="file-name">linkedin_setup</span>
+            <span class="file-desc">Coming soon...</span>
+          </span>
         </div>
+      </div>
+    </div>
 
-        <!-- 3. Python App Window -->
-        <div id="python-window" class="window" onmousedown="focusWindow(this)">
-            <div class="title-bar">
-                <span>python3 script.py</span>
-                <div class="window-controls">
-                    <button class="close-btn" onclick="closeWindow('python-window')">x</button>
-                </div>
-            </div>
-            <div class="content python-content">
-                <!-- WRITE YOUR PYTHON CODE BELOW -->
-                <py-script>
+    <div id="python-window" class="window" onmousedown="focusWindow(this)">
+      <div class="title-bar">
+        <span>python3 script.py</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" onclick="closeWindow('python-window')">x</button>
+        </div>
+      </div>
+
+      <div class="content python-content">
+        <py-script>
 import datetime
 
 def get_time():
     now = datetime.datetime.now()
     return now.strftime("%H:%M:%S")
 
-print(f"Initializing Python Environment...")
+print("Initializing Python Environment...")
 print(f"Current System Time: {get_time()}")
 print("Ready for input.")
-                </py-script>
-                <div id="py-output"></div>
-            </div>
-        </div>
+        </py-script>
+        <div id="py-output"></div>
+      </div>
     </div>
-    <script src="script.js"></script>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
