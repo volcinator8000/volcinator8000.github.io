@@ -3,234 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Khalil Almwakeh (volcinator8000) — Epitech student building systems and simulations in C, Python and Bash. A tiny Linux desktop you can click around." />
+  <meta name="theme-color" content="#1e1e2e" />
   <title>Khalil Almwakeh (volcinator8000)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e1e2e'/%3E%3Ctext x='12' y='44' font-family='monospace' font-size='30' fill='%23a6e3a1'%3E%3E_%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css" />
-  <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
 </head>
 <body>
-  <div id="boot-screen">
-    <div class="terminal-text">
-      <p>> KERNEL: Linux x86_64</p>
-      <p>> USER: volcinator8000 (Khalil Almwakeh)</p>
-      <p>> MOUNTING: /home/khalil...</p>
-      <p class="blink">_</p>
-    </div>
+  <!-- Boot screen: lines are typed in by script.js. Click or press a key to skip. -->
+  <div id="boot-screen" aria-live="polite">
+    <pre id="boot-text" class="terminal-text"></pre>
+    <p class="boot-hint">press any key to skip</p>
   </div>
 
-  <div id="desktop" style="display: none;">
+  <div id="desktop" hidden>
+    <header id="top-bar">
+      <span class="bar-left"><span class="green">volcinator8000</span>@<span class="blue">arch</span></span>
+      <nav id="taskbar" class="bar-center" aria-label="Open windows">
+        <span id="bar-hint">click an icon to open it</span>
+      </nav>
+      <span id="clock" class="bar-right">--:--</span>
+    </header>
+
     <div class="icon-container">
-      <button class="icon" type="button" onclick="openWindow('about-window')">
-        <div class="icon-img terminal-icon"></div>
+      <button class="icon" type="button" data-open="about-window">
+        <div class="icon-img terminal-icon" aria-hidden="true">&gt;_</div>
         <span>readme.txt</span>
       </button>
 
-      <button class="icon" type="button" onclick="openWindow('projects-window')">
-        <div class="icon-img folder-icon"></div>
+      <button class="icon" type="button" data-open="projects-window">
+        <div class="icon-img folder-icon" aria-hidden="true"></div>
         <span>projects/</span>
       </button>
 
-      <button class="icon" type="button" onclick="openWindow('python-window')">
-        <div class="icon-img python-icon"></div>
-        <span>script.py</span>
+      <button class="icon" type="button" data-open="terminal-window">
+        <div class="icon-img shell-icon" aria-hidden="true">$</div>
+        <span>terminal</span>
       </button>
 
-      <button class="icon" type="button" onclick="window.open('https://github.com/volcinator8000', '_blank')">
-        <div class="icon-img github-icon"></div>
+      <a class="icon" href="https://github.com/volcinator8000" target="_blank" rel="noopener">
+        <div class="icon-img github-icon" aria-hidden="true"></div>
         <span>github</span>
-      </button>
+      </a>
     </div>
 
-    <div id="about-window" class="window" onmousedown="focusWindow(this)">
+    <!-- README -->
+    <section id="about-window" class="window" data-title="readme.txt" aria-labelledby="about-title">
       <div class="title-bar">
-        <span>vim /home/khalil/readme.txt</span>
+        <span id="about-title">vim ~/readme.txt</span>
         <div class="window-controls">
-          <button class="close-btn" type="button" onclick="closeWindow('about-window')">x</button>
+          <button class="close-btn" type="button" data-close="about-window" aria-label="Close">×</button>
         </div>
       </div>
 
       <div class="content terminal-content">
-        <p><span class="green">volcinator8000@arch</span>: <span class="blue">~</span>$ cat readme.txt</p>
-        <br />
-        <p>USER: Khalil Almwakeh</p>
-        <p>ROLE: Epitech Student (1st Year)</p>
-        <p>STACK: C, Linux, Python, Bash</p>
-        <br />
-        <p>Currently building systems and simulations.</p>
+        <p class="prompt-line"><span class="green">volcinator8000@arch</span>:<span class="blue">~</span>$ cat readme.txt</p>
+
+        <div class="fetch">
+          <pre class="fetch-art" aria-hidden="true">
+   ,--.
+  /  o \
+ |  ,--'
+ |  |
+  \  `--.
+   `----'</pre>
+          <div class="fetch-info">
+            <p class="fetch-head"><span class="green">khalil</span>@<span class="blue">epitech</span></p>
+            <p class="fetch-rule">----------------</p>
+            <p><span class="key">Name</span>Khalil Almwakeh</p>
+            <p><span class="key">Role</span>Epitech student, 1st year</p>
+            <p><span class="key">Stack</span>C · Linux · Python · Bash</p>
+            <p><span class="key">Doing</span>building systems and simulations</p>
+            <p><span class="key">GitHub</span><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
+            <div class="swatches" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+        </div>
+
+        <p class="intro">Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things.</p>
+
+        <p class="tip">
+          Try: <button type="button" class="link-btn" data-open="projects-window">open projects/</button>
+          or <button type="button" class="link-btn" data-open="terminal-window">type <code>help</code> in the terminal</button>.
+        </p>
         <p class="blink">_</p>
       </div>
-    </div>
+    </section>
 
-    <div id="projects-window" class="window" onmousedown="focusWindow(this)">
+    <!-- PROJECTS -->
+    <section id="projects-window" class="window window-wide" data-title="projects/" aria-labelledby="projects-title">
       <div class="title-bar">
-        <span>~/projects</span>
+        <span id="projects-title">~/projects</span>
         <div class="window-controls">
-          <button class="close-btn" type="button" onclick="closeWindow('projects-window')">x</button>
+          <button class="close-btn" type="button" data-close="projects-window" aria-label="Close">×</button>
         </div>
       </div>
 
       <div class="content explorer-content">
-        <div class="file-entry">
-          <span class="file-icon">📐</span>
-          <span class="file-meta">
-            <span class="file-name">110 Borwein</span>
-            <span class="file-desc">Mathematics project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🐚</span>
-          <span class="file-meta">
-            <span class="file-name">42sh</span>
-            <span class="file-desc">Unix shell project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🤖</span>
-          <span class="file-meta">
-            <span class="file-name">Cuddle</span>
-            <span class="file-desc">Artificial intelligence project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">⭐</span>
-          <span class="file-meta">
-            <span class="file-name">Star</span>
-            <span class="file-desc">Graphical programming project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🛠️</span>
-          <span class="file-meta">
-            <span class="file-name">Setting Up</span>
-            <span class="file-desc">Environment and setup project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🦋</span>
-          <span class="file-meta">
-            <span class="file-name">106 Bombyx</span>
-            <span class="file-desc">Mathematics project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🏝️</span>
-          <span class="file-meta">
-            <span class="file-name">Count Islands</span>
-            <span class="file-desc">Map and traversal project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🌀</span>
-          <span class="file-meta">
-            <span class="file-name">Amazed</span>
-            <span class="file-desc">Pathfinding project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🔁</span>
-          <span class="file-meta">
-            <span class="file-name">107 Transfer</span>
-            <span class="file-desc">Mathematics project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🏭</span>
-          <span class="file-meta">
-            <span class="file-name">Robot Factory</span>
-            <span class="file-desc">Factory simulation project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">📊</span>
-          <span class="file-meta">
-            <span class="file-name">108 Trigo</span>
-            <span class="file-desc">Trigonometry project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🖨️</span>
-          <span class="file-meta">
-            <span class="file-name">My printf</span>
-            <span class="file-desc">Custom printf implementation</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🥐</span>
-          <span class="file-meta">
-            <span class="file-name">Chocolatine</span>
-            <span class="file-desc">DevOps and automation project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🧪</span>
-          <span class="file-meta">
-            <span class="file-name">109 Titration</span>
-            <span class="file-desc">Chemistry and mathematics project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🔐</span>
-          <span class="file-meta">
-            <span class="file-name">Hack Juice</span>
-            <span class="file-desc">Web security project</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🗂️</span>
-          <span class="file-meta">
-            <span class="file-name">Organized</span>
-            <span class="file-desc">File sorting system</span>
-          </span>
-        </div>
-
-        <div class="file-entry">
-          <span class="file-icon">🌍</span>
-          <span class="file-meta">
-            <span class="file-name">My World</span>
-            <span class="file-desc">3D or graphical world project</span>
-          </span>
-        </div>
+        <div id="filters" class="filters" role="tablist" aria-label="Filter projects"></div>
+        <p id="project-count" class="count"></p>
+        <div id="project-list" class="project-list"></div>
       </div>
-    </div>
+    </section>
 
-    <div id="python-window" class="window" onmousedown="focusWindow(this)">
+    <!-- TERMINAL -->
+    <section id="terminal-window" class="window" data-title="terminal" aria-labelledby="terminal-title">
       <div class="title-bar">
-        <span>python3 script.py</span>
+        <span id="terminal-title">bash — ~</span>
         <div class="window-controls">
-          <button class="close-btn" type="button" onclick="closeWindow('python-window')">x</button>
+          <button class="close-btn" type="button" data-close="terminal-window" aria-label="Close">×</button>
         </div>
       </div>
 
-      <div class="content python-content">
-        <py-script>
-import datetime
-
-def get_time():
-    now = datetime.datetime.now()
-    return now.strftime("%H:%M:%S")
-
-print("Initializing Python Environment...")
-print(f"Current System Time: {get_time()}")
-print("Ready for input.")
-        </py-script>
-        <div id="py-output"></div>
+      <div class="content shell-content" id="shell">
+        <div id="shell-output"></div>
+        <form id="shell-form" autocomplete="off">
+          <label for="shell-input" class="shell-prompt"><span class="green">volcinator8000@arch</span>:<span class="blue">~</span>$</label>
+          <input id="shell-input" type="text" spellcheck="false" autocapitalize="off" aria-label="Terminal input" />
+        </form>
       </div>
-    </div>
+    </section>
   </div>
 
   <script src="script.js"></script>
