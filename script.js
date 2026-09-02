@@ -20,54 +20,55 @@ const CATEGORIES = {
 };
 
 // Edit this list to add / reorder projects. `featured` pins a project at the top.
+// `ext` is the little file-type badge: c, cpp, py, sh, js, web, yml, ai.
 // `link` is optional — Epitech repos are private, so most rows have none.
 const PROJECTS = [
-  { name: '42sh', icon: '🐚', cat: 'systems', tech: ['C', 'POSIX'], featured: true,
+  { name: '42sh', ext: 'c', cat: 'systems', tech: ['C', 'POSIX'], featured: true,
     blurb: 'A Unix shell in C: pipes, redirections, builtins and the usual quoting headaches.' },
-  { name: 'Obsidian console', icon: '☢️', cat: 'devops', tech: ['C', 'security audit'], featured: true, link: `${GITHUB}/corewar`,
+  { name: 'Obsidian console', ext: 'c', cat: 'devops', tech: ['C', 'security audit'], featured: true, link: `${GITHUB}/corewar`,
     blurb: 'Security audit of a nuclear-reactor console CLI in C: white-box and black-box review, vulnerability report and patches.' },
-  { name: 'My World', icon: '🌍', cat: 'graphics', tech: ['C', 'CSFML'], featured: true,
+  { name: 'My World', ext: 'c', cat: 'graphics', tech: ['C', 'CSFML'], featured: true,
     blurb: 'An isometric 3D world editor: terrain, elevation and hand-rolled projection maths.' },
-  { name: 'Amazed', icon: '🌀', cat: 'algo', tech: ['C', 'BFS'], featured: true,
+  { name: 'Amazed', ext: 'c', cat: 'algo', tech: ['C', 'BFS'], featured: true,
     blurb: 'Maze solver that finds the shortest path with breadth-first search on very large grids.' },
 
-  { name: 'My printf', icon: '🖨️', cat: 'systems', tech: ['C'],
+  { name: 'My printf', ext: 'c', cat: 'systems', tech: ['C'],
     blurb: 'printf rebuilt from scratch: parsing format strings and handling every conversion by hand.' },
-  { name: 'Robot Factory', icon: '🏭', cat: 'systems', tech: ['C'],
+  { name: 'Robot Factory', ext: 'c', cat: 'systems', tech: ['C'],
     blurb: 'An assembler for a made-up robot instruction set, turning source files into binary.' },
-  { name: 'Count Islands', icon: '🏝️', cat: 'algo', tech: ['C', 'flood fill'],
+  { name: 'Count Islands', ext: 'c', cat: 'algo', tech: ['C', 'flood fill'],
     blurb: 'Flood-fill over a 2D map to count and label every island.' },
-  { name: 'Navigate', icon: '🧭', cat: 'algo', tech: ['pathfinding'], link: `${GITHUB}/navigate`,
+  { name: 'Navigate', ext: 'py', cat: 'algo', tech: ['pathfinding'], link: `${GITHUB}/navigate`,
     blurb: 'A local GPS navigation system.' },
-  { name: 'Star', icon: '⭐', cat: 'graphics', tech: ['C', 'CSFML'],
+  { name: 'Star', ext: 'c', cat: 'graphics', tech: ['C', 'CSFML'],
     blurb: 'A starfield animation: pixels, vectors and frame timing.' },
-  { name: 'Bug Break', icon: '🪲', cat: 'graphics', tech: ['C++', 'Unreal Engine 5'], link: `${GITHUB}/gamejam`,
+  { name: 'Bug Break', ext: 'cpp', cat: 'graphics', tech: ['C++', 'Unreal Engine 5'], link: `${GITHUB}/gamejam`,
     blurb: 'Game-jam horror comedy: find the bugged office props, hide from the spider, reach the coffee machine.' },
-  { name: 'Music visualizer', icon: '🎵', cat: 'tools', tech: ['JavaScript', 'web'], link: `${GITHUB}/music-visualizer`,
+  { name: 'Music visualizer', ext: 'js', cat: 'tools', tech: ['JavaScript', 'web'], link: `${GITHUB}/music-visualizer`,
     blurb: 'A web page that draws instruments and audio effects as waves and sines.' },
-  { name: 'MAX Finder', icon: '🚄', cat: 'tools', tech: ['SNCF open data', 'PWA'], link: `${GITHUB}/max-trip-chain`,
+  { name: 'MAX Finder', ext: 'web', cat: 'tools', tech: ['SNCF open data', 'PWA'], link: `${GITHUB}/max-trip-chain`,
     blurb: 'Find every SNCF train with a free MAX JEUNE / SENIOR seat in one search, and chain them into a tour.' },
-  { name: 'Cuddle', icon: '🤖', cat: 'algo', tech: ['AI'],
+  { name: 'Cuddle', ext: 'ai', cat: 'algo', tech: ['AI'],
     blurb: 'An AI bot project: decision-making and heuristics.' },
-  { name: 'Organized', icon: '🗂️', cat: 'systems', tech: ['Bash'],
+  { name: 'Organized', ext: 'sh', cat: 'systems', tech: ['Bash'],
     blurb: 'A Bash script that sorts a messy directory into folders by file type.' },
-  { name: 'Setting Up', icon: '🛠️', cat: 'systems', tech: ['Linux', 'Bash'],
+  { name: 'Setting Up', ext: 'sh', cat: 'systems', tech: ['Linux', 'Bash'],
     blurb: 'Day one: setting up a Linux development environment from scratch.' },
-  { name: 'Fourier workshop', icon: '🌊', cat: 'maths', tech: ['Python', 'Jupyter'], link: `${GITHUB}/Fourier-workshop`,
+  { name: 'Fourier workshop', ext: 'py', cat: 'maths', tech: ['Python', 'Jupyter'], link: `${GITHUB}/Fourier-workshop`,
     blurb: 'A live notebook showing how an FFT works and what it is good for.' },
-  { name: '110 Borwein', icon: '📐', cat: 'maths', tech: ['Python'],
+  { name: '110 Borwein', ext: 'py', cat: 'maths', tech: ['Python'],
     blurb: 'Numerical integration of Borwein integrals, where a neat pattern suddenly breaks.' },
-  { name: '109 Titration', icon: '🧪', cat: 'maths', tech: ['Python'],
+  { name: '109 Titration', ext: 'py', cat: 'maths', tech: ['Python'],
     blurb: 'Finding the equivalence point of a titration curve with numerical derivatives.' },
-  { name: '108 Trigo', icon: '📊', cat: 'maths', tech: ['Python'],
+  { name: '108 Trigo', ext: 'py', cat: 'maths', tech: ['Python'],
     blurb: 'Trig functions on matrices, computed from their power series.' },
-  { name: '107 Transfer', icon: '🔁', cat: 'maths', tech: ['Python'],
+  { name: '107 Transfer', ext: 'py', cat: 'maths', tech: ['Python'],
     blurb: 'Transfer functions of chained systems, from polynomial coefficients.' },
-  { name: '106 Bombyx', icon: '🦋', cat: 'maths', tech: ['Python'],
+  { name: '106 Bombyx', ext: 'py', cat: 'maths', tech: ['Python'],
     blurb: 'Modelling a silkworm population with the logistic map, plus bifurcation diagrams.' },
-  { name: 'Chocolatine', icon: '🥐', cat: 'devops', tech: ['GitHub Actions'], link: `${GITHUB}/painauchocolat`,
+  { name: 'Chocolatine', ext: 'yml', cat: 'devops', tech: ['GitHub Actions'], link: `${GITHUB}/painauchocolat`,
     blurb: 'A CI pipeline with GitHub Actions: build, test and mirror on every push.' },
-  { name: 'Hack Juice', icon: '🔐', cat: 'devops', tech: ['web security'],
+  { name: 'Hack Juice', ext: 'web', cat: 'devops', tech: ['web security'],
     blurb: 'Breaking into OWASP Juice Shop: XSS, injection and broken auth.' },
 ];
 
@@ -337,9 +338,7 @@ function renderProjects() {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPreview(p); }
     });
 
-    const icon = document.createElement('span');
-    icon.className = 'project-icon';
-    icon.textContent = p.icon;
+    const icon = fileBadge(p.ext);
 
     const body = document.createElement('div');
     body.className = 'project-body';
@@ -350,7 +349,7 @@ function renderProjects() {
     if (hasPreview(p)) {
       const play = document.createElement('span');
       play.className = 'play';
-      play.textContent = p.name === 'Navigate' ? '▶ run' : '▶ preview';
+      play.textContent = p.name === 'Navigate' ? 'run' : 'preview';
       name.appendChild(play);
     }
     if (p.link) {
@@ -389,6 +388,14 @@ function renderProjects() {
   });
 }
 
+function fileBadge(ext) {
+  const b = document.createElement('span');
+  b.className = 'file-ext';
+  b.dataset.ext = ext;
+  b.textContent = ext === 'web' || ext === 'ai' ? ext : `.${ext}`;
+  return b;
+}
+
 /* ---------- project preview window ---------- */
 
 let previewCleanup = null;
@@ -402,7 +409,9 @@ function openPreview(p) {
 
   stopPreview();
   $('#preview-title').textContent = `~/projects/${p.name.toLowerCase().replace(/\s+/g, '-')}`;
-  $('#preview-icon').textContent = p.icon;
+  const iconSlot = $('#preview-icon');
+  iconSlot.innerHTML = '';
+  iconSlot.appendChild(fileBadge(p.ext));
   $('#preview-name').textContent = p.name;
   $('#preview-blurb').textContent = p.blurb;
 
@@ -632,7 +641,7 @@ const COMMANDS = {
       '  help        this list',
       '  whoami      who is this?',
       '  ls          list files',
-      '  cat <file>  read a file (try readme.txt)',
+      '  cat <file>  read a file (readme.txt, experience.md)',
       '  projects    list projects (projects <category> to filter)',
       '  neofetch    system info',
       '  open <win>  readme | projects | terminal',
@@ -645,9 +654,9 @@ const COMMANDS = {
     ].join('\n')
   ),
 
-  whoami: () => print('Khalil Almwakeh (volcinator8000). Epitech, 1st year. C / Linux / Python / Bash.'),
+  whoami: () => print('Khalil Almwakeh (volcinator8000). Epitech, 2nd year. C / Linux / Python / Bash. Currently web & SEO engineering at Remoters.'),
 
-  ls: () => print('readme.txt  projects/  navigate.py  script.js  style.css  .bashrc  .secrets  (nice try)'),
+  ls: () => print('readme.txt  experience.md  projects/  navigate.py  script.js  style.css  .bashrc  .secrets  (nice try)'),
 
   cat: (args) => {
     const f = args[0];
@@ -655,6 +664,10 @@ const COMMANDS = {
     if (f === 'readme.txt') {
       openWindow('about-window');
       return print('opening readme.txt in vim...');
+    }
+    if (f === 'experience.md') {
+      openWindow('experience-window');
+      return print('opening experience.md…');
     }
     if (f === '.secrets') return print('cat: .secrets: Permission denied', 'err');
     if (f === '.bashrc') return print('alias please="sudo"\nexport EDITOR=vim\nPS1="\\u@\\h:\\w$ "');
@@ -667,7 +680,7 @@ const COMMANDS = {
       return print(`unknown category. try: ${Object.keys(CATEGORIES).filter((k) => k !== 'all').join(', ')}`, 'err');
     }
     const shown = PROJECTS.filter((p) => !cat || p.cat === cat);
-    print(shown.map((p) => `${p.icon}  ${p.name.padEnd(18)} ${p.blurb}`).join('\n'));
+    print(shown.map((p) => `${(p.ext === 'web' || p.ext === 'ai' ? p.ext : '.' + p.ext).padEnd(5)} ${p.name.padEnd(18)} ${p.blurb}`).join('\n'));
     activeFilter = cat || 'all';
     renderFilters();
     renderProjects();
@@ -676,20 +689,20 @@ const COMMANDS = {
 
   neofetch: () => print(
     [
-      '   ,--.        khalil@epitech',
-      '  /  o \\       ----------------',
-      " |  ,--'       OS: Arch Linux x86_64",
-      ' |  |          Shell: 42sh (my own)',
-      '  \\  `--.      Editor: vim',
-      "   `----'      Langs: C, Python, Bash",
-      '               Status: building systems and simulations',
+      '       /\\         khalil@arch',
+      '      /  \\        ----------',
+      '     /\\   \\       OS: Arch Linux x86_64',
+      '    /      \\      Shell: 42sh (my own)',
+      '   /   ,,   \\     Editor: vim',
+      '  /   |  |  -\\    Langs: C, Python, Bash',
+      " /_-''    ''-_\\   Status: building systems and simulations",
     ].join('\n')
   ),
 
   open: (args) => {
-    const map = { readme: 'about-window', projects: 'projects-window', terminal: 'terminal-window', navigate: 'python-window' };
+    const map = { readme: 'about-window', projects: 'projects-window', terminal: 'terminal-window', navigate: 'python-window', experience: 'experience-window' };
     const id = map[args[0]];
-    if (!id) return print('open: readme | projects | terminal | navigate', 'err');
+    if (!id) return print('open: readme | projects | terminal | navigate | experience', 'err');
     openWindow(id);
     print(`opening ${args[0]}...`);
   },

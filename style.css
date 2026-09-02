@@ -17,6 +17,7 @@
   --mauve: #cba6f7;
   --teal: #94e2d5;
   --pink: #f5c2e7;
+  --sky: #89dceb;
   --bar-h: 36px;
 }
 
@@ -163,11 +164,11 @@ code {
 /* ---------- icons ---------- */
 .icon-container {
   position: absolute;
-  top: calc(var(--bar-h) + 20px);
+  top: calc(var(--bar-h) + 14px);
   left: 20px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 10px;
 }
 
 .icon {
@@ -181,7 +182,7 @@ code {
   cursor: pointer;
   transition: transform 0.15s ease;
   text-decoration: none;
-  padding: 6px 0;
+  padding: 5px 0;
   border-radius: 8px;
 }
 
@@ -197,16 +198,16 @@ code {
 }
 
 .icon span {
-  font-size: 13px;
-  margin-top: 8px;
+  font-size: 12.5px;
+  margin-top: 6px;
   background: rgba(0, 0, 0, 0.45);
   padding: 2px 7px;
   border-radius: 4px;
 }
 
 .icon-img {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
   display: flex;
@@ -355,9 +356,9 @@ code {
 
 .fetch-art {
   margin: 0;
-  color: var(--blue);
-  line-height: 1.2;
-  font-size: 15px;
+  color: var(--sky, #89dceb);
+  line-height: 1.25;
+  font-size: 14px;
 }
 
 .fetch-head {
@@ -484,11 +485,28 @@ a.project:hover {
   background: linear-gradient(135deg, rgba(137, 180, 250, 0.08), transparent 60%), var(--mantle);
 }
 
-.project-icon {
-  font-size: 22px;
+.file-ext {
   flex: 0 0 auto;
-  line-height: 1.2;
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  background: var(--surface0);
+  color: var(--subtext);
+  margin-top: 1px;
 }
+
+.file-ext[data-ext="c"] { color: var(--blue); }
+.file-ext[data-ext="cpp"] { color: var(--mauve); }
+.file-ext[data-ext="py"] { color: var(--yellow); }
+.file-ext[data-ext="sh"] { color: var(--green); }
+.file-ext[data-ext="js"] { color: var(--peach); }
+.file-ext[data-ext="web"] { color: var(--sky, #89dceb); }
+.file-ext[data-ext="yml"] { color: var(--teal); }
+.file-ext[data-ext="ai"] { color: var(--pink); }
 
 .project-body {
   min-width: 0;
@@ -733,10 +751,6 @@ a.project:hover {
   align-items: flex-start;
 }
 
-.preview-head .project-icon {
-  font-size: 26px;
-}
-
 .preview-meta {
   min-width: 0;
   flex: 1;
@@ -960,4 +974,89 @@ a.project:hover {
   .stage {
     min-height: 220px;
   }
+}
+
+/* ---------- experience window ---------- */
+.doc-icon {
+  background: var(--mantle);
+  border: 2px solid var(--mauve);
+  color: var(--mauve);
+  font-size: 16px;
+}
+
+.xp-content {
+  padding: 18px 20px;
+}
+
+.xp-role {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.xp-role a {
+  color: var(--blue);
+}
+
+.xp-meta {
+  color: var(--subtext);
+  font-size: 12.5px;
+  margin: 4px 0 10px;
+}
+
+.xp-about {
+  margin: 0;
+  color: var(--subtext);
+  max-width: 70ch;
+  line-height: 1.5;
+}
+
+.xp-h {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--overlay);
+  margin: 20px 0 10px;
+  font-weight: normal;
+}
+
+.xp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+}
+
+.xp-card {
+  background: var(--mantle);
+  border: 1px solid var(--surface0);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.xp-card h4 {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  color: var(--blue);
+}
+
+.xp-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--subtext);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.xp-card li + li {
+  margin-top: 4px;
+}
+
+.xp-tags .tag {
+  font-size: 12px;
+  padding: 3px 9px;
+}
+
+.tag.skill {
+  color: var(--mauve);
+  background: rgba(203, 166, 247, 0.12);
 }

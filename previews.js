@@ -710,7 +710,7 @@ PREVIEWS['Organized'] = (stage) => {
     folders.forEach((f, i) => {
       const y = 30 + i * gh;
       ctx.strokeStyle = PV.surface1; ctx.strokeRect(gx, y, gw, gh - 8);
-      ctx.fillStyle = PV.yellow; ctx.fillText(`📁 ${f}/`, gx + 8, y + 14);
+      ctx.fillStyle = PV.yellow; ctx.fillText(`${f}/`, gx + 8, y + 14);
     });
     files.forEach((f, i) => {
       const start = 1 + i * 0.35, p = PV_REDUCED ? 1 : Math.max(0, Math.min(1, (local - start) / 0.6));
