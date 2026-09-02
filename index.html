@@ -44,6 +44,11 @@
         <span>terminal</span>
       </button>
 
+      <button class="icon" type="button" data-open="python-window">
+        <div class="icon-img python-icon" aria-hidden="true">py</div>
+        <span>navigate.py</span>
+      </button>
+
       <a class="icon" href="https://github.com/volcinator8000" target="_blank" rel="noopener">
         <div class="icon-img github-icon" aria-hidden="true"></div>
         <span>github</span>
@@ -87,7 +92,8 @@
         <p class="intro">Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things.</p>
 
         <p class="tip">
-          Try: <button type="button" class="link-btn" data-open="projects-window">open projects/</button>
+          Try: <button type="button" class="link-btn" data-open="projects-window">open projects/</button>,
+          <button type="button" class="link-btn" data-open="python-window">run navigate.py</button>
           or <button type="button" class="link-btn" data-open="terminal-window">type <code>help</code> in the terminal</button>.
         </p>
         <p class="blink">_</p>
@@ -127,8 +133,63 @@
         </form>
       </div>
     </section>
+
+    <!-- PROJECT PREVIEW -->
+    <section id="preview-window" class="window window-wide" data-title="preview" aria-labelledby="preview-title">
+      <div class="title-bar">
+        <span id="preview-title">preview</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="preview-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content preview-content">
+        <div class="preview-head">
+          <span id="preview-icon" class="project-icon"></span>
+          <div class="preview-meta">
+            <div class="project-name"><span id="preview-name"></span></div>
+            <p id="preview-blurb" class="project-blurb"></p>
+            <div class="preview-links">
+              <div id="preview-tags" class="tags"></div>
+              <a id="preview-link" class="ext-link" target="_blank" rel="noopener" hidden>github ↗</a>
+              <a id="preview-live" class="ext-link" target="_blank" rel="noopener" hidden>live site ↗</a>
+            </div>
+          </div>
+        </div>
+        <div id="preview-stage" class="stage"></div>
+        <p id="preview-note" class="stage-note"></p>
+      </div>
+    </section>
+
+    <!-- NAVIGATE.PY (real Python, runs in the browser) -->
+    <section id="python-window" class="window window-wide" data-title="navigate.py" aria-labelledby="python-title">
+      <div class="title-bar">
+        <span id="python-title">python3 navigate.py</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="python-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content python-content">
+        <div class="py-toolbar">
+          <label>from <select id="py-from" disabled></select></label>
+          <label>to <select id="py-to" disabled></select></label>
+          <button id="py-run" type="button" class="btn" disabled>find route</button>
+          <button id="py-source" type="button" class="btn ghost" aria-pressed="false">view source</button>
+          <span id="py-status" class="dim">python runtime not loaded yet</span>
+        </div>
+        <div class="py-body">
+          <canvas id="py-map" class="py-map" aria-label="Transit map"></canvas>
+          <pre id="py-out" class="py-out">$ python3 navigate.py
+</pre>
+          <pre id="py-code" class="py-code" hidden></pre>
+        </div>
+        <p class="stage-note">A real Python file, <code>navigate.py</code>, running in your browser through Pyodide. It does the Dijkstra search; the page only draws the result.</p>
+      </div>
+    </section>
   </div>
 
+  <script src="previews.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

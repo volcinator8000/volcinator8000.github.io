@@ -679,3 +679,285 @@ a.project:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- python icon ---------- */
+.python-icon {
+  background: linear-gradient(135deg, #3776ab 50%, #ffd343 50%);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- project cards are buttons now ---------- */
+.project {
+  cursor: pointer;
+}
+
+.project:hover,
+.project:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--blue);
+  outline: none;
+}
+
+.project-name .ext,
+.ext-link {
+  color: var(--overlay);
+  font-size: 11px;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+.ext-link:hover,
+.project-name .ext:hover {
+  color: var(--blue);
+  text-decoration: underline;
+}
+
+.project-name .play {
+  color: var(--green);
+  font-size: 11px;
+  font-weight: normal;
+}
+
+/* ---------- preview window ---------- */
+.preview-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.preview-head .project-icon {
+  font-size: 26px;
+}
+
+.preview-meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.preview-meta .project-blurb {
+  margin: 2px 0 6px;
+}
+
+.preview-links {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  background: var(--crust);
+  border: 1px solid var(--surface0);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.stage iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.stage .term {
+  padding: 12px 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+  font-size: 13px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.stage .term .c { color: var(--text); }
+.stage .term .o { color: var(--subtext); }
+.stage .term .g { color: var(--green); }
+.stage .term .r { color: var(--red); }
+.stage .term .y { color: var(--yellow); }
+.stage .term .d { color: var(--overlay); }
+
+.stage .empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--overlay);
+  text-align: center;
+  padding: 20px;
+}
+
+.stage .empty strong {
+  color: var(--subtext);
+  font-weight: normal;
+}
+
+.stage .caption {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 11px;
+  color: var(--subtext);
+  background: rgba(17, 17, 27, 0.75);
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.stage .overlay-ui {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.stage .overlay-ui input[type="text"] {
+  background: var(--mantle);
+  border: 1px solid var(--surface1);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  width: 260px;
+  max-width: 60vw;
+}
+
+.stage-note {
+  color: var(--overlay);
+  font-size: 12px;
+  margin: 0;
+}
+
+.btn {
+  background: var(--surface0);
+  border: 1px solid var(--surface1);
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12.5px;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn.ghost {
+  background: transparent;
+}
+
+.btn[aria-pressed="true"] {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* ---------- navigate.py window ---------- */
+.python-content {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.py-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.py-toolbar select {
+  background: var(--mantle);
+  border: 1px solid var(--surface1);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+
+.py-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 10px;
+}
+
+.py-map {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  background: var(--crust);
+  border: 1px solid var(--surface0);
+  border-radius: 8px;
+}
+
+.py-out,
+.py-code {
+  margin: 0;
+  background: var(--crust);
+  border: 1px solid var(--surface0);
+  border-radius: 8px;
+  padding: 12px;
+  overflow: auto;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--subtext);
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 260px;
+}
+
+.py-code {
+  white-space: pre;
+  color: var(--text);
+}
+
+.py-out .g { color: var(--green); }
+.py-out .y { color: var(--yellow); }
+.py-out .r { color: var(--red); }
+
+@media (max-width: 768px) {
+  .py-body {
+    grid-template-columns: 1fr;
+  }
+
+  .py-map {
+    min-height: 220px;
+  }
+
+  .stage {
+    min-height: 220px;
+  }
+}

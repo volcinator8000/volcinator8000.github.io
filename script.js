@@ -24,8 +24,8 @@ const CATEGORIES = {
 const PROJECTS = [
   { name: '42sh', icon: '🐚', cat: 'systems', tech: ['C', 'POSIX'], featured: true,
     blurb: 'A Unix shell in C: pipes, redirections, builtins and the usual quoting headaches.' },
-  { name: 'Corewar', icon: '⚔️', cat: 'systems', tech: ['C'], featured: true, link: `${GITHUB}/corewar`,
-    blurb: 'A virtual machine and assembler where tiny programs fight for control of memory.' },
+  { name: 'Obsidian console', icon: '☢️', cat: 'devops', tech: ['C', 'security audit'], featured: true, link: `${GITHUB}/corewar`,
+    blurb: 'Security audit of a nuclear-reactor console CLI in C: white-box and black-box review, vulnerability report and patches.' },
   { name: 'My World', icon: '🌍', cat: 'graphics', tech: ['C', 'CSFML'], featured: true,
     blurb: 'An isometric 3D world editor: terrain, elevation and hand-rolled projection maths.' },
   { name: 'Amazed', icon: '🌀', cat: 'algo', tech: ['C', 'BFS'], featured: true,
@@ -41,12 +41,12 @@ const PROJECTS = [
     blurb: 'A local GPS navigation system.' },
   { name: 'Star', icon: '⭐', cat: 'graphics', tech: ['C', 'CSFML'],
     blurb: 'A starfield animation: pixels, vectors and frame timing.' },
-  { name: 'Game jam', icon: '🎮', cat: 'graphics', tech: ['C++'], link: `${GITHUB}/gamejam`,
-    blurb: 'A C++ game built for a game jam.' },
+  { name: 'Bug Break', icon: '🪲', cat: 'graphics', tech: ['C++', 'Unreal Engine 5'], link: `${GITHUB}/gamejam`,
+    blurb: 'Game-jam horror comedy: find the bugged office props, hide from the spider, reach the coffee machine.' },
   { name: 'Music visualizer', icon: '🎵', cat: 'tools', tech: ['JavaScript', 'web'], link: `${GITHUB}/music-visualizer`,
     blurb: 'A web page that draws instruments and audio effects as waves and sines.' },
-  { name: 'MAX trip chain', icon: '🚄', cat: 'tools', tech: ['SNCF open data'], link: `${GITHUB}/max-trip-chain`,
-    blurb: 'Open-source finder for reservable MAX JEUNE / SENIOR train seats.' },
+  { name: 'MAX Finder', icon: '🚄', cat: 'tools', tech: ['SNCF open data', 'PWA'], link: `${GITHUB}/max-trip-chain`,
+    blurb: 'Find every SNCF train with a free MAX JEUNE / SENIOR seat in one search, and chain them into a tour.' },
   { name: 'Cuddle', icon: '🤖', cat: 'algo', tech: ['AI'],
     blurb: 'An AI bot project: decision-making and heuristics.' },
   { name: 'Organized', icon: '🗂️', cat: 'systems', tech: ['Bash'],
@@ -156,6 +156,9 @@ function openWindow(id) {
   if (id === 'terminal-window') {
     setTimeout(() => $('#shell-input').focus(), 50);
   }
+  if (id === 'python-window') {
+    setTimeout(() => { setupPython(); drawMap(); }, 50);
+  }
 }
 
 function closeWindow(id) {
@@ -163,6 +166,7 @@ function closeWindow(id) {
   if (!win || !win.classList.contains('open')) return;
 
   win.classList.remove('active', 'focused');
+  if (id === 'preview-window') stopPreview();
   const idx = openOrder.indexOf(win);
   if (idx > -1) openOrder.splice(idx, 1);
 
@@ -324,13 +328,14 @@ function renderProjects() {
   $('#project-count').textContent = `${shown.length} item${shown.length === 1 ? '' : 's'}`;
 
   shown.forEach((p) => {
-    const el = document.createElement(p.link ? 'a' : 'div');
+    const el = document.createElement('div');
     el.className = 'project' + (p.featured && activeFilter === 'all' ? ' featured' : '');
-    if (p.link) {
-      el.href = p.link;
-      el.target = '_blank';
-      el.rel = 'noopener';
-    }
+    el.setAttribute('role', 'button');
+    el.tabIndex = 0;
+    el.addEventListener('click', () => openPreview(p));
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPreview(p); }
+    });
 
     const icon = document.createElement('span');
     icon.className = 'project-icon';
@@ -342,10 +347,20 @@ function renderProjects() {
     const name = document.createElement('div');
     name.className = 'project-name';
     name.textContent = p.name;
+    if (hasPreview(p)) {
+      const play = document.createElement('span');
+      play.className = 'play';
+      play.textContent = p.name === 'Navigate' ? '▶ run' : '▶ preview';
+      name.appendChild(play);
+    }
     if (p.link) {
-      const ext = document.createElement('span');
+      const ext = document.createElement('a');
       ext.className = 'ext';
+      ext.href = p.link;
+      ext.target = '_blank';
+      ext.rel = 'noopener';
       ext.textContent = 'github ↗';
+      ext.addEventListener('click', (e) => e.stopPropagation());
       name.appendChild(ext);
     }
 
@@ -374,6 +389,227 @@ function renderProjects() {
   });
 }
 
+/* ---------- project preview window ---------- */
+
+let previewCleanup = null;
+
+function hasPreview(p) {
+  return p.name === 'Navigate' || typeof PREVIEWS[p.name] === 'function';
+}
+
+function openPreview(p) {
+  if (p.name === 'Navigate') { openWindow('python-window'); return; }
+
+  stopPreview();
+  $('#preview-title').textContent = `~/projects/${p.name.toLowerCase().replace(/\s+/g, '-')}`;
+  $('#preview-icon').textContent = p.icon;
+  $('#preview-name').textContent = p.name;
+  $('#preview-blurb').textContent = p.blurb;
+
+  const tags = $('#preview-tags');
+  tags.innerHTML = '';
+  p.tech.forEach((t) => {
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = t;
+    tags.appendChild(tag);
+  });
+
+  const link = $('#preview-link');
+  link.hidden = !p.link;
+  if (p.link) link.href = p.link;
+
+  const live = $('#preview-live');
+  const liveUrl = PREVIEW_LIVE[p.name];
+  live.hidden = !liveUrl;
+  if (liveUrl) live.href = liveUrl;
+
+  const stage = $('#preview-stage');
+  stage.innerHTML = '';
+  $('#preview-note').textContent = PREVIEW_NOTES[p.name] || '';
+
+  openWindow('preview-window');
+
+  const run = PREVIEWS[p.name];
+  if (run) {
+    // wait a frame so the stage has its final size before canvases measure it
+    requestAnimationFrame(() => {
+      if (!$('#preview-window').classList.contains('open')) return;
+      try {
+        previewCleanup = run(stage) || null;
+      } catch (err) {
+        console.error('preview failed', p.name, err);
+        emptyStage(stage, 'preview crashed', [String(err.message || err)]);
+      }
+    });
+  } else {
+    emptyStage(stage, 'no preview yet', [
+      p.link ? 'the code is on GitHub, link above' : 'this one lives in a private Epitech repo',
+    ]);
+    $('#preview-note').textContent = '';
+  }
+}
+
+function stopPreview() {
+  if (previewCleanup) {
+    try { previewCleanup(); } catch (e) { /* ignore */ }
+    previewCleanup = null;
+  }
+  $('#preview-stage').innerHTML = '';
+}
+
+/* ---------- navigate.py: real Python through Pyodide ---------- */
+
+const PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js';
+let pyodideReady = null;   // promise
+let pyNetwork = null;
+let pyLastRoute = null;
+
+function loadPyodideOnce() {
+  if (pyodideReady) return pyodideReady;
+  pyodideReady = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = PYODIDE_URL;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('could not download the Python runtime'));
+    document.head.appendChild(script);
+    setTimeout(() => reject(new Error('timed out downloading the Python runtime')), 60000);
+  })
+    .then(() => window.loadPyodide())
+    .then(async (py) => {
+      const src = await fetch('navigate.py').then((r) => { if (!r.ok) throw new Error('navigate.py not found'); return r.text(); });
+      $('#py-code').textContent = src;
+      py.runPython(src);
+      return py;
+    });
+  return pyodideReady;
+}
+
+function pyStatus(text, cls = 'dim') {
+  const el = $('#py-status');
+  el.textContent = text;
+  el.className = cls;
+}
+
+function pyPrint(text, cls) {
+  const out = $('#py-out');
+  const span = document.createElement('span');
+  if (cls) span.className = cls;
+  span.textContent = text + '\n';
+  out.appendChild(span);
+  out.scrollTop = out.scrollHeight;
+}
+
+async function setupPython() {
+  if (pyNetwork) return;
+  if (!$('#python-window').dataset.started) {
+    $('#python-window').dataset.started = '1';
+  } else {
+    return; // already loading
+  }
+
+  pyStatus('loading Python runtime, about 10 MB, first time only…', 'yellow');
+  pyPrint('loading pyodide…', 'y');
+  try {
+    const py = await loadPyodideOnce();
+    pyNetwork = JSON.parse(py.runPython('network()'));
+    pyPrint(`Python ${py.runPython('import sys; sys.version.split()[0]')} ready. navigate.py loaded.`, 'g');
+    pyPrint('');
+
+    const from = $('#py-from'), to = $('#py-to');
+    Object.keys(pyNetwork.stations).forEach((name) => {
+      from.add(new Option(name, name));
+      to.add(new Option(name, name));
+    });
+    from.value = 'Gare Nord';
+    to.value = 'Aéroport';
+    from.disabled = to.disabled = false;
+    $('#py-run').disabled = false;
+    pyStatus('ready', 'green');
+    drawMap();
+    runRoute();
+  } catch (err) {
+    pyStatus('failed: ' + err.message, 'red');
+    pyPrint('error: ' + err.message, 'r');
+    pyPrint('you can still read the source with "view source", or run it locally: python3 navigate.py "Gare Nord" Parc', 'd');
+    delete $('#python-window').dataset.started;
+  }
+}
+
+async function runRoute() {
+  const py = await pyodideReady;
+  const a = $('#py-from').value, b = $('#py-to').value;
+  py.globals.set('_a', a);
+  py.globals.set('_b', b);
+  pyPrint(`$ python3 navigate.py "${a}" "${b}"`, 'y');
+  const text = py.runPython('describe(_a, _b)');
+  pyLastRoute = JSON.parse(py.runPython('route(_a, _b)'));
+  pyPrint(text, pyLastRoute.error ? 'r' : undefined);
+  pyPrint('');
+  drawMap();
+}
+
+function drawMap() {
+  const canvas = $('#py-map');
+  if (!pyNetwork || !canvas.clientWidth) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#11111b'; ctx.fillRect(0, 0, w, h);
+
+  const pad = 34;
+  const P = (name) => { const [x, y] = pyNetwork.stations[name]; return [pad + (x / 100) * (w - pad * 2), pad + (y / 100) * (h - pad * 2)]; };
+  const path = pyLastRoute && !pyLastRoute.error ? pyLastRoute.path : [];
+  const onPath = (a, b) => { const i = path.indexOf(a), j = path.indexOf(b); return i > -1 && j > -1 && Math.abs(i - j) === 1; };
+
+  // lines
+  Object.values(pyNetwork.lines).forEach((line) => {
+    for (let i = 0; i < line.stops.length - 1; i++) {
+      const hot = onPath(line.stops[i], line.stops[i + 1]);
+      ctx.strokeStyle = line.colour; ctx.globalAlpha = path.length ? (hot ? 1 : 0.22) : 0.8; ctx.lineWidth = hot ? 6 : 3;
+      ctx.beginPath(); ctx.moveTo(...P(line.stops[i])); ctx.lineTo(...P(line.stops[i + 1])); ctx.stroke();
+    }
+  });
+  ctx.globalAlpha = 1;
+  // stations
+  ctx.font = '11px JetBrains Mono, monospace';
+  Object.keys(pyNetwork.stations).forEach((name) => {
+    const [x, y] = P(name);
+    const hot = path.includes(name);
+    ctx.fillStyle = hot ? '#f9e2af' : '#cdd6f4'; ctx.strokeStyle = '#11111b'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, hot ? 6 : 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    const tw = ctx.measureText(name).width;
+    const lx = Math.min(w - tw - 4, Math.max(4, x - tw / 2));
+    ctx.fillStyle = 'rgba(17,17,27,0.8)'; ctx.fillRect(lx - 2, y - 20, tw + 4, 13);
+    ctx.fillStyle = hot ? '#f9e2af' : '#a6adc8';
+    ctx.fillText(name, lx, y - 10);
+  });
+  // legend
+  let lx = 8, ly = h - 10;
+  Object.entries(pyNetwork.lines).forEach(([k, line]) => {
+    ctx.fillStyle = line.colour; ctx.fillRect(lx, ly - 8, 10, 10); ctx.fillStyle = '#a6adc8'; ctx.fillText(k, lx + 14, ly); lx += 44;
+  });
+}
+
+function setupPythonUI() {
+  $('#py-run').addEventListener('click', runRoute);
+  $('#py-from').addEventListener('change', runRoute);
+  $('#py-to').addEventListener('change', runRoute);
+  $('#py-source').addEventListener('click', (btn) => {
+    const b = $('#py-source');
+    const show = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', String(show));
+    $('#py-code').hidden = !show;
+    $('#py-out').hidden = show;
+    if (show && !$('#py-code').textContent) {
+      fetch('navigate.py').then((r) => r.text()).then((t) => { $('#py-code').textContent = t; });
+    }
+  });
+  window.addEventListener('resize', drawMap);
+}
+
 /* ---------- terminal ---------- */
 
 const cmdHistory = [];
@@ -400,6 +636,7 @@ const COMMANDS = {
       '  neofetch    system info',
       '  open <win>  readme | projects | terminal',
       '  github      open my GitHub',
+      '  python3 navigate.py   run my Python navigator (real Python)',
       '  date        current time',
       '  echo <txt>  say it back',
       '  clear       clear the screen',
@@ -409,7 +646,7 @@ const COMMANDS = {
 
   whoami: () => print('Khalil Almwakeh (volcinator8000). Epitech, 1st year. C / Linux / Python / Bash.'),
 
-  ls: () => print('readme.txt  projects/  script.js  style.css  .bashrc  .secrets  (nice try)'),
+  ls: () => print('readme.txt  projects/  navigate.py  script.js  style.css  .bashrc  .secrets  (nice try)'),
 
   cat: (args) => {
     const f = args[0];
@@ -449,9 +686,9 @@ const COMMANDS = {
   ),
 
   open: (args) => {
-    const map = { readme: 'about-window', projects: 'projects-window', terminal: 'terminal-window' };
+    const map = { readme: 'about-window', projects: 'projects-window', terminal: 'terminal-window', navigate: 'python-window' };
     const id = map[args[0]];
-    if (!id) return print('open: readme | projects | terminal', 'err');
+    if (!id) return print('open: readme | projects | terminal | navigate', 'err');
     openWindow(id);
     print(`opening ${args[0]}...`);
   },
@@ -474,8 +711,11 @@ const COMMANDS = {
   rm: (args) => (args.join(' ').includes('-rf') ? print("I'm going to pretend you didn't type that.") : print('rm: nothing removed (this is a portfolio, not a filesystem)')),
   vim: () => print('you are now stuck in vim. type :q to leave (just kidding, type anything)'),
   ':q': () => print('phew.'),
-  python: () => print('Python 3.12.0\n>>> import this\nThe Zen of Python, by Tim Peters\n\nBeautiful is better than ugly.\n...'),
-  python3: () => COMMANDS.python(),
+  python: (args) => {
+    if (args[0] === 'navigate.py') { openWindow('python-window'); return print('running navigate.py in the browser…'); }
+    print('>>> import this\nThe Zen of Python, by Tim Peters\n\nBeautiful is better than ugly.\n...\n(try: python3 navigate.py)');
+  },
+  python3: (args) => COMMANDS.python(args),
   hello: () => print('hi! type help to see what you can do.'),
   hi: () => COMMANDS.hello(),
   pwd: () => print('/home/khalil'),
@@ -552,6 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderFilters();
   renderProjects();
   setupTerminal();
+  setupPythonUI();
   tickClock();
   setInterval(tickClock, 15000);
   runBoot();
