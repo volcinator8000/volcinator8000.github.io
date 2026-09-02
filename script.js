@@ -532,6 +532,7 @@ async function setupPython() {
     pyStatus('failed: ' + err.message, 'red');
     pyPrint('error: ' + err.message, 'r');
     pyPrint('you can still read the source with "view source", or run it locally: python3 navigate.py "Gare Nord" Parc', 'd');
+    pyodideReady = null; // so reopening the window retries the download
     delete $('#python-window').dataset.started;
   }
 }
