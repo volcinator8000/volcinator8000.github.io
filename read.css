@@ -145,6 +145,26 @@ body.read {
 }
 
 @media print {
+  :root {
+    --base: #fff;
+    --mantle: #fff;
+    --crust: #fff;
+    --surface0: #d0d0d8;
+    --surface1: #b8b8c4;
+    --surface2: #a0a0ae;
+    --text: #111;
+    --subtext: #333;
+    --overlay: #555;
+    --green: #1f6f3a;
+    --blue: #1a4fb4;
+    --yellow: #7a5a00;
+    --peach: #9a4a1a;
+    --red: #a11;
+    --mauve: #5a3a9a;
+    --teal: #0f6b66;
+    --pink: #8a2a6a;
+  }
+
   .read-nav,
   .read-foot {
     display: none;
@@ -153,6 +173,30 @@ body.read {
   body.read {
     background: #fff;
     color: #111;
+    font-size: 12.5px;
+  }
+
+  .read-main {
+    padding-top: 0;
+  }
+
+  .tag,
+  .file-ext,
+  .xp-card,
+  .fav-card,
+  .glance {
+    background: #f3f3f6 !important;
+  }
+
+  a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  .xp-card,
+  .fav-card,
+  .read-item {
+    break-inside: avoid;
   }
 }
 

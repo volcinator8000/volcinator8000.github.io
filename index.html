@@ -29,7 +29,7 @@
         <!-- state 1: terminal -->
         <main class="term" id="term" hidden>
           <button id="sound" class="sound" type="button" aria-pressed="true" title="Toggle sound">SOUND: ON</button>
-          <pre id="hdr" class="hdr" aria-live="polite"></pre>
+          <pre id="hdr" class="hdr"></pre>
 
           <nav id="choices" class="choices" aria-label="Choose a version of the portfolio" hidden>
             <a class="choice" href="desktop.html" data-choice="desktop">
@@ -249,6 +249,7 @@
         a.addEventListener('mouseenter', function () { select(k, false); });
         a.addEventListener('focus', function () { select(k, false); });
         a.addEventListener('click', function (e) {
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return; // let new-tab clicks through
           if (a.dataset.choice === 'desktop') {
             try { sessionStorage.setItem('fromLanding', '1'); } catch (e2) { /* ignore */ }
           }
@@ -263,6 +264,7 @@
 
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Tab') return;
+        if (e.target.closest && e.target.closest('.sound')) return; // Enter/Space on the toggle just toggles
         if (!powered) { e.preventDefault(); powerOn(); return; }
         if (!done) { skip(); return; }
         if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'j') { e.preventDefault(); select(current + 1, true); }
