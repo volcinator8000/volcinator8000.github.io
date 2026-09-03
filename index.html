@@ -15,12 +15,20 @@
 <body>
   <div class="room">
     <div class="monitor">
-      <div class="screen">
+      <div class="screen off" id="screen">
         <div class="glass" aria-hidden="true"></div>
         <div class="scanlines" aria-hidden="true"></div>
         <div class="rollbar" aria-hidden="true"></div>
 
-        <main class="term">
+        <!-- state 0: monitor off -->
+        <div id="standby" class="standby">
+          <p class="standby-text blink">PRESS ANY KEY OR TAP TO POWER ON</p>
+          <p class="standby-sub">Khalil Almwakeh &middot; volcinator8000</p>
+        </div>
+
+        <!-- state 1: terminal -->
+        <main class="term" id="term" hidden>
+          <button id="sound" class="sound" type="button" aria-pressed="true" title="Toggle sound">SOUND: ON</button>
           <pre id="hdr" class="hdr" aria-live="polite"></pre>
 
           <nav id="choices" class="choices" aria-label="Choose a version of the portfolio" hidden>
@@ -41,7 +49,7 @@
         </main>
       </div>
       <div class="chin" aria-hidden="true">
-        <span class="led"></span>
+        <span class="led" id="led"></span>
         <span class="brand">VOLCINATOR 8000</span>
       </div>
     </div>
@@ -51,17 +59,125 @@
     (function () {
       'use strict';
       var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var hdr = document.getElementById('hdr');
-      var choices = document.getElementById('choices');
-      var hint = document.getElementById('hint');
+      var $ = function (id) { return document.getElementById(id); };
+      var screen = $('screen'), standby = $('standby'), term = $('term'), hdr = $('hdr');
+      var choices = $('choices'), hint = $('hint'), soundBtn = $('sound'), led = $('led');
       var links = Array.prototype.slice.call(choices.querySelectorAll('.choice'));
-      var lines = [
-        'KHALIL ALMWAKEH (TM) PERSONAL TERMINAL',
-        'COPYRIGHT 2026 VOLCINATOR8000. ALL RIGHTS RESERVED.',
-        '-EPITECH, YEAR 2-  -C / LINUX / PYTHON / BASH-',
-        '',
-        '> TWO WAYS TO LOOK AROUND. PICK ONE:'
+
+      /* ---------- sound: everything synthesized, no files ---------- */
+      var soundOn = true;
+      try { soundOn = localStorage.getItem('crtSound') !== 'off'; } catch (e) { /* ignore */ }
+      var ctx = null, hum = null;
+
+      function audio() {
+        if (!soundOn) return null;
+        if (!ctx) {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          ctx = new AC();
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+        return ctx;
+      }
+
+      function tone(freq, dur, type, gain, when) {
+        var c = audio(); if (!c) return;
+        var o = c.createOscillator(), g = c.createGain();
+        var t = c.currentTime + (when || 0);
+        o.type = type || 'square';
+        o.frequency.setValueAtTime(freq, t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(gain || 0.05, t + 0.005);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g).connect(c.destination);
+        o.start(t); o.stop(t + dur + 0.02);
+      }
+
+      var lastTick = 0;
+      function tick() { // key click while typing
+        var now = performance.now();
+        if (now - lastTick < 28) return;
+        lastTick = now;
+        tone(1400 + Math.random() * 500, 0.02, 'square', 0.03);
+      }
+      function blip() { tone(880, 0.06, 'square', 0.05); }                // selection moved
+      function confirm() { tone(660, 0.08, 'square', 0.06); tone(990, 0.12, 'square', 0.06, 0.09); }
+      function granted() { tone(523, 0.1, 'square', 0.05); tone(659, 0.1, 'square', 0.05, 0.11); tone(784, 0.18, 'square', 0.06, 0.22); }
+
+      function powerOnSound() {
+        var c = audio(); if (!c) return;
+        // rising sweep + a burst of noise, like a tube warming up
+        var o = c.createOscillator(), g = c.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(80, c.currentTime);
+        o.frequency.exponentialRampToValueAtTime(1200, c.currentTime + 0.5);
+        g.gain.setValueAtTime(0.0001, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.08, c.currentTime + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.7);
+        o.connect(g).connect(c.destination);
+        o.start(); o.stop(c.currentTime + 0.75);
+        var len = c.sampleRate * 0.3, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+        for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+        var n = c.createBufferSource(), ng = c.createGain();
+        n.buffer = buf; ng.gain.value = 0.04;
+        n.connect(ng).connect(c.destination); n.start();
+        startHum();
+      }
+
+      function startHum() {
+        var c = audio(); if (!c || hum) return;
+        var o = c.createOscillator(), g = c.createGain();
+        o.type = 'sawtooth'; o.frequency.value = 50;
+        var f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 120;
+        g.gain.value = 0.012;
+        o.connect(f).connect(g).connect(c.destination); o.start();
+        hum = { o: o, g: g };
+      }
+      function stopHum() { if (hum) { try { hum.o.stop(); } catch (e) { /* ignore */ } hum = null; } }
+
+      function setSound(on) {
+        soundOn = on;
+        soundBtn.textContent = 'SOUND: ' + (on ? 'ON' : 'OFF');
+        soundBtn.setAttribute('aria-pressed', String(on));
+        try { localStorage.setItem('crtSound', on ? 'on' : 'off'); } catch (e) { /* ignore */ }
+        if (!on) stopHum(); else if (powered) startHum();
+      }
+      setSound(soundOn);
+      soundBtn.addEventListener('click', function (e) { e.stopPropagation(); setSound(!soundOn); if (soundOn) blip(); });
+      document.addEventListener('visibilitychange', function () { if (document.hidden) stopHum(); else if (powered && soundOn) startHum(); });
+
+      /* ---------- the script that types itself ---------- */
+      // each step: [text, kind]  kind: 'line' typed, 'pw' typed as dots, 'pause', 'bar' progress, 'ok' access granted
+      var script = [
+        ['KHALIL ALMWAKEH (TM) PERSONAL TERMINAL', 'line'],
+        ['COPYRIGHT 2026 VOLCINATOR8000. ALL RIGHTS RESERVED.', 'line'],
+        ['-EPITECH, YEAR 2-  -C / LINUX / PYTHON / BASH-', 'line'],
+        ['', 'line'],
+        ['> LOGIN: visitor', 'line'],
+        ['> PASSWORD: ', 'pw'],
+        ['> AUTHENTICATING ', 'bar'],
+        ['> ACCESS GRANTED. WELCOME, VISITOR.', 'ok'],
+        ['', 'line'],
+        ['> TWO WAYS TO LOOK AROUND. PICK ONE:', 'line']
       ];
+      var out = [];      // finished lines
+      var done = false, powered = false, timer = 0;
+
+      function render(partial) {
+        hdr.textContent = out.join('\n') + (out.length ? '\n' : '') + (partial || '') + (done ? '' : '█');
+      }
+
+      function finishAll() {
+        clearTimeout(timer);
+        out = script.map(function (s) {
+          if (s[1] === 'pw') return s[0] + '••••••••';
+          if (s[1] === 'bar') return s[0] + '[██████████] OK';
+          return s[0];
+        });
+        done = true;
+        render('');
+        showChoices();
+      }
 
       function showChoices() {
         choices.hidden = false;
@@ -69,51 +185,92 @@
         select(0, false);
       }
 
-      // type the header line by line
-      var li = 0, ci = 0, done = false;
-      function type() {
+      function run(i) {
         if (done) return;
-        if (reduced) { hdr.textContent = lines.join('\n'); done = true; showChoices(); return; }
-        if (li >= lines.length) { done = true; showChoices(); return; }
-        var line = lines[li];
-        if (ci <= line.length) {
-          hdr.textContent = lines.slice(0, li).join('\n') + (li ? '\n' : '') + line.slice(0, ci) + '█';
-          ci++;
-          setTimeout(type, line === '' ? 120 : 18);
-        } else {
-          li++; ci = 0;
-          setTimeout(type, 140);
+        if (i >= script.length) { done = true; render(''); showChoices(); return; }
+        var text = script[i][0], kind = script[i][1];
+        if (reduced) { out.push(kind === 'pw' ? text + '••••••••' : kind === 'bar' ? text + '[██████████] OK' : text); render(''); timer = setTimeout(function () { run(i + 1); }, 0); return; }
+
+        if (kind === 'line' || kind === 'ok') {
+          var c = 0;
+          (function step() {
+            if (done) return;
+            if (c <= text.length) { render(text.slice(0, c)); if (c) tick(); c++; timer = setTimeout(step, 14); }
+            else { out.push(text); render(''); if (kind === 'ok') granted(); timer = setTimeout(function () { run(i + 1); }, text ? (kind === 'ok' ? 500 : 160) : 120); }
+          })();
+        } else if (kind === 'pw') {
+          var n = 0, dots = '';
+          (function step() {
+            if (done) return;
+            if (n < 8) { dots += '•'; render(text + dots); tick(); n++; timer = setTimeout(step, 70); }
+            else { out.push(text + dots); render(''); timer = setTimeout(function () { run(i + 1); }, 300); }
+          })();
+        } else if (kind === 'bar') {
+          var k = 0;
+          (function step() {
+            if (done) return;
+            if (k <= 10) { render(text + '[' + '█'.repeat(k) + '·'.repeat(10 - k) + ']'); if (k % 2 === 0) tone(300 + k * 40, 0.03, 'square', 0.03); k++; timer = setTimeout(step, 70); }
+            else { out.push(text + '[██████████] OK'); render(''); timer = setTimeout(function () { run(i + 1); }, 250); }
+          })();
         }
       }
-      type();
 
-      // any click or key skips the typing
-      function skip() { if (!done) { done = true; hdr.textContent = lines.join('\n'); showChoices(); } }
-      document.addEventListener('click', skip, { once: true });
+      /* ---------- power on ---------- */
+      function powerOn() {
+        if (powered) return;
+        powered = true;
+        powerOnSound();
+        standby.hidden = true;
+        screen.classList.remove('off');
+        screen.classList.add('on');
+        led.classList.add('lit');
+        setTimeout(function () { term.hidden = false; render(''); run(0); }, reduced ? 0 : 650);
+      }
 
+      // after power-on, any click or key skips the typing
+      function skip() { if (powered && !done) finishAll(); }
+
+      document.addEventListener('click', function (e) {
+        if (!powered) { powerOn(); return; }
+        if (e.target.closest('.choice') || e.target.closest('.sound')) return;
+        skip();
+      });
+
+      /* ---------- menu ---------- */
       var current = 0;
       function select(i, focus) {
+        var prev = current;
         current = (i + links.length) % links.length;
         links.forEach(function (a, k) { a.classList.toggle('sel', k === current); });
         if (focus) links[current].focus();
+        if (prev !== current) blip();
       }
       links.forEach(function (a, k) {
         a.addEventListener('mouseenter', function () { select(k, false); });
         a.addEventListener('focus', function () { select(k, false); });
-        a.addEventListener('click', function () {
+        a.addEventListener('click', function (e) {
           if (a.dataset.choice === 'desktop') {
-            try { sessionStorage.setItem('fromLanding', '1'); } catch (e) { /* ignore */ }
+            try { sessionStorage.setItem('fromLanding', '1'); } catch (e2) { /* ignore */ }
+          }
+          if (soundOn && ctx) { // let the confirm blip play before leaving
+            e.preventDefault();
+            confirm();
+            stopHum();
+            setTimeout(function () { location.href = a.href; }, 220);
           }
         });
       });
 
       document.addEventListener('keydown', function (e) {
-        if (!done) { skip(); if (e.key !== 'Enter') return; }
+        if (e.key === 'Tab') return;
+        if (!powered) { e.preventDefault(); powerOn(); return; }
+        if (!done) { skip(); return; }
         if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'j') { e.preventDefault(); select(current + 1, true); }
         else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'k') { e.preventDefault(); select(current - 1, true); }
         else if (e.key === '1') select(0, true);
         else if (e.key === '2') select(1, true);
         else if (e.key === 'Enter' && document.activeElement !== links[current]) { links[current].click(); }
+        else if (e.key === 'm') { setSound(!soundOn); }
       });
     })();
   </script>

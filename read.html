@@ -14,24 +14,37 @@
   <link rel="stylesheet" href="read.css" />
 </head>
 <body class="read">
-  <nav class="read-nav">
-    <a href="index.html">&larr; start</a>
-    <span class="dim">quick read</span>
-    <a href="desktop.html">full experience &rarr;</a>
+  <nav class="read-nav" aria-label="Page">
+    <a class="read-nav-side" href="index.html">&larr; start</a>
+    <div class="read-nav-mid">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a class="read-nav-side" href="desktop.html">full experience &rarr;</a>
   </nav>
 
   <main class="read-main">
     <header class="read-head">
+      <p class="read-kicker">volcinator8000@arch:~$ cat khalil.md</p>
       <h1>Khalil Almwakeh</h1>
-      <p class="read-sub">Epitech student, 2nd year · C · Linux · Python · Bash</p>
-      <p class="read-links">
-        <a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a>
-      </p>
+      <p class="read-sub">Systems-minded student who likes C, Linux and things that simulate other things.</p>
+
+      <dl class="glance">
+        <div><dt>School</dt><dd>Epitech, 2nd year</dd></div>
+        <div><dt>Stack</dt><dd>C · Linux · Python · Bash</dd></div>
+        <div><dt>Currently</dt><dd>Web &amp; SEO engineering at <a href="https://www.remoters.io" target="_blank" rel="noopener">Remoters</a></dd></div>
+        <div><dt>Languages</dt><dd>French, English</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></dd></div>
+        <div><dt>Daily driver</dt><dd>Arch Linux, vim</dd></div>
+      </dl>
     </header>
 
     <section id="about">
       <h2>About</h2>
-      <p>Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things. Currently in my second year at Epitech, and doing web and SEO engineering for Remoters on the side.</p>
+      <p>Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things: shells, maze solvers, isometric worlds, population models. In my second year at Epitech, and doing web and SEO engineering for Remoters on the side, which taught me that a CMS at scale is just another system to reason about.</p>
+      <p>Prefer to poke at things? The <a href="desktop.html">full experience</a> is a little desktop with a terminal and running previews of most projects, including a real Python file that runs in the browser.</p>
     </section>
 
     <section id="experience">
@@ -41,12 +54,23 @@
 
     <section id="projects">
       <h2>Projects</h2>
-      <p class="dim">Grouped by what they are about. Epitech projects live in private repos; the ones with a link are public. The <a href="desktop.html">full experience</a> has a running preview for most of them.</p>
+      <h3 class="read-cat">Favourites</h3>
+      <div id="fav-root" class="fav-grid"></div>
+      <p class="dim read-note">Everything else, grouped by what it is about. Epitech projects live in private repos; the ones with a link are public.</p>
       <div id="projects-root"></div>
     </section>
 
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>The quickest way to reach me is GitHub: <a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a>. Open an issue on any repo, or find the contact details on my profile.</p>
+      <p class="read-actions">
+        <button type="button" class="btn" id="print-btn">Print / save as PDF</button>
+        <a class="btn ghost" href="desktop.html">Open the desktop version</a>
+      </p>
+    </section>
+
     <footer class="read-foot">
-      <p>Prefer to click around? <a href="desktop.html">Open the desktop version</a>, or <a href="index.html">go back to the start</a>.</p>
+      <p>Built by hand: HTML, CSS and JavaScript, no framework. <a href="https://github.com/volcinator8000/khalil-almwakeh.github.io" target="_blank" rel="noopener">Source on GitHub</a>.</p>
     </footer>
   </main>
 
