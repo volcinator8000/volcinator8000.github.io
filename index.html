@@ -15,23 +15,17 @@
 <body>
   <div class="room">
     <div class="monitor">
-      <div class="screen off" id="screen">
+      <div class="screen on" id="screen">
         <div class="glass" aria-hidden="true"></div>
         <div class="scanlines" aria-hidden="true"></div>
         <div class="rollbar" aria-hidden="true"></div>
 
-        <!-- state 0: monitor off -->
-        <div id="standby" class="standby">
-          <p class="standby-text blink">PRESS ANY KEY OR TAP TO POWER ON</p>
-          <p class="standby-sub">Khalil Almwakeh &middot; volcinator8000</p>
-        </div>
-
         <!-- state 1: terminal -->
-        <main class="term" id="term" hidden>
+        <main class="term" id="term">
           <button id="sound" class="sound" type="button" aria-pressed="true" title="Toggle sound">SOUND: ON</button>
           <pre id="hdr" class="hdr"></pre>
 
-          <nav id="choices" class="choices" aria-label="Choose a version of the portfolio" hidden>
+          <nav id="choices" class="choices" aria-label="Choose a version of the portfolio">
             <a class="choice" href="desktop.html" data-choice="desktop">
               <span class="c-label">[1] FULL EXPERIENCE</span>
               <span class="c-desc">Boot a small Linux desktop. Windows to drag, a terminal to type in, project demos that actually run.</span>
@@ -44,12 +38,12 @@
             </a>
           </nav>
 
-          <p id="hint" class="hint" hidden>&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
+          <p id="hint" class="hint">&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
           <p class="foot"><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
         </main>
       </div>
       <div class="chin" aria-hidden="true">
-        <span class="led" id="led"></span>
+        <span class="led lit" id="led"></span>
         <span class="brand">VOLCINATOR 8000</span>
       </div>
     </div>
@@ -60,17 +54,17 @@
       'use strict';
       var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var $ = function (id) { return document.getElementById(id); };
-      var screen = $('screen'), standby = $('standby'), term = $('term'), hdr = $('hdr');
+      var term = $('term'), hdr = $('hdr');
       var choices = $('choices'), hint = $('hint'), soundBtn = $('sound'), led = $('led');
       var links = Array.prototype.slice.call(choices.querySelectorAll('.choice'));
 
       /* ---------- sound: everything synthesized, no files ---------- */
       var soundOn = true;
       try { soundOn = localStorage.getItem('crtSound') !== 'off'; } catch (e) { /* ignore */ }
-      var ctx = null, hum = null;
+      var ctx = null, hum = null, gestured = false;
 
       function audio() {
-        if (!soundOn) return null;
+        if (!soundOn || !gestured) return null; // browsers refuse audio before a user gesture
         if (!ctx) {
           var AC = window.AudioContext || window.webkitAudioContext;
           if (!AC) return null;
@@ -140,11 +134,20 @@
         soundBtn.textContent = 'SOUND: ' + (on ? 'ON' : 'OFF');
         soundBtn.setAttribute('aria-pressed', String(on));
         try { localStorage.setItem('crtSound', on ? 'on' : 'off'); } catch (e) { /* ignore */ }
-        if (!on) stopHum(); else if (powered) startHum();
+        if (!on) stopHum(); else if (gestured) startHum();
       }
       setSound(soundOn);
       soundBtn.addEventListener('click', function (e) { e.stopPropagation(); setSound(!soundOn); if (soundOn) blip(); });
-      document.addEventListener('visibilitychange', function () { if (document.hidden) stopHum(); else if (powered && soundOn) startHum(); });
+      document.addEventListener('visibilitychange', function () { if (document.hidden) stopHum(); else if (gestured && soundOn) startHum(); });
+
+      // the first key or pointer press unlocks audio; the hum starts then
+      function firstGesture() {
+        if (gestured) return;
+        gestured = true;
+        if (soundOn) { powerOnSound(); }
+      }
+      document.addEventListener('pointerdown', firstGesture, true);
+      document.addEventListener('keydown', firstGesture, true);
 
       /* ---------- the script that types itself ---------- */
       // each step: [text, kind]  kind: 'line' typed, 'pw' typed as dots, 'pause', 'bar' progress, 'ok' access granted
@@ -160,84 +163,77 @@
         ['', 'line'],
         ['> TWO WAYS TO LOOK AROUND. PICK ONE:', 'line']
       ];
-      var out = [];      // finished lines
-      var done = false, powered = false, timer = 0;
+      var done = false;
+      var CPS = 220;            // characters per second while typing
+      var BAR = '██████████', DOTS = '••••••••';
 
-      function render(partial) {
-        hdr.textContent = out.join('\n') + (out.length ? '\n' : '') + (partial || '') + (done ? '' : '█');
+      // build a timeline: every step gets a start time and a duration, so the
+      // intro takes the same time on every machine (no setTimeout chains)
+      var timeline = [], t = 0;
+      script.forEach(function (st) {
+        var text = st[0], kind = st[1], dur;
+        if (kind === 'pw') dur = 8 * 0.035;
+        else if (kind === 'bar') dur = 11 * 0.03;
+        else dur = text.length / CPS;
+        var pause = kind === 'ok' ? 0.22 : text ? 0.05 : 0.04;
+        timeline.push({ text: text, kind: kind, start: t, dur: dur });
+        t += dur + pause;
+      });
+      var TOTAL = t;
+
+      function finalText(st) {
+        if (st.kind === 'pw') return st.text + DOTS;
+        if (st.kind === 'bar') return st.text + '[' + BAR + '] OK';
+        return st.text;
+      }
+
+      var lastCount = -1, okPlayed = false;
+      function renderAt(el) {
+        var lines = [], cursor = true, count = 0;
+        for (var i = 0; i < timeline.length; i++) {
+          var st = timeline[i];
+          if (el >= st.start + st.dur) { lines.push(finalText(st)); count += finalText(st).length; if (st.kind === 'ok' && !okPlayed) { okPlayed = true; granted(); } continue; }
+          if (el < st.start) break;
+          var f = (el - st.start) / st.dur;
+          if (st.kind === 'pw') { var n = Math.floor(f * 8); lines.push(st.text + DOTS.slice(0, n)); count += n; }
+          else if (st.kind === 'bar') { var k = Math.floor(f * 11); lines.push(st.text + '[' + BAR.slice(0, k) + '··········'.slice(0, 10 - k) + ']'); count += k; if (k % 2 === 0) tone(300 + k * 40, 0.03, 'square', 0.03); }
+          else { var c = Math.floor(f * st.text.length); lines.push(st.text.slice(0, c)); count += c; }
+          break;
+        }
+        if (count !== lastCount) { if (lastCount >= 0) tick(); lastCount = count; }
+        if (el >= TOTAL) { done = true; cursor = false; }
+        hdr.textContent = lines.join('\n') + (cursor ? '█' : '');
+      }
+
+      var t0 = null;
+      function frame(now) {
+        if (done) return;
+        if (t0 === null) t0 = now;
+        renderAt(reduced ? TOTAL : (now - t0) / 1000);
+        if (!done) requestAnimationFrame(frame);
+        else showChoices();
       }
 
       function finishAll() {
-        clearTimeout(timer);
-        out = script.map(function (s) {
-          if (s[1] === 'pw') return s[0] + '••••••••';
-          if (s[1] === 'bar') return s[0] + '[██████████] OK';
-          return s[0];
-        });
-        done = true;
-        render('');
+        if (done) return;
+        renderAt(TOTAL);
         showChoices();
       }
 
       function showChoices() {
-        choices.hidden = false;
-        hint.hidden = false;
-        select(0, false);
+        if (!links.some(function (a) { return a.classList.contains('sel'); })) select(0, false);
       }
 
-      function run(i) {
-        if (done) return;
-        if (i >= script.length) { done = true; render(''); showChoices(); return; }
-        var text = script[i][0], kind = script[i][1];
-        if (reduced) { out.push(kind === 'pw' ? text + '••••••••' : kind === 'bar' ? text + '[██████████] OK' : text); render(''); timer = setTimeout(function () { run(i + 1); }, 0); return; }
-
-        if (kind === 'line' || kind === 'ok') {
-          var c = 0;
-          (function step() {
-            if (done) return;
-            if (c <= text.length) { render(text.slice(0, c)); if (c) tick(); c++; timer = setTimeout(step, 14); }
-            else { out.push(text); render(''); if (kind === 'ok') granted(); timer = setTimeout(function () { run(i + 1); }, text ? (kind === 'ok' ? 500 : 160) : 120); }
-          })();
-        } else if (kind === 'pw') {
-          var n = 0, dots = '';
-          (function step() {
-            if (done) return;
-            if (n < 8) { dots += '•'; render(text + dots); tick(); n++; timer = setTimeout(step, 70); }
-            else { out.push(text + dots); render(''); timer = setTimeout(function () { run(i + 1); }, 300); }
-          })();
-        } else if (kind === 'bar') {
-          var k = 0;
-          (function step() {
-            if (done) return;
-            if (k <= 10) { render(text + '[' + '█'.repeat(k) + '·'.repeat(10 - k) + ']'); if (k % 2 === 0) tone(300 + k * 40, 0.03, 'square', 0.03); k++; timer = setTimeout(step, 70); }
-            else { out.push(text + '[██████████] OK'); render(''); timer = setTimeout(function () { run(i + 1); }, 250); }
-          })();
-        }
-      }
-
-      /* ---------- power on ---------- */
-      function powerOn() {
-        if (powered) return;
-        powered = true;
-        powerOnSound();
-        standby.hidden = true;
-        screen.classList.remove('off');
-        screen.classList.add('on');
-        led.classList.add('lit');
-        setTimeout(function () { term.hidden = false; render(''); run(0); }, reduced ? 0 : 650);
-      }
-
-      // after power-on, any click or key skips the typing
-      function skip() { if (powered && !done) finishAll(); }
-
+      // any click or key skips the typing
+      function skip() { if (!done) finishAll(); }
       document.addEventListener('click', function (e) {
-        if (!powered) { powerOn(); return; }
         if (e.target.closest('.choice') || e.target.closest('.sound')) return;
         skip();
       });
+      requestAnimationFrame(frame);
 
       /* ---------- menu ---------- */
-      var current = 0;
+      var current = -1;
       function select(i, focus) {
         var prev = current;
         current = (i + links.length) % links.length;
@@ -262,11 +258,13 @@
         });
       });
 
+      select(0, false);
+
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Tab') return;
         if (e.target.closest && e.target.closest('.sound')) return; // Enter/Space on the toggle just toggles
-        if (!powered) { e.preventDefault(); powerOn(); return; }
-        if (!done) { skip(); return; }
+        if (!done && e.key !== 'Enter' && !/^Arrow/.test(e.key) && e.key !== '1' && e.key !== '2') { skip(); return; }
+        if (!done) skip();
         if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'j') { e.preventDefault(); select(current + 1, true); }
         else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'k') { e.preventDefault(); select(current - 1, true); }
         else if (e.key === '1') select(0, true);

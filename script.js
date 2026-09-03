@@ -40,6 +40,10 @@ function finishBoot() {
 
   document.removeEventListener('keydown', finishBoot);
 
+  // #navigate, #projects, #experience, #terminal deep-link straight to a window
+  const wanted = { navigate: 'python-window', projects: 'projects-window', experience: 'experience-window', terminal: 'terminal-window', readme: 'about-window' }[location.hash.slice(1)];
+  if (wanted) { setTimeout(() => openWindow(wanted), 250); return; }
+
   // Give the visitor something to read right away (desktop only —
   // on a phone a full-screen window would hide the icons).
   if (!isMobile()) {
@@ -52,7 +56,7 @@ function runBoot() {
   const boot = $('#boot-screen');
   let fromLanding = false;
   try { fromLanding = sessionStorage.getItem('fromLanding') === '1'; sessionStorage.removeItem('fromLanding'); } catch (e) { /* ignore */ }
-  if (fromLanding) { finishBoot(); return; }
+  if (fromLanding || location.hash) { finishBoot(); return; }
   const step = reducedMotion ? 0 : 180;
 
   boot.addEventListener('click', finishBoot);

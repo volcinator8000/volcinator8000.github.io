@@ -308,7 +308,7 @@ body {
 
 /* the tube lighting up: a thin bright line that opens vertically, then brightness settles */
 .screen.on .term {
-  animation: turnon 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) both, flicker 4s 0.7s infinite;
+  animation: turnon 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both, flicker 4s 0.45s infinite;
   transform-origin: center;
 }
 
@@ -357,6 +357,15 @@ body {
 
 .hdr {
   min-height: 10.5em;
+}
+
+.choices {
+  animation: fadein 0.5s 0.2s both;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
