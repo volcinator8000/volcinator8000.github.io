@@ -9,6 +9,19 @@
 
 // PROJECTS, CATEGORIES, EXPERIENCE and GITHUB come from content.js
 
+/* ---------- sound hooks (sound.js) ---------- */
+
+const SFX = new Proxy({}, { get: (_, name) => (...args) => { try { if (typeof Sound !== 'undefined' && Sound[name]) return Sound[name](...args); } catch (e) { /* ignore */ } } });
+
+function setupSoundToggle() {
+  const btn = $('#sound-toggle');
+  if (!btn || typeof Sound === 'undefined') return;
+  const paint = () => { btn.textContent = `sound: ${Sound.enabled ? 'on' : 'off'}`; btn.setAttribute('aria-pressed', String(Sound.enabled)); };
+  btn.addEventListener('click', () => { Sound.setEnabled(!Sound.enabled); paint(); if (Sound.enabled) Sound.tryUnlock().then(() => SFX.blip()); });
+  paint();
+  Sound.tryUnlock(); // works right away when the visitor clicked their way here from the landing
+}
+
 /* ---------- helpers ---------- */
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -75,6 +88,7 @@ function runBoot() {
       line.appendChild(document.createTextNode(text));
       if (!tag) line.className = 'dim';
       out.appendChild(line);
+      if (tag) SFX.step(i * 2); else SFX.granted();
     }, step * i);
   });
 
@@ -95,6 +109,7 @@ function openWindow(id) {
     win.classList.add('open');
     placeWindow(win);
     requestAnimationFrame(() => win.classList.add('active'));
+    SFX.open();
   }
   focusWindow(win);
 
@@ -111,6 +126,7 @@ function closeWindow(id) {
   if (!win || !win.classList.contains('open')) return;
 
   win.classList.remove('active', 'focused');
+  SFX.close();
   if (id === 'preview-window') stopPreview();
   const idx = openOrder.indexOf(win);
   if (idx > -1) openOrder.splice(idx, 1);
@@ -257,6 +273,7 @@ function renderFilters() {
     chip.setAttribute('aria-selected', String(key === activeFilter));
     chip.textContent = `${label} ${n}`;
     chip.addEventListener('click', () => {
+      SFX.blip();
       activeFilter = key;
       renderFilters();
       renderProjects();
@@ -487,6 +504,7 @@ async function setupPython() {
     from.disabled = to.disabled = false;
     $('#py-run').disabled = false;
     pyStatus('ready', 'green');
+    SFX.granted();
     drawMap();
     runRoute();
   } catch (err) {
@@ -503,6 +521,7 @@ async function runRoute() {
   const a = $('#py-from').value, b = $('#py-to').value;
   py.globals.set('_a', a);
   py.globals.set('_b', b);
+  SFX.confirm();
   pyPrint(`$ python3 navigate.py "${a}" "${b}"`, 'y');
   const text = py.runPython('describe(_a, _b)');
   pyLastRoute = JSON.parse(py.runPython('route(_a, _b)'));
@@ -698,8 +717,8 @@ function runCommand(raw) {
 
   const [cmd, ...args] = line.split(/\s+/);
   const fn = COMMANDS[cmd.toLowerCase()];
-  if (fn) fn(args);
-  else print(`${cmd}: command not found (try 'help')`, 'err');
+  if (fn) { SFX.confirm(); fn(args); }
+  else { SFX.error(); print(`${cmd}: command not found (try 'help')`, 'err'); }
 }
 
 function setupTerminal() {
@@ -713,6 +732,7 @@ function setupTerminal() {
   });
 
   input.addEventListener('keydown', (e) => {
+    if (e.key.length === 1 || e.key === 'Backspace') SFX.tick();
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (historyPos > 0) input.value = cmdHistory[--historyPos];
@@ -736,6 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     const opener = e.target.closest('[data-open]');
     if (opener) openWindow(opener.dataset.open);
+    if (e.target.closest('.icon') && !opener) SFX.blip(); // the github link icon
     const closer = e.target.closest('[data-close]');
     if (closer) closeWindow(closer.dataset.close);
   });
@@ -760,6 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTerminal();
   setupPythonUI();
   renderExperience();
+  setupSoundToggle();
   tickClock();
   setInterval(tickClock, 15000);
   runBoot();

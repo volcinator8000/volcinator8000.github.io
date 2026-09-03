@@ -11,11 +11,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap" />
   <link rel="stylesheet" href="landing.css" />
+  <script src="sound.js"></script>
 </head>
 <body>
   <div class="room">
     <div class="monitor">
-      <div class="screen on" id="screen">
+      <div class="screen booting" id="screen">
         <div class="glass" aria-hidden="true"></div>
         <div class="scanlines" aria-hidden="true"></div>
         <div class="rollbar" aria-hidden="true"></div>
@@ -43,7 +44,7 @@
         </main>
       </div>
       <div class="chin" aria-hidden="true">
-        <span class="led lit" id="led"></span>
+        <span class="led" id="led"></span>
         <span class="brand">VOLCINATOR 8000</span>
       </div>
     </div>
@@ -54,100 +55,27 @@
       'use strict';
       var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var $ = function (id) { return document.getElementById(id); };
-      var term = $('term'), hdr = $('hdr');
+      var term = $('term'), hdr = $('hdr'), screen = $('screen'), led = $('led');
       var choices = $('choices'), hint = $('hint'), soundBtn = $('sound'), led = $('led');
       var links = Array.prototype.slice.call(choices.querySelectorAll('.choice'));
 
-      /* ---------- sound: everything synthesized, no files ---------- */
-      var soundOn = true;
-      try { soundOn = localStorage.getItem('crtSound') !== 'off'; } catch (e) { /* ignore */ }
-      var ctx = null, hum = null, gestured = false;
-
-      function audio() {
-        if (!soundOn || !gestured) return null; // browsers refuse audio before a user gesture
-        if (!ctx) {
-          var AC = window.AudioContext || window.webkitAudioContext;
-          if (!AC) return null;
-          ctx = new AC();
-        }
-        if (ctx.state === 'suspended') ctx.resume();
-        return ctx;
-      }
-
-      function tone(freq, dur, type, gain, when) {
-        var c = audio(); if (!c) return;
-        var o = c.createOscillator(), g = c.createGain();
-        var t = c.currentTime + (when || 0);
-        o.type = type || 'square';
-        o.frequency.setValueAtTime(freq, t);
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(gain || 0.05, t + 0.005);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        o.connect(g).connect(c.destination);
-        o.start(t); o.stop(t + dur + 0.02);
-      }
-
-      var lastTick = 0;
-      function tick() { // key click while typing
-        var now = performance.now();
-        if (now - lastTick < 28) return;
-        lastTick = now;
-        tone(1400 + Math.random() * 500, 0.02, 'square', 0.03);
-      }
-      function blip() { tone(880, 0.06, 'square', 0.05); }                // selection moved
-      function confirm() { tone(660, 0.08, 'square', 0.06); tone(990, 0.12, 'square', 0.06, 0.09); }
-      function granted() { tone(523, 0.1, 'square', 0.05); tone(659, 0.1, 'square', 0.05, 0.11); tone(784, 0.18, 'square', 0.06, 0.22); }
-
-      function powerOnSound() {
-        var c = audio(); if (!c) return;
-        // rising sweep + a burst of noise, like a tube warming up
-        var o = c.createOscillator(), g = c.createGain();
-        o.type = 'sine';
-        o.frequency.setValueAtTime(80, c.currentTime);
-        o.frequency.exponentialRampToValueAtTime(1200, c.currentTime + 0.5);
-        g.gain.setValueAtTime(0.0001, c.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.08, c.currentTime + 0.05);
-        g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.7);
-        o.connect(g).connect(c.destination);
-        o.start(); o.stop(c.currentTime + 0.75);
-        var len = c.sampleRate * 0.3, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
-        for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
-        var n = c.createBufferSource(), ng = c.createGain();
-        n.buffer = buf; ng.gain.value = 0.04;
-        n.connect(ng).connect(c.destination); n.start();
-        startHum();
-      }
-
-      function startHum() {
-        var c = audio(); if (!c || hum) return;
-        var o = c.createOscillator(), g = c.createGain();
-        o.type = 'sawtooth'; o.frequency.value = 50;
-        var f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 120;
-        g.gain.value = 0.012;
-        o.connect(f).connect(g).connect(c.destination); o.start();
-        hum = { o: o, g: g };
-      }
-      function stopHum() { if (hum) { try { hum.o.stop(); } catch (e) { /* ignore */ } hum = null; } }
+      /* ---------- sound (shared kit in sound.js) ---------- */
+      var tick = Sound.tick, blip = Sound.blip, confirm = Sound.confirm, granted = Sound.granted;
+      var tone = function (f, d, type, g) { Sound.step(Math.round((f - 300) / 40)); };
 
       function setSound(on) {
-        soundOn = on;
+        Sound.setEnabled(on);
         soundBtn.textContent = 'SOUND: ' + (on ? 'ON' : 'OFF');
         soundBtn.setAttribute('aria-pressed', String(on));
-        try { localStorage.setItem('crtSound', on ? 'on' : 'off'); } catch (e) { /* ignore */ }
-        if (!on) stopHum(); else if (gestured) startHum();
+        if (on) Sound.tryUnlock().then(function (ok) { if (ok) Sound.hum(true); });
       }
-      setSound(soundOn);
-      soundBtn.addEventListener('click', function (e) { e.stopPropagation(); setSound(!soundOn); if (soundOn) blip(); });
-      document.addEventListener('visibilitychange', function () { if (document.hidden) stopHum(); else if (gestured && soundOn) startHum(); });
+      setSound(Sound.enabled);
+      soundBtn.addEventListener('click', function (e) { e.stopPropagation(); setSound(!Sound.enabled); if (Sound.enabled) blip(); });
 
-      // the first key or pointer press unlocks audio; the hum starts then
-      function firstGesture() {
-        if (gestured) return;
-        gestured = true;
-        if (soundOn) { powerOnSound(); }
-      }
-      document.addEventListener('pointerdown', firstGesture, true);
-      document.addEventListener('keydown', firstGesture, true);
+      // the moment audio is allowed (at load if the browser trusts the site,
+      // otherwise at the first key or click) the tube "powers on" audibly
+      Sound.onUnlock(function () { Sound.powerOn(); setTimeout(function () { Sound.hum(true); }, 300); });
+      Sound.tryUnlock();
 
       /* ---------- the script that types itself ---------- */
       // each step: [text, kind]  kind: 'line' typed, 'pw' typed as dots, 'pause', 'bar' progress, 'ok' access granted
@@ -216,6 +144,9 @@
 
       function finishAll() {
         if (done) return;
+        screen.classList.remove('booting');
+        screen.classList.add('on');
+        led.classList.add('lit');
         renderAt(TOTAL);
         showChoices();
       }
@@ -230,7 +161,13 @@
         if (e.target.closest('.choice') || e.target.closest('.sound')) return;
         skip();
       });
-      requestAnimationFrame(frame);
+      var BOOT_MS = reduced ? 0 : 900;
+      setTimeout(function () {
+        screen.classList.remove('booting');
+        screen.classList.add('on');
+        led.classList.add('lit');
+      }, 60);
+      setTimeout(function () { requestAnimationFrame(frame); }, BOOT_MS);
 
       /* ---------- menu ---------- */
       var current = -1;
@@ -249,10 +186,10 @@
           if (a.dataset.choice === 'desktop') {
             try { sessionStorage.setItem('fromLanding', '1'); } catch (e2) { /* ignore */ }
           }
-          if (soundOn && ctx) { // let the confirm blip play before leaving
+          if (Sound.enabled && Sound.unlocked) { // let the confirm blip play before leaving
             e.preventDefault();
             confirm();
-            stopHum();
+            Sound.hum(false);
             setTimeout(function () { location.href = a.href; }, 220);
           }
         });
@@ -270,7 +207,7 @@
         else if (e.key === '1') select(0, true);
         else if (e.key === '2') select(1, true);
         else if (e.key === 'Enter' && document.activeElement !== links[current]) { links[current].click(); }
-        else if (e.key === 'm') { setSound(!soundOn); }
+        else if (e.key === 'm') { setSound(!Sound.enabled); }
       });
     })();
   </script>
