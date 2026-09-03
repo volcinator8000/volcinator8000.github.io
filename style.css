@@ -1060,3 +1060,15 @@ a.project:hover {
   color: var(--mauve);
   background: rgba(203, 166, 247, 0.12);
 }
+
+/* ---------- top-bar link to the quick-read page ---------- */
+.bar-link {
+  color: var(--overlay);
+  text-decoration: none;
+  margin-right: 14px;
+}
+
+.bar-link:hover {
+  color: var(--blue);
+  text-decoration: underline;
+}

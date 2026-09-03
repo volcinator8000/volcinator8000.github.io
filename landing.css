@@ -1,0 +1,257 @@
+/* ---------- CRT landing ---------- */
+:root {
+  --phosphor: #4cff7a;
+  --phosphor-dim: #2a9a4a;
+  --phosphor-dark: #0f3a1c;
+  --glass: #071009;
+  --bezel: #1b1b1f;
+  --bezel-edge: #2c2c32;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: radial-gradient(ellipse at 50% 40%, #16181c 0%, #08090b 60%, #000 100%);
+  color: var(--phosphor);
+  font-family: 'VT323', 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 22px;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.room {
+  width: min(960px, 100%);
+}
+
+/* the monitor shell */
+.monitor {
+  background: linear-gradient(180deg, var(--bezel-edge), var(--bezel) 30%, #141417);
+  border-radius: 28px;
+  padding: 26px 26px 12px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.6);
+}
+
+.screen {
+  position: relative;
+  background:
+    radial-gradient(ellipse at center, #0d1a10 0%, var(--glass) 70%, #030604 100%);
+  border-radius: 18px / 22px;
+  min-height: 520px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 60px rgba(0, 0, 0, 0.9),
+    inset 0 0 8px rgba(76, 255, 122, 0.08);
+}
+
+/* glass reflection + vignette */
+.glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(255, 255, 255, 0.05), transparent 45%),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+  z-index: 3;
+}
+
+/* fine horizontal scanlines */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.28) 3px,
+    rgba(0, 0, 0, 0.28) 4px
+  );
+  z-index: 2;
+}
+
+/* the slow rolling bar an old tube shows */
+.rollbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 90px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, rgba(76, 255, 122, 0.07) 50%, transparent);
+  animation: roll 7s linear infinite;
+  z-index: 2;
+}
+
+@keyframes roll {
+  from { top: -120px; }
+  to { top: 100%; }
+}
+
+.term {
+  position: relative;
+  z-index: 1;
+  padding: 34px 40px 28px;
+  text-shadow: 0 0 6px rgba(76, 255, 122, 0.55), 0 0 1px var(--phosphor);
+  animation: flicker 4s infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.86; }
+  94% { opacity: 1; }
+  97% { opacity: 0.93; }
+}
+
+.hdr {
+  margin: 0 0 22px;
+  font: inherit;
+  white-space: pre-wrap;
+  min-height: 6.25em;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 0 0 18px;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 2px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  text-decoration: none;
+  background: rgba(76, 255, 122, 0.03);
+  transition: background 0.1s ease, color 0.1s ease;
+  outline: none;
+}
+
+.choice .c-label {
+  font-size: 1.15em;
+  letter-spacing: 0.04em;
+}
+
+.choice .c-desc {
+  color: var(--phosphor);
+  opacity: 0.85;
+}
+
+.choice .c-meta {
+  color: var(--phosphor-dim);
+  font-size: 0.9em;
+}
+
+/* Fallout-style inverted selection */
+.choice.sel,
+.choice:hover,
+.choice:focus-visible {
+  background: var(--phosphor);
+  color: #041a0a;
+  border-color: var(--phosphor);
+  text-shadow: none;
+}
+
+.choice.sel .c-desc,
+.choice:hover .c-desc,
+.choice.sel .c-meta,
+.choice:hover .c-meta {
+  color: #041a0a;
+  opacity: 1;
+}
+
+.hint {
+  margin: 0;
+  color: var(--phosphor-dim);
+  font-size: 0.9em;
+}
+
+.foot {
+  margin: 26px 0 0;
+  color: var(--phosphor-dim);
+  font-size: 0.9em;
+}
+
+.foot a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--phosphor-dim);
+}
+
+.foot a:hover {
+  color: var(--phosphor);
+}
+
+/* below the screen */
+.chin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 8px 0;
+  color: #6a6a72;
+  font-size: 15px;
+  letter-spacing: 0.25em;
+}
+
+.led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--phosphor);
+  box-shadow: 0 0 8px var(--phosphor);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .term,
+  .rollbar {
+    animation: none;
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 12px;
+    font-size: 19px;
+  }
+
+  .monitor {
+    padding: 14px 14px 8px;
+    border-radius: 18px;
+  }
+
+  .screen {
+    min-height: 0;
+  }
+
+  .term {
+    padding: 22px 18px 20px;
+  }
+
+  .choices {
+    grid-template-columns: 1fr;
+  }
+
+  .hint {
+    display: none;
+  }
+}

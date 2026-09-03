@@ -3,294 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Khalil Almwakeh (volcinator8000) — Epitech student building systems and simulations in C, Python and Bash. A tiny Linux desktop you can click around." />
-  <meta name="theme-color" content="#1e1e2e" />
+  <meta name="description" content="Khalil Almwakeh (volcinator8000), Epitech student building systems and simulations in C, Python and Bash. Pick the clickable desktop or the one-page read." />
+  <meta name="theme-color" content="#050805" />
   <title>Khalil Almwakeh (volcinator8000)</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e1e2e'/%3E%3Ctext x='12' y='44' font-family='monospace' font-size='30' fill='%23a6e3a1'%3E%3E_%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap" />
+  <link rel="stylesheet" href="landing.css" />
 </head>
 <body>
-  <!-- Boot screen: lines are typed in by script.js. Click or press a key to skip. -->
-  <div id="boot-screen" aria-live="polite">
-    <pre id="boot-text" class="terminal-text"></pre>
-    <p class="boot-hint">press any key to skip</p>
-  </div>
+  <div class="room">
+    <div class="monitor">
+      <div class="screen">
+        <div class="glass" aria-hidden="true"></div>
+        <div class="scanlines" aria-hidden="true"></div>
+        <div class="rollbar" aria-hidden="true"></div>
 
-  <div id="desktop" hidden>
-    <header id="top-bar">
-      <span class="bar-left"><span class="green">volcinator8000</span>@<span class="blue">arch</span></span>
-      <nav id="taskbar" class="bar-center" aria-label="Open windows">
-        <span id="bar-hint">click an icon to open it</span>
-      </nav>
-      <span id="clock" class="bar-right">--:--</span>
-    </header>
+        <main class="term">
+          <pre id="hdr" class="hdr" aria-live="polite"></pre>
 
-    <div class="icon-container">
-      <button class="icon" type="button" data-open="about-window">
-        <div class="icon-img terminal-icon" aria-hidden="true">&gt;_</div>
-        <span>readme.txt</span>
-      </button>
+          <nav id="choices" class="choices" aria-label="Choose a version of the portfolio" hidden>
+            <a class="choice" href="desktop.html" data-choice="desktop">
+              <span class="c-label">[1] FULL EXPERIENCE</span>
+              <span class="c-desc">Boot a small Linux desktop. Windows to drag, a terminal to type in, project demos that actually run.</span>
+              <span class="c-meta">A couple of minutes. Works on a phone too.</span>
+            </a>
+            <a class="choice" href="read.html" data-choice="read">
+              <span class="c-label">[2] QUICK READ</span>
+              <span class="c-desc">Everything on one page. Scroll, done. No windows, no boot screen, nothing to click except links.</span>
+              <span class="c-meta">One minute. Prints fine.</span>
+            </a>
+          </nav>
 
-      <button class="icon" type="button" data-open="projects-window">
-        <div class="icon-img folder-icon" aria-hidden="true"></div>
-        <span>projects/</span>
-      </button>
-
-      <button class="icon" type="button" data-open="terminal-window">
-        <div class="icon-img shell-icon" aria-hidden="true">$</div>
-        <span>terminal</span>
-      </button>
-
-      <button class="icon" type="button" data-open="experience-window">
-        <div class="icon-img doc-icon" aria-hidden="true">md</div>
-        <span>experience.md</span>
-      </button>
-
-      <button class="icon" type="button" data-open="python-window">
-        <div class="icon-img python-icon" aria-hidden="true">py</div>
-        <span>navigate.py</span>
-      </button>
-
-      <a class="icon" href="https://github.com/volcinator8000" target="_blank" rel="noopener">
-        <div class="icon-img github-icon" aria-hidden="true"></div>
-        <span>github</span>
-      </a>
+          <p id="hint" class="hint" hidden>&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
+          <p class="foot"><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
+        </main>
+      </div>
+      <div class="chin" aria-hidden="true">
+        <span class="led"></span>
+        <span class="brand">VOLCINATOR 8000</span>
+      </div>
     </div>
-
-    <!-- README -->
-    <section id="about-window" class="window" data-title="readme.txt" aria-labelledby="about-title">
-      <div class="title-bar">
-        <span id="about-title">vim ~/readme.txt</span>
-        <div class="window-controls">
-          <button class="close-btn" type="button" data-close="about-window" aria-label="Close">×</button>
-        </div>
-      </div>
-
-      <div class="content terminal-content">
-        <p class="prompt-line"><span class="green">volcinator8000@arch</span>:<span class="blue">~</span>$ cat readme.txt</p>
-
-        <div class="fetch">
-          <pre class="fetch-art" aria-hidden="true">
-       /\
-      /  \
-     /\   \
-    /      \
-   /   ,,   \
-  /   |  |  -\
- /_-''    ''-_\</pre>
-          <div class="fetch-info">
-            <p class="fetch-head"><span class="green">khalil</span>@<span class="blue">epitech</span></p>
-            <p class="fetch-rule">----------------</p>
-            <p><span class="key">Name</span>Khalil Almwakeh</p>
-            <p><span class="key">Role</span>Epitech student, 2nd year</p>
-            <p><span class="key">Work</span><button type="button" class="link-btn" data-open="experience-window">Remoters, web &amp; SEO engineering (2026)</button></p>
-            <p><span class="key">Stack</span>C · Linux · Python · Bash</p>
-            <p><span class="key">Doing</span>building systems and simulations</p>
-            <p><span class="key">GitHub</span><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
-            <div class="swatches" aria-hidden="true">
-              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            </div>
-          </div>
-        </div>
-
-        <p class="intro">Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things.</p>
-
-        <p class="tip">
-          Try: <button type="button" class="link-btn" data-open="projects-window">open projects/</button>,
-          <button type="button" class="link-btn" data-open="python-window">run navigate.py</button>
-          or <button type="button" class="link-btn" data-open="terminal-window">type <code>help</code> in the terminal</button>.
-        </p>
-        <p class="blink">_</p>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects-window" class="window window-wide" data-title="projects/" aria-labelledby="projects-title">
-      <div class="title-bar">
-        <span id="projects-title">~/projects</span>
-        <div class="window-controls">
-          <button class="close-btn" type="button" data-close="projects-window" aria-label="Close">×</button>
-        </div>
-      </div>
-
-      <div class="content explorer-content">
-        <div id="filters" class="filters" role="tablist" aria-label="Filter projects"></div>
-        <p id="project-count" class="count"></p>
-        <div id="project-list" class="project-list"></div>
-      </div>
-    </section>
-
-    <!-- TERMINAL -->
-    <section id="terminal-window" class="window" data-title="terminal" aria-labelledby="terminal-title">
-      <div class="title-bar">
-        <span id="terminal-title">bash — ~</span>
-        <div class="window-controls">
-          <button class="close-btn" type="button" data-close="terminal-window" aria-label="Close">×</button>
-        </div>
-      </div>
-
-      <div class="content shell-content" id="shell">
-        <div id="shell-output"></div>
-        <form id="shell-form" autocomplete="off">
-          <label for="shell-input" class="shell-prompt"><span class="green">volcinator8000@arch</span>:<span class="blue">~</span>$</label>
-          <input id="shell-input" type="text" spellcheck="false" autocapitalize="off" aria-label="Terminal input" />
-        </form>
-      </div>
-    </section>
-
-    <!-- PROJECT PREVIEW -->
-    <section id="preview-window" class="window window-wide" data-title="preview" aria-labelledby="preview-title">
-      <div class="title-bar">
-        <span id="preview-title">preview</span>
-        <div class="window-controls">
-          <button class="close-btn" type="button" data-close="preview-window" aria-label="Close">×</button>
-        </div>
-      </div>
-
-      <div class="content preview-content">
-        <div class="preview-head">
-          <span id="preview-icon"></span>
-          <div class="preview-meta">
-            <div class="project-name"><span id="preview-name"></span></div>
-            <p id="preview-blurb" class="project-blurb"></p>
-            <div class="preview-links">
-              <div id="preview-tags" class="tags"></div>
-              <a id="preview-link" class="ext-link" target="_blank" rel="noopener" hidden>github ↗</a>
-              <a id="preview-live" class="ext-link" target="_blank" rel="noopener" hidden>live site ↗</a>
-            </div>
-          </div>
-        </div>
-        <div id="preview-stage" class="stage"></div>
-        <p id="preview-note" class="stage-note"></p>
-      </div>
-    </section>
-
-
-    <!-- WORK EXPERIENCE -->
-    <section id="experience-window" class="window window-wide" data-title="experience.md" aria-labelledby="xp-title">
-      <div class="title-bar">
-        <span id="xp-title">less ~/experience.md</span>
-        <div class="window-controls">
-          <button class="close-btn" type="button" data-close="experience-window" aria-label="Close">×</button>
-        </div>
-      </div>
-
-      <div class="content xp-content">
-        <header class="xp-head">
-          <div class="xp-role">Web &amp; SEO engineer <span class="dim">at</span> <a href="https://www.remoters.io" target="_blank" rel="noopener">Remoters</a></div>
-          <div class="xp-meta">August 2026 – now · French and English</div>
-          <p class="xp-about">Remoters is a marketplace that connects people moving abroad with vetted local home finders. The site runs on Webflow behind Cloudflare: about 5,500 indexed URLs, 40 CMS collections, two locales.</p>
-        </header>
-
-        <h3 class="xp-h">What I did</h3>
-        <div class="xp-grid">
-          <article class="xp-card">
-            <h4>Technical SEO clean-up</h4>
-            <ul>
-              <li>Sitemap trimmed from 6,439 to 5,506 URLs: questionnaires, redirecting and utility pages out, with an edge filter for what the CMS refuses to hide.</li>
-              <li>robots.txt rewritten, AI crawlers unblocked, noindex response headers at the edge for the zombie sections.</li>
-              <li>471 redirects rebuilt from a Search Console 404 export, tested one by one before shipping. IndexNow key served.</li>
-            </ul>
-          </article>
-
-          <article class="xp-card">
-            <h4>English locale</h4>
-            <ul>
-              <li>Seven transverse pages translated and slugged under /en, with bilingual header and footer components.</li>
-              <li>About 10,900 English alt texts and per-locale JSON-LD written through the API.</li>
-              <li>Found and fixed the pages where the EN locale silently served French content.</li>
-            </ul>
-          </article>
-
-          <article class="xp-card">
-            <h4>Structured data</h4>
-            <ul>
-              <li>Organization, Breadcrumb, Service, FAQ and Article graphs on the static pages and templates.</li>
-              <li>A Cloudflare Worker that injects per-page schema on more than 2,600 template pages the CMS could not express itself.</li>
-              <li>Blog Article schema repaired at the edge by replacing the broken block on every post.</li>
-            </ul>
-          </article>
-
-          <article class="xp-card">
-            <h4>Reviews page rebuild</h4>
-            <ul>
-              <li>Two client-side widgets replaced by 1,157 server-rendered Google and Trustpilot reviews with filters, dates and anonymised authors.</li>
-              <li>Assembled at the edge by a Worker because the CMS was near its item cap; ranking rule disclosed as French consumer law requires.</li>
-              <li>Same page delivered in English on its own locale.</li>
-            </ul>
-          </article>
-
-          <article class="xp-card">
-            <h4>Redesign support</h4>
-            <ul>
-              <li>New shared header and footer components, a language switcher, a mobile menu and a harmonisation stylesheet across the nine redesigned pages.</li>
-              <li>Homepage city-search modal covering 310 cities with rent and buy routing in both locales.</li>
-              <li>Width, hero and FAQ passes on the new homepage from client feedback rounds.</li>
-            </ul>
-          </article>
-
-          <article class="xp-card">
-            <h4>Content hygiene at scale</h4>
-            <ul>
-              <li>11,649 CMS images given French alt text through the API, in batches sized to what the API tolerates.</li>
-              <li>131 duplicate CMS items mapped with their reference graph before any decision was taken.</li>
-              <li>A responsive audit of 5,774 URLs done by measurement, without a browser.</li>
-            </ul>
-          </article>
-
-          <article class="xp-card">
-            <h4>Infrastructure planning</h4>
-            <ul>
-              <li>Migration guide for moving a CMS collection and static pages from Webflow to AWS S3 and CloudFront, behind the same Cloudflare.</li>
-              <li>An AWS primer written for the team, from accounts to costs.</li>
-            </ul>
-          </article>
-        </div>
-
-        <h3 class="xp-h">Tools used</h3>
-        <div class="tags xp-tags">
-          <span class="tag">Webflow Data API v2</span><span class="tag">Webflow MCP</span><span class="tag">Cloudflare Workers</span><span class="tag">HTMLRewriter</span><span class="tag">Cloudflare rulesets &amp; bulk redirects</span><span class="tag">Cloudflare GraphQL analytics</span><span class="tag">Python</span><span class="tag">Bash &amp; curl</span><span class="tag">JSON-LD / schema.org</span><span class="tag">IndexNow</span><span class="tag">Google Search Console</span><span class="tag">AWS S3 + CloudFront</span><span class="tag">headless Chrome</span><span class="tag">Claude Code</span>
-        </div>
-
-        <h3 class="xp-h">Skills</h3>
-        <div class="tags xp-tags">
-          <span class="tag skill">technical SEO</span><span class="tag skill">internationalisation</span><span class="tag skill">structured data</span><span class="tag skill">edge computing</span><span class="tag skill">API automation at scale</span><span class="tag skill">data cleaning</span><span class="tag skill">accessibility</span><span class="tag skill">GDPR-aware publishing</span><span class="tag skill">auditing without a browser</span><span class="tag skill">client communication</span><span class="tag skill">decision logs</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- NAVIGATE.PY (real Python, runs in the browser) -->
-    <section id="python-window" class="window window-wide" data-title="navigate.py" aria-labelledby="python-title">
-      <div class="title-bar">
-        <span id="python-title">python3 navigate.py</span>
-        <div class="window-controls">
-          <button class="close-btn" type="button" data-close="python-window" aria-label="Close">×</button>
-        </div>
-      </div>
-
-      <div class="content python-content">
-        <div class="py-toolbar">
-          <label>from <select id="py-from" disabled></select></label>
-          <label>to <select id="py-to" disabled></select></label>
-          <button id="py-run" type="button" class="btn" disabled>find route</button>
-          <button id="py-source" type="button" class="btn ghost" aria-pressed="false">view source</button>
-          <span id="py-status" class="dim">python runtime not loaded yet</span>
-        </div>
-        <div class="py-body">
-          <canvas id="py-map" class="py-map" aria-label="Transit map"></canvas>
-          <pre id="py-out" class="py-out">$ python3 navigate.py
-</pre>
-          <pre id="py-code" class="py-code" hidden></pre>
-        </div>
-        <p class="stage-note">A real Python file, <code>navigate.py</code>, running in your browser through Pyodide. It does the Dijkstra search; the page only draws the result.</p>
-      </div>
-    </section>
   </div>
 
-  <script src="previews.js"></script>
-  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var hdr = document.getElementById('hdr');
+      var choices = document.getElementById('choices');
+      var hint = document.getElementById('hint');
+      var links = Array.prototype.slice.call(choices.querySelectorAll('.choice'));
+      var lines = [
+        'KHALIL ALMWAKEH (TM) PERSONAL TERMINAL',
+        'COPYRIGHT 2026 VOLCINATOR8000. ALL RIGHTS RESERVED.',
+        '-EPITECH, YEAR 2-  -C / LINUX / PYTHON / BASH-',
+        '',
+        '> TWO WAYS TO LOOK AROUND. PICK ONE:'
+      ];
+
+      function showChoices() {
+        choices.hidden = false;
+        hint.hidden = false;
+        select(0, false);
+      }
+
+      // type the header line by line
+      var li = 0, ci = 0, done = false;
+      function type() {
+        if (done) return;
+        if (reduced) { hdr.textContent = lines.join('\n'); done = true; showChoices(); return; }
+        if (li >= lines.length) { done = true; showChoices(); return; }
+        var line = lines[li];
+        if (ci <= line.length) {
+          hdr.textContent = lines.slice(0, li).join('\n') + (li ? '\n' : '') + line.slice(0, ci) + '█';
+          ci++;
+          setTimeout(type, line === '' ? 120 : 18);
+        } else {
+          li++; ci = 0;
+          setTimeout(type, 140);
+        }
+      }
+      type();
+
+      // any click or key skips the typing
+      function skip() { if (!done) { done = true; hdr.textContent = lines.join('\n'); showChoices(); } }
+      document.addEventListener('click', skip, { once: true });
+
+      var current = 0;
+      function select(i, focus) {
+        current = (i + links.length) % links.length;
+        links.forEach(function (a, k) { a.classList.toggle('sel', k === current); });
+        if (focus) links[current].focus();
+      }
+      links.forEach(function (a, k) {
+        a.addEventListener('mouseenter', function () { select(k, false); });
+        a.addEventListener('focus', function () { select(k, false); });
+        a.addEventListener('click', function () {
+          if (a.dataset.choice === 'desktop') {
+            try { sessionStorage.setItem('fromLanding', '1'); } catch (e) { /* ignore */ }
+          }
+        });
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (!done) { skip(); if (e.key !== 'Enter') return; }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'j') { e.preventDefault(); select(current + 1, true); }
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'k') { e.preventDefault(); select(current - 1, true); }
+        else if (e.key === '1') select(0, true);
+        else if (e.key === '2') select(1, true);
+        else if (e.key === 'Enter' && document.activeElement !== links[current]) { links[current].click(); }
+      });
+    })();
+  </script>
 </body>
 </html>

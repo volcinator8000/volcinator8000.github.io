@@ -7,70 +7,7 @@
 
 /* ---------- data ---------- */
 
-const GITHUB = 'https://github.com/volcinator8000';
-
-const CATEGORIES = {
-  all: 'All',
-  systems: 'Systems & C',
-  algo: 'Algorithms',
-  maths: 'Maths',
-  graphics: 'Graphics & Games',
-  devops: 'DevOps & Security',
-  tools: 'Tools & Web',
-};
-
-// Edit this list to add / reorder projects. `featured` pins a project at the top.
-// `ext` is the little file-type badge: c, cpp, py, sh, js, web, yml, ai.
-// `link` is optional — Epitech repos are private, so most rows have none.
-const PROJECTS = [
-  { name: '42sh', ext: 'c', cat: 'systems', tech: ['C', 'POSIX'], featured: true,
-    blurb: 'A Unix shell in C: pipes, redirections, builtins and the usual quoting headaches.' },
-  { name: 'Obsidian console', ext: 'c', cat: 'devops', tech: ['C', 'security audit'], featured: true, link: `${GITHUB}/corewar`,
-    blurb: 'Security audit of a nuclear-reactor console CLI in C: white-box and black-box review, vulnerability report and patches.' },
-  { name: 'My World', ext: 'c', cat: 'graphics', tech: ['C', 'CSFML'], featured: true,
-    blurb: 'An isometric 3D world editor: terrain, elevation and hand-rolled projection maths.' },
-  { name: 'Amazed', ext: 'c', cat: 'algo', tech: ['C', 'BFS'], featured: true,
-    blurb: 'Maze solver that finds the shortest path with breadth-first search on very large grids.' },
-
-  { name: 'My printf', ext: 'c', cat: 'systems', tech: ['C'],
-    blurb: 'printf rebuilt from scratch: parsing format strings and handling every conversion by hand.' },
-  { name: 'Robot Factory', ext: 'c', cat: 'systems', tech: ['C'],
-    blurb: 'An assembler for a made-up robot instruction set, turning source files into binary.' },
-  { name: 'Count Islands', ext: 'c', cat: 'algo', tech: ['C', 'flood fill'],
-    blurb: 'Flood-fill over a 2D map to count and label every island.' },
-  { name: 'Navigate', ext: 'py', cat: 'algo', tech: ['pathfinding'], link: `${GITHUB}/navigate`,
-    blurb: 'A local GPS navigation system.' },
-  { name: 'Star', ext: 'c', cat: 'graphics', tech: ['C', 'CSFML'],
-    blurb: 'A starfield animation: pixels, vectors and frame timing.' },
-  { name: 'Bug Break', ext: 'cpp', cat: 'graphics', tech: ['C++', 'Unreal Engine 5'], link: `${GITHUB}/gamejam`,
-    blurb: 'Game-jam horror comedy: find the bugged office props, hide from the spider, reach the coffee machine.' },
-  { name: 'Music visualizer', ext: 'js', cat: 'tools', tech: ['JavaScript', 'web'], link: `${GITHUB}/music-visualizer`,
-    blurb: 'A web page that draws instruments and audio effects as waves and sines.' },
-  { name: 'MAX Finder', ext: 'web', cat: 'tools', tech: ['SNCF open data', 'PWA'], link: `${GITHUB}/max-trip-chain`,
-    blurb: 'Find every SNCF train with a free MAX JEUNE / SENIOR seat in one search, and chain them into a tour.' },
-  { name: 'Cuddle', ext: 'ai', cat: 'algo', tech: ['AI'],
-    blurb: 'An AI bot project: decision-making and heuristics.' },
-  { name: 'Organized', ext: 'sh', cat: 'systems', tech: ['Bash'],
-    blurb: 'A Bash script that sorts a messy directory into folders by file type.' },
-  { name: 'Setting Up', ext: 'sh', cat: 'systems', tech: ['Linux', 'Bash'],
-    blurb: 'Day one: setting up a Linux development environment from scratch.' },
-  { name: 'Fourier workshop', ext: 'py', cat: 'maths', tech: ['Python', 'Jupyter'], link: `${GITHUB}/Fourier-workshop`,
-    blurb: 'A live notebook showing how an FFT works and what it is good for.' },
-  { name: '110 Borwein', ext: 'py', cat: 'maths', tech: ['Python'],
-    blurb: 'Numerical integration of Borwein integrals, where a neat pattern suddenly breaks.' },
-  { name: '109 Titration', ext: 'py', cat: 'maths', tech: ['Python'],
-    blurb: 'Finding the equivalence point of a titration curve with numerical derivatives.' },
-  { name: '108 Trigo', ext: 'py', cat: 'maths', tech: ['Python'],
-    blurb: 'Trig functions on matrices, computed from their power series.' },
-  { name: '107 Transfer', ext: 'py', cat: 'maths', tech: ['Python'],
-    blurb: 'Transfer functions of chained systems, from polynomial coefficients.' },
-  { name: '106 Bombyx', ext: 'py', cat: 'maths', tech: ['Python'],
-    blurb: 'Modelling a silkworm population with the logistic map, plus bifurcation diagrams.' },
-  { name: 'Chocolatine', ext: 'yml', cat: 'devops', tech: ['GitHub Actions'], link: `${GITHUB}/painauchocolat`,
-    blurb: 'A CI pipeline with GitHub Actions: build, test and mirror on every push.' },
-  { name: 'Hack Juice', ext: 'web', cat: 'devops', tech: ['web security'],
-    blurb: 'Breaking into OWASP Juice Shop: XSS, injection and broken auth.' },
-];
+// PROJECTS, CATEGORIES, EXPERIENCE and GITHUB come from content.js
 
 /* ---------- helpers ---------- */
 
@@ -113,6 +50,9 @@ function finishBoot() {
 function runBoot() {
   const out = $('#boot-text');
   const boot = $('#boot-screen');
+  let fromLanding = false;
+  try { fromLanding = sessionStorage.getItem('fromLanding') === '1'; sessionStorage.removeItem('fromLanding'); } catch (e) { /* ignore */ }
+  if (fromLanding) { finishBoot(); return; }
   const step = reducedMotion ? 0 : 180;
 
   boot.addEventListener('click', finishBoot);
@@ -394,6 +334,14 @@ function fileBadge(ext) {
   b.dataset.ext = ext;
   b.textContent = ext === 'web' || ext === 'ai' ? ext : `.${ext}`;
   return b;
+}
+
+/* ---------- experience window (rendered from content.js) ---------- */
+
+function renderExperience() {
+  const root = $('#xp-root');
+  if (!root || typeof EXPERIENCE === 'undefined') return;
+  root.innerHTML = renderExperienceHTML(EXPERIENCE);
 }
 
 /* ---------- project preview window ---------- */
@@ -807,6 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProjects();
   setupTerminal();
   setupPythonUI();
+  renderExperience();
   tickClock();
   setInterval(tickClock, 15000);
   runBoot();

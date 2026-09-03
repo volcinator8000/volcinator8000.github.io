@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Khalil Almwakeh (volcinator8000) — Epitech student building systems and simulations in C, Python and Bash. A tiny Linux desktop you can click around." />
+  <meta name="theme-color" content="#1e1e2e" />
+  <title>Khalil Almwakeh (volcinator8000)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e1e2e'/%3E%3Ctext x='12' y='44' font-family='monospace' font-size='30' fill='%23a6e3a1'%3E%3E_%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Boot screen: lines are typed in by script.js. Click or press a key to skip. -->
+  <div id="boot-screen" aria-live="polite">
+    <pre id="boot-text" class="terminal-text"></pre>
+    <p class="boot-hint">press any key to skip</p>
+  </div>
+
+  <div id="desktop" hidden>
+    <header id="top-bar">
+      <span class="bar-left"><span class="green">volcinator8000</span>@<span class="blue">arch</span></span>
+      <nav id="taskbar" class="bar-center" aria-label="Open windows">
+        <span id="bar-hint">click an icon to open it</span>
+      </nav>
+      <span class="bar-right"><a class="bar-link" href="read.html">quick read</a> <span id="clock">--:--</span></span>
+    </header>
+
+    <div class="icon-container">
+      <button class="icon" type="button" data-open="about-window">
+        <div class="icon-img terminal-icon" aria-hidden="true">&gt;_</div>
+        <span>readme.txt</span>
+      </button>
+
+      <button class="icon" type="button" data-open="projects-window">
+        <div class="icon-img folder-icon" aria-hidden="true"></div>
+        <span>projects/</span>
+      </button>
+
+      <button class="icon" type="button" data-open="terminal-window">
+        <div class="icon-img shell-icon" aria-hidden="true">$</div>
+        <span>terminal</span>
+      </button>
+
+      <button class="icon" type="button" data-open="experience-window">
+        <div class="icon-img doc-icon" aria-hidden="true">md</div>
+        <span>experience.md</span>
+      </button>
+
+      <button class="icon" type="button" data-open="python-window">
+        <div class="icon-img python-icon" aria-hidden="true">py</div>
+        <span>navigate.py</span>
+      </button>
+
+      <a class="icon" href="https://github.com/volcinator8000" target="_blank" rel="noopener">
+        <div class="icon-img github-icon" aria-hidden="true"></div>
+        <span>github</span>
+      </a>
+    </div>
+
+    <!-- README -->
+    <section id="about-window" class="window" data-title="readme.txt" aria-labelledby="about-title">
+      <div class="title-bar">
+        <span id="about-title">vim ~/readme.txt</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="about-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content terminal-content">
+        <p class="prompt-line"><span class="green">volcinator8000@arch</span>:<span class="blue">~</span>$ cat readme.txt</p>
+
+        <div class="fetch">
+          <pre class="fetch-art" aria-hidden="true">
+       /\
+      /  \
+     /\   \
+    /      \
+   /   ,,   \
+  /   |  |  -\
+ /_-''    ''-_\</pre>
+          <div class="fetch-info">
+            <p class="fetch-head"><span class="green">khalil</span>@<span class="blue">epitech</span></p>
+            <p class="fetch-rule">----------------</p>
+            <p><span class="key">Name</span>Khalil Almwakeh</p>
+            <p><span class="key">Role</span>Epitech student, 2nd year</p>
+            <p><span class="key">Work</span><button type="button" class="link-btn" data-open="experience-window">Remoters, web &amp; SEO engineering (2026)</button></p>
+            <p><span class="key">Stack</span>C · Linux · Python · Bash</p>
+            <p><span class="key">Doing</span>building systems and simulations</p>
+            <p><span class="key">GitHub</span><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
+            <div class="swatches" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+        </div>
+
+        <p class="intro">Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things.</p>
+
+        <p class="tip">
+          Try: <button type="button" class="link-btn" data-open="projects-window">open projects/</button>,
+          <button type="button" class="link-btn" data-open="python-window">run navigate.py</button>
+          or <button type="button" class="link-btn" data-open="terminal-window">type <code>help</code> in the terminal</button>.
+        </p>
+        <p class="blink">_</p>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects-window" class="window window-wide" data-title="projects/" aria-labelledby="projects-title">
+      <div class="title-bar">
+        <span id="projects-title">~/projects</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="projects-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content explorer-content">
+        <div id="filters" class="filters" role="tablist" aria-label="Filter projects"></div>
+        <p id="project-count" class="count"></p>
+        <div id="project-list" class="project-list"></div>
+      </div>
+    </section>
+
+    <!-- TERMINAL -->
+    <section id="terminal-window" class="window" data-title="terminal" aria-labelledby="terminal-title">
+      <div class="title-bar">
+        <span id="terminal-title">bash — ~</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="terminal-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content shell-content" id="shell">
+        <div id="shell-output"></div>
+        <form id="shell-form" autocomplete="off">
+          <label for="shell-input" class="shell-prompt"><span class="green">volcinator8000@arch</span>:<span class="blue">~</span>$</label>
+          <input id="shell-input" type="text" spellcheck="false" autocapitalize="off" aria-label="Terminal input" />
+        </form>
+      </div>
+    </section>
+
+    <!-- PROJECT PREVIEW -->
+    <section id="preview-window" class="window window-wide" data-title="preview" aria-labelledby="preview-title">
+      <div class="title-bar">
+        <span id="preview-title">preview</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="preview-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content preview-content">
+        <div class="preview-head">
+          <span id="preview-icon"></span>
+          <div class="preview-meta">
+            <div class="project-name"><span id="preview-name"></span></div>
+            <p id="preview-blurb" class="project-blurb"></p>
+            <div class="preview-links">
+              <div id="preview-tags" class="tags"></div>
+              <a id="preview-link" class="ext-link" target="_blank" rel="noopener" hidden>github ↗</a>
+              <a id="preview-live" class="ext-link" target="_blank" rel="noopener" hidden>live site ↗</a>
+            </div>
+          </div>
+        </div>
+        <div id="preview-stage" class="stage"></div>
+        <p id="preview-note" class="stage-note"></p>
+      </div>
+    </section>
+
+
+    <!-- WORK EXPERIENCE -->
+    <section id="experience-window" class="window window-wide" data-title="experience.md" aria-labelledby="xp-title">
+      <div class="title-bar">
+        <span id="xp-title">less ~/experience.md</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="experience-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content xp-content" id="xp-root"></div>
+    </section>
+
+    <!-- NAVIGATE.PY (real Python, runs in the browser) -->
+    <section id="python-window" class="window window-wide" data-title="navigate.py" aria-labelledby="python-title">
+      <div class="title-bar">
+        <span id="python-title">python3 navigate.py</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="python-window" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="content python-content">
+        <div class="py-toolbar">
+          <label>from <select id="py-from" disabled></select></label>
+          <label>to <select id="py-to" disabled></select></label>
+          <button id="py-run" type="button" class="btn" disabled>find route</button>
+          <button id="py-source" type="button" class="btn ghost" aria-pressed="false">view source</button>
+          <span id="py-status" class="dim">python runtime not loaded yet</span>
+        </div>
+        <div class="py-body">
+          <canvas id="py-map" class="py-map" aria-label="Transit map"></canvas>
+          <pre id="py-out" class="py-out">$ python3 navigate.py
+</pre>
+          <pre id="py-code" class="py-code" hidden></pre>
+        </div>
+        <p class="stage-note">A real Python file, <code>navigate.py</code>, running in your browser through Pyodide. It does the Dijkstra search; the page only draws the result.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="content.js"></script>
+  <script src="previews.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
