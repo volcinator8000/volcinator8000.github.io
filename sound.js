@@ -109,6 +109,17 @@ const Sound = (function () {
     close() { sweep(700, 220, 0.14, 'triangle', 0.05); },                               // window closes
     step(k) { tone(300 + k * 40, 0.03, 'square', 0.03); },                              // progress bar notch
     powerOn() { sweep(80, 1200, 0.5, 'sine', 0.08); noise(0.3, 0.04); },                // tube warming up
+    eat() { tone(1046, 0.05, 'square', 0.05); tone(1568, 0.06, 'square', 0.04, 0.05); },   // snake ate
+    // a short 8-bit victory tune (note, beats)
+    jingle() {
+      const bpm = 168, beat = 60 / bpm;
+      const seq = [[523, 0.5], [659, 0.5], [784, 0.5], [1046, 1], [784, 0.5], [1046, 1.5], [0, 0.5],
+        [587, 0.5], [698, 0.5], [880, 0.5], [1174, 1], [880, 0.5], [1174, 1.5], [0, 0.5],
+        [659, 0.5], [784, 0.5], [988, 0.5], [1318, 1], [1174, 0.5], [1046, 0.5], [988, 0.5], [1046, 2]];
+      let at = 0;
+      seq.forEach(([f, b]) => { if (f) { tone(f, beat * b * 0.9, 'square', 0.05, at); tone(f / 2, beat * b * 0.9, 'triangle', 0.03, at); } at += beat * b; });
+      return at;
+    },
 
     hum(on) {
       if (!on) { if (hum) { try { hum.stop(); } catch (e) { /* ignore */ } hum = null; } return; }

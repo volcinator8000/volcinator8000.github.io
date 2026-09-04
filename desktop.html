@@ -65,6 +65,11 @@
         <span>navigate.py</span>
       </button>
 
+      <button class="icon" type="button" data-open="snake-window" id="snake-icon" hidden>
+        <div class="icon-img snake-icon" aria-hidden="true">~</div>
+        <span>snake</span>
+      </button>
+
       <a class="icon" href="https://github.com/volcinator8000" target="_blank" rel="noopener">
         <div class="icon-img github-icon" aria-hidden="true"></div>
         <span>github</span>
@@ -215,14 +220,33 @@
       </div>
     </section>
 
+    <!-- SNAKE (unlocked by the secrets) -->
+    <section id="snake-window" class="window" data-title="snake" aria-labelledby="snake-title">
+      <div class="title-bar">
+        <span id="snake-title">snake</span>
+        <div class="window-controls">
+          <button class="close-btn" type="button" data-close="snake-window" aria-label="Close">×</button>
+        </div>
+      </div>
+      <div class="content snake-content">
+        <div class="snake-bar">
+          <span><span data-i18n="snake.score">score</span> <b id="snake-score">0</b></span>
+          <span><span data-i18n="snake.best">best</span> <b id="snake-best">0</b></span>
+        </div>
+        <canvas id="snake-canvas" tabindex="0" aria-label="snake game"></canvas>
+        <p class="stage-note" data-i18n="snake.help">arrow keys or WASD, swipe on a phone · space pauses</p>
+      </div>
+    </section>
+
     <!-- easter-egg hunt -->
     <aside id="eggs" class="eggs" aria-label="Easter eggs">
       <button id="eggs-head" class="eggs-head" type="button">
-        <span id="eggs-title">easter eggs</span>
+        <span id="eggs-title">secrets</span>
         <span id="eggs-count" class="eggs-count">0/9</span>
       </button>
       <div class="eggs-body">
         <p id="eggs-sub" class="eggs-sub"></p>
+        <p id="eggs-stuck" class="eggs-sub"></p>
         <ul id="eggs-list" class="eggs-list"></ul>
       </div>
     </aside>

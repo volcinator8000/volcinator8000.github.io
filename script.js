@@ -30,8 +30,14 @@ function resetEggs() {
   eggsFound = new Set();
   try { localStorage.removeItem('eggsFound'); localStorage.removeItem('eggsDone'); } catch (e) { /* ignore */ }
   document.body.classList.remove('all-eggs');
+  hintLevel = {};
+  try { localStorage.removeItem('eggHints'); } catch (e) { /* ignore */ }
+  $('#snake-icon').hidden = true;
   renderEggs();
 }
+
+let hintLevel = {};
+try { hintLevel = JSON.parse(localStorage.getItem('eggHints') || '{}'); } catch (e) { hintLevel = {}; }
 
 function renderEggs() {
   const box = $('#eggs');
@@ -39,14 +45,49 @@ function renderEggs() {
   const n = eggsFound.size, total = EGG_IDS.length;
   $('#eggs-count').textContent = `${n}/${total}`;
   $('#eggs-title').textContent = t('eggs.title');
-  $('#eggs-sub').textContent = n === total ? t('eggs.all') : t('eggs.hint');
+  $('#eggs-sub').textContent = n === total ? t('eggs.all') + ' · ' + t('eggs.unlocked') : t('eggs.intro');
+  $('#eggs-stuck').textContent = n === total ? '' : t('eggs.stuck');
   const list = $('#eggs-list');
   list.innerHTML = '';
   EGG_IDS.forEach((id) => {
     const li = document.createElement('li');
     const found = eggsFound.has(id);
+    const level = Math.min(3, hintLevel[id] || 0);
     li.className = found ? 'found' : '';
-    li.textContent = found ? `✓ ${t('egg.' + id + '.name')}` : `· ${t('egg.' + id + '.hint')}`;
+
+    const row = document.createElement('div');
+    row.className = 'eggs-row';
+    const name = document.createElement('span');
+    name.className = 'eggs-name';
+    name.textContent = found ? `✓ ${t('egg.' + id + '.name')}` : t('eggs.locked');
+    row.appendChild(name);
+    if (!found && level < 3) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'eggs-hint-btn';
+      btn.textContent = level === 0 ? t('eggs.hint') : `${t('eggs.more')} (${level}/3)`;
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hintLevel[id] = level + 1;
+        try { localStorage.setItem('eggHints', JSON.stringify(hintLevel)); } catch (err) { /* ignore */ }
+        SFX.blip();
+        renderEggs();
+      });
+      row.appendChild(btn);
+    }
+    li.appendChild(row);
+
+    if (!found && level > 0) {
+      const hints = document.createElement('div');
+      hints.className = 'eggs-hints';
+      for (let k = 1; k <= level; k++) {
+        const h = document.createElement('div');
+        h.className = `h${k}`;
+        h.textContent = `${k}. ${t(`egg.${id}.h${k}`)}`;
+        hints.appendChild(h);
+      }
+      li.appendChild(hints);
+    }
     list.appendChild(li);
   });
   box.classList.toggle('complete', n === total);
@@ -61,33 +102,54 @@ function toast(text) {
   toast.timer = setTimeout(() => el.classList.remove('show'), 2600);
 }
 
-// the reward: a warp through a starfield with a banner, then a permanent badge
+// the reward: a starfield warp with rolling credits and a chiptune, then snake unlocks for good
+function unlockSnake() {
+  const icon = $('#snake-icon');
+  if (icon) icon.hidden = false;
+}
+
 function celebrate() {
   try { localStorage.setItem('eggsDone', '1'); } catch (e) { /* ignore */ }
   document.body.classList.add('all-eggs');
   if ($('#celebrate')) return;
   const wrap = document.createElement('div');
   wrap.id = 'celebrate';
-  wrap.innerHTML = '<canvas></canvas><div class="celebrate-text"><div class="big"></div><div class="small"></div></div>';
+  wrap.innerHTML = '<canvas></canvas><div class="celebrate-text credits"><div class="credits-roll"></div></div>';
   document.body.appendChild(wrap);
-  wrap.querySelector('.big').textContent = t('eggs.all');
-  wrap.querySelector('.small').textContent = t('eggs.reward');
-  SFX.powerOn(); setTimeout(() => SFX.granted(), 400); setTimeout(() => SFX.granted(), 900);
+  const roll = wrap.querySelector('.credits-roll');
+  t('eggs.credits').forEach((line, i) => {
+    const div = document.createElement('div');
+    div.className = i === 0 ? 'big' : line === '' ? 'gap' : 'dim';
+    div.textContent = line || '\u00a0';
+    if (line === 'Khalil Almwakeh') div.className = 'big';
+    roll.appendChild(div);
+  });
+  SFX.powerOn();
+  setTimeout(() => SFX.jingle(), 500);
 
   const canvas = wrap.querySelector('canvas');
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
-  const resize = () => { canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
-  resize();
+  canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const stars = Array.from({ length: 400 }, () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() * 0.9 + 0.1 }));
   const colours = ['#f38ba8', '#fab387', '#f9e2af', '#a6e3a1', '#94e2d5', '#89b4fa', '#cba6f7', '#f5c2e7'];
-  let last = performance.now(), start = last, raf = 0;
+  let last = performance.now(), start = last, raf = 0, ended = false;
+  const finish = () => {
+    if (ended) return;
+    ended = true;
+    cancelAnimationFrame(raf);
+    wrap.classList.add('fade');
+    setTimeout(() => wrap.remove(), 700);
+    unlockSnake();
+    toast(t('eggs.unlocked'));
+    document.removeEventListener('keydown', finish, true);
+  };
   const frame = (now) => {
     const dt = Math.min(0.1, (now - last) / 1000); last = now;
     const age = (now - start) / 1000;
     const w = innerWidth, h = innerHeight, f = Math.min(w, h) * 0.9;
     ctx.fillStyle = 'rgba(17,17,27,0.45)'; ctx.fillRect(0, 0, w, h);
-    const speed = 0.3 + Math.min(2.5, age * 0.8);
+    const speed = 0.25 + Math.min(1.2, age * 0.3);
     stars.forEach((st, i) => {
       const pz = st.z; st.z -= dt * speed;
       if (st.z <= 0.02) { st.x = Math.random() * 2 - 1; st.y = Math.random() * 2 - 1; st.z = 1; return; }
@@ -95,11 +157,103 @@ function celebrate() {
       ctx.beginPath(); ctx.moveTo(w / 2 + (st.x / pz) * f, h / 2 + (st.y / pz) * f); ctx.lineTo(w / 2 + (st.x / st.z) * f, h / 2 + (st.y / st.z) * f); ctx.stroke();
     });
     ctx.globalAlpha = 1;
-    if (age < 6) raf = requestAnimationFrame(frame);
-    else { wrap.classList.add('fade'); setTimeout(() => wrap.remove(), 700); }
+    if (age < 15) raf = requestAnimationFrame(frame); else finish();
   };
   raf = requestAnimationFrame(frame);
-  wrap.addEventListener('click', () => { cancelAnimationFrame(raf); wrap.remove(); });
+  wrap.addEventListener('click', finish);
+  setTimeout(() => document.addEventListener('keydown', finish, true), 1500);
+}
+
+/* ---------- snake ---------- */
+
+const snake = { timer: 0, running: false, dir: [1, 0], next: [1, 0], body: [], food: null, score: 0, best: 0, over: false, started: false };
+try { snake.best = +localStorage.getItem('snakeBest') || 0; } catch (e) { /* ignore */ }
+
+function snakeReset() {
+  snake.body = [[8, 10], [7, 10], [6, 10]];
+  snake.dir = [1, 0]; snake.next = [1, 0]; snake.score = 0; snake.over = false; snake.started = false;
+  snakePlaceFood();
+  snakeDraw();
+  $('#snake-score').textContent = '0';
+  $('#snake-best').textContent = String(snake.best);
+}
+
+function snakePlaceFood() {
+  const N = 20;
+  do { snake.food = [Math.floor(Math.random() * N), Math.floor(Math.random() * N)]; }
+  while (snake.body.some(([x, y]) => x === snake.food[0] && y === snake.food[1]));
+}
+
+function snakeStep() {
+  if (snake.over || !snake.started) return;
+  snake.dir = snake.next;
+  const N = 20;
+  const head = [(snake.body[0][0] + snake.dir[0] + N) % N, (snake.body[0][1] + snake.dir[1] + N) % N];
+  if (snake.body.some(([x, y]) => x === head[0] && y === head[1])) {
+    snake.over = true; SFX.error();
+    if (snake.score > snake.best) { snake.best = snake.score; try { localStorage.setItem('snakeBest', String(snake.best)); } catch (e) { /* ignore */ } $('#snake-best').textContent = String(snake.best); }
+    snakeDraw();
+    return;
+  }
+  snake.body.unshift(head);
+  if (head[0] === snake.food[0] && head[1] === snake.food[1]) {
+    snake.score += 1; $('#snake-score').textContent = String(snake.score); SFX.eat(); snakePlaceFood();
+  } else snake.body.pop();
+  snakeDraw();
+}
+
+function snakeDraw() {
+  const canvas = $('#snake-canvas');
+  if (!canvas || !canvas.clientWidth) return;
+  const dpr = window.devicePixelRatio || 1, size = canvas.clientWidth, N = 20, cell = size / N;
+  canvas.width = size * dpr; canvas.height = size * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#11111b'; ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = 'rgba(205,214,244,0.05)';
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) if ((i + j) % 2) ctx.fillRect(i * cell, j * cell, cell, cell);
+  ctx.fillStyle = '#f38ba8'; ctx.beginPath(); ctx.arc(snake.food[0] * cell + cell / 2, snake.food[1] * cell + cell / 2, cell * 0.35, 0, Math.PI * 2); ctx.fill();
+  snake.body.forEach(([x, y], i) => {
+    ctx.fillStyle = i === 0 ? '#a6e3a1' : `rgba(166,227,161,${Math.max(0.35, 1 - i / snake.body.length)})`;
+    ctx.fillRect(x * cell + 1, y * cell + 1, cell - 2, cell - 2);
+  });
+  if (!snake.started || snake.over) {
+    ctx.fillStyle = 'rgba(17,17,27,0.7)'; ctx.fillRect(0, size / 2 - 22, size, 44);
+    ctx.fillStyle = '#cdd6f4'; ctx.font = '13px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+    ctx.fillText(t(snake.over ? 'snake.over' : 'snake.start'), size / 2, size / 2 + 5);
+    ctx.textAlign = 'left';
+  }
+}
+
+function snakeTurn(dx, dy) {
+  if (snake.over) { snakeReset(); }
+  if (dx === -snake.dir[0] && dy === -snake.dir[1] && snake.body.length > 1) return;
+  snake.next = [dx, dy];
+  snake.started = true;
+}
+
+function setupSnake() {
+  const canvas = $('#snake-canvas');
+  if (!canvas) return;
+  const keys = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0], z: [0, -1], q: [-1, 0] };
+  document.addEventListener('keydown', (e) => {
+    if (!$('#snake-window').classList.contains('open') || !$('#snake-window').classList.contains('focused')) return;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+    const k = keys[e.key] || keys[e.key.toLowerCase()];
+    if (k) { e.preventDefault(); snakeTurn(...k); }
+    else if (e.key === ' ') { e.preventDefault(); snake.started = !snake.started; snakeDraw(); }
+  });
+  let touch = null;
+  canvas.addEventListener('pointerdown', (e) => { touch = [e.clientX, e.clientY]; canvas.focus(); if (snake.over) snakeReset(); });
+  canvas.addEventListener('pointerup', (e) => {
+    if (!touch) return;
+    const dx = e.clientX - touch[0], dy = e.clientY - touch[1]; touch = null;
+    if (Math.abs(dx) < 12 && Math.abs(dy) < 12) { if (!snake.started) { snake.started = true; } return; }
+    if (Math.abs(dx) > Math.abs(dy)) snakeTurn(Math.sign(dx), 0); else snakeTurn(0, Math.sign(dy));
+  });
+  snakeReset();
+  snake.timer = setInterval(snakeStep, 120);
+  window.addEventListener('resize', snakeDraw);
 }
 
 // konami code anywhere on the desktop
@@ -226,6 +380,9 @@ function openWindow(id) {
   }
   if (id === 'python-window') {
     setTimeout(() => { setupPython(); drawMap(); }, 50);
+  }
+  if (id === 'snake-window') {
+    setTimeout(() => { snakeDraw(); $('#snake-canvas').focus(); }, 60);
   }
 }
 
@@ -755,7 +912,7 @@ const COMMANDS = {
       openWindow('experience-window');
       return print('opening experience.md…');
     }
-    if (f === '.secrets') return print(`# ${t('eggs.title')}\n` + EGG_IDS.map((id) => `- ${eggsFound.has(id) ? '[x] ' + t('egg.' + id + '.name') : '[ ] ' + t('egg.' + id + '.hint')}`).join('\n'));
+    if (f === '.secrets') return print(`# ${t('eggs.title')}\n` + EGG_IDS.map((id) => `- ${eggsFound.has(id) ? '[x] ' + t('egg.' + id + '.name') : '[ ] ' + t('egg.' + id + '.h1')}`).join('\n'));
     if (f === '.bashrc') return print('alias please="sudo"\nexport EDITOR=vim\nPS1="\\u@\\h:\\w$ "');
     return print(`cat: ${f}: No such file or directory`, 'err');
   },
@@ -836,10 +993,12 @@ const COMMANDS = {
     findEgg('cow');
   },
   matrix: () => { matrixRain(); findEgg('matrix'); },
+  konami: () => { print('↑ ↑ ↓ ↓ ← → ← → B A'); findEgg('konami'); },
+  snake: () => { if ($('#snake-icon').hidden) return print('snake: locked. find the nine secrets first (type eggs).', 'err'); openWindow('snake-window'); },
   eggs: (args) => {
     if (args[0] === 'reset') { resetEggs(); return print('eggs reset.'); }
     $('#eggs').classList.add('open');
-    print(`${eggsFound.size}/${EGG_IDS.length} ${t('eggs.found')}. ${t('eggs.hint')}`);
+    print(`${eggsFound.size}/${EGG_IDS.length} ${t('eggs.found')}. ${t('eggs.stuck')}`);
   },
   keys: () => print(
     [
@@ -988,11 +1147,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // keyboard: Esc closes, Alt+1..5 open, Alt+Q closes all, m toggles sound
-  const ALT_WINDOWS = ['about-window', 'projects-window', 'terminal-window', 'experience-window', 'python-window'];
+  const ALT_WINDOWS = ['about-window', 'projects-window', 'terminal-window', 'experience-window', 'python-window', 'snake-window'];
   document.addEventListener('keydown', (e) => {
     watchKonami(e);
     if (e.key === 'Escape' && openOrder.length) { closeWindow(openOrder[openOrder.length - 1].id); return; }
-    if (e.altKey && /^[1-5]$/.test(e.key)) { e.preventDefault(); openWindow(ALT_WINDOWS[+e.key - 1]); return; }
+    if (e.altKey && /^[1-6]$/.test(e.key)) { e.preventDefault(); if (e.key !== '6' || !$('#snake-icon').hidden) openWindow(ALT_WINDOWS[+e.key - 1]); return; }
     if (e.altKey && e.key.toLowerCase() === 'q') { e.preventDefault(); [...openOrder].forEach((w) => closeWindow(w.id)); return; }
     const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
     if (!typing && e.key === 'm' && !e.altKey && !e.ctrlKey && !e.metaKey) { $('#sound-toggle')?.click(); }
@@ -1014,8 +1173,9 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#eggs-head').addEventListener('click', () => { eggs.classList.toggle('open'); SFX.blip(); });
     renderEggs();
     document.addEventListener('langchange', renderEggs);
-    try { if (localStorage.getItem('eggsDone') === '1') document.body.classList.add('all-eggs'); } catch (e) { /* ignore */ }
+    try { if (localStorage.getItem('eggsDone') === '1') { document.body.classList.add('all-eggs'); unlockSnake(); } } catch (e) { /* ignore */ }
   }
+  setupSnake();
 
   window.addEventListener('resize', () => $$('.window.open').forEach(keepOnScreen));
 
