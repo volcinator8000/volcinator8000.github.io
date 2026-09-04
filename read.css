@@ -470,13 +470,13 @@ body.read {
 }
 
 .fold summary span:first-child::before {
-  content: '▸ ';
+  content: '+ ';
   color: var(--overlay);
   font-weight: normal;
 }
 
 .fold[open] summary span:first-child::before {
-  content: '▾ ';
+  content: '− ';
 }
 
 .fold .pv-grid {

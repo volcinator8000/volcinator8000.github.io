@@ -1119,12 +1119,12 @@ a.project:hover {
 }
 
 .xp-fold-title::before {
-  content: '▸ ';
+  content: '+ ';
   color: var(--overlay);
 }
 
 .xp-fold[open] .xp-fold-title::before {
-  content: '▾ ';
+  content: '− ';
 }
 
 .xp-peek {
