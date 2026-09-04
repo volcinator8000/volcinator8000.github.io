@@ -15,7 +15,7 @@
     (function () {
       var seg = location.pathname.replace(/\/+$/, "").split("/").pop().toLowerCase();
       var slug = seg.replace(/\.html?$/, "");
-      if (typeof projectBySlug === "function" && projectBySlug(slug)) location.replace("/desktop.html#" + slug);
+      if (typeof projectBySlug === "function" && projectBySlug(slug)) location.replace("desktop.html#" + slug);
     })();
   </script>
 </head>
