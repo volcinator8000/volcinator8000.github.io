@@ -30,7 +30,7 @@
           </div>
           <pre id="hdr" class="hdr"></pre>
 
-          <nav id="choices" class="choices" aria-label="Choose a version of the portfolio">
+          <nav id="choices" class="choices" aria-label="Choose a version of the portfolio" hidden>
             <a class="choice" href="desktop.html" data-choice="desktop">
               <span class="c-label" data-i18n="landing.c1.label">[1] FULL EXPERIENCE</span>
               <span class="c-desc" data-i18n="landing.c1.desc">Boot a small Linux desktop. Windows to drag, a terminal to type in, project demos that actually run.</span>
@@ -43,7 +43,7 @@
             </a>
           </nav>
 
-          <p id="hint" class="hint" data-i18n="landing.hint">&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
+          <p id="hint" class="hint" data-i18n="landing.hint" hidden>&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
           <p class="foot"><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
         </main>
       </div>
@@ -78,7 +78,12 @@
 
       // the moment audio is allowed (at load if the browser trusts the site,
       // otherwise at the first key or click) the tube "powers on" audibly
-      Sound.onUnlock(function () { Sound.powerOn(); setTimeout(function () { Sound.hum(true); }, 300); });
+      var pageStart = performance.now();
+      Sound.onUnlock(function () {
+        var early = performance.now() - pageStart < 1500;
+        if (early) Sound.powerOn();
+        setTimeout(function () { Sound.hum(true); }, early ? 300 : 0);
+      });
       Sound.tryUnlock();
 
       /* ---------- the script that types itself ---------- */
@@ -160,6 +165,8 @@
       }
 
       function showChoices() {
+        choices.hidden = false;
+        hint.hidden = false;
         if (!links.some(function (a) { return a.classList.contains('sel'); })) select(0, false);
       }
 
@@ -203,13 +210,10 @@
         });
       });
 
-      select(0, false);
-
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Tab') return;
         if (e.target.closest && e.target.closest('.sound')) return; // Enter/Space on the toggle just toggles
-        if (!done && e.key !== 'Enter' && !/^Arrow/.test(e.key) && e.key !== '1' && e.key !== '2') { skip(); return; }
-        if (!done) skip();
+        if (!done) { skip(); return; }
         if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'j') { e.preventDefault(); select(current + 1, true); }
         else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'k') { e.preventDefault(); select(current - 1, true); }
         else if (e.key === '1') select(0, true);
