@@ -9,6 +9,108 @@
 
 // PROJECTS, CATEGORIES, EXPERIENCE and GITHUB come from content.js
 
+/* ---------- easter eggs ---------- */
+
+// id -> hint keys live in i18n.js ('egg.<id>.name' / 'egg.<id>.hint')
+const EGG_IDS = ['sudo', 'rmrf', 'vim', 'cow', 'matrix', 'sl', 'konami', 'clock', 'arch'];
+let eggsFound = new Set();
+try { eggsFound = new Set(JSON.parse(localStorage.getItem('eggsFound') || '[]').filter((id) => EGG_IDS.includes(id))); } catch (e) { /* ignore */ }
+
+function findEgg(id) {
+  if (!EGG_IDS.includes(id) || eggsFound.has(id)) return;
+  eggsFound.add(id);
+  try { localStorage.setItem('eggsFound', JSON.stringify([...eggsFound])); } catch (e) { /* ignore */ }
+  SFX.granted();
+  toast(`${t('eggs.found')}: ${t('egg.' + id + '.name')}  (${eggsFound.size}/${EGG_IDS.length})`);
+  renderEggs();
+  if (eggsFound.size === EGG_IDS.length) setTimeout(celebrate, 900);
+}
+
+function resetEggs() {
+  eggsFound = new Set();
+  try { localStorage.removeItem('eggsFound'); localStorage.removeItem('eggsDone'); } catch (e) { /* ignore */ }
+  document.body.classList.remove('all-eggs');
+  renderEggs();
+}
+
+function renderEggs() {
+  const box = $('#eggs');
+  if (!box) return;
+  const n = eggsFound.size, total = EGG_IDS.length;
+  $('#eggs-count').textContent = `${n}/${total}`;
+  $('#eggs-title').textContent = t('eggs.title');
+  $('#eggs-sub').textContent = n === total ? t('eggs.all') : t('eggs.hint');
+  const list = $('#eggs-list');
+  list.innerHTML = '';
+  EGG_IDS.forEach((id) => {
+    const li = document.createElement('li');
+    const found = eggsFound.has(id);
+    li.className = found ? 'found' : '';
+    li.textContent = found ? `✓ ${t('egg.' + id + '.name')}` : `· ${t('egg.' + id + '.hint')}`;
+    list.appendChild(li);
+  });
+  box.classList.toggle('complete', n === total);
+}
+
+function toast(text) {
+  let el = $('#toast');
+  if (!el) { el = document.createElement('div'); el.id = 'toast'; document.body.appendChild(el); }
+  el.textContent = text;
+  el.classList.add('show');
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+// the reward: a warp through a starfield with a banner, then a permanent badge
+function celebrate() {
+  try { localStorage.setItem('eggsDone', '1'); } catch (e) { /* ignore */ }
+  document.body.classList.add('all-eggs');
+  if ($('#celebrate')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'celebrate';
+  wrap.innerHTML = '<canvas></canvas><div class="celebrate-text"><div class="big"></div><div class="small"></div></div>';
+  document.body.appendChild(wrap);
+  wrap.querySelector('.big').textContent = t('eggs.all');
+  wrap.querySelector('.small').textContent = t('eggs.reward');
+  SFX.powerOn(); setTimeout(() => SFX.granted(), 400); setTimeout(() => SFX.granted(), 900);
+
+  const canvas = wrap.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const resize = () => { canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  resize();
+  const stars = Array.from({ length: 400 }, () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() * 0.9 + 0.1 }));
+  const colours = ['#f38ba8', '#fab387', '#f9e2af', '#a6e3a1', '#94e2d5', '#89b4fa', '#cba6f7', '#f5c2e7'];
+  let last = performance.now(), start = last, raf = 0;
+  const frame = (now) => {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    const age = (now - start) / 1000;
+    const w = innerWidth, h = innerHeight, f = Math.min(w, h) * 0.9;
+    ctx.fillStyle = 'rgba(17,17,27,0.45)'; ctx.fillRect(0, 0, w, h);
+    const speed = 0.3 + Math.min(2.5, age * 0.8);
+    stars.forEach((st, i) => {
+      const pz = st.z; st.z -= dt * speed;
+      if (st.z <= 0.02) { st.x = Math.random() * 2 - 1; st.y = Math.random() * 2 - 1; st.z = 1; return; }
+      ctx.strokeStyle = colours[i % colours.length]; ctx.globalAlpha = 1 - st.z; ctx.lineWidth = Math.max(0.5, 3 * (1 - st.z));
+      ctx.beginPath(); ctx.moveTo(w / 2 + (st.x / pz) * f, h / 2 + (st.y / pz) * f); ctx.lineTo(w / 2 + (st.x / st.z) * f, h / 2 + (st.y / st.z) * f); ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    if (age < 6) raf = requestAnimationFrame(frame);
+    else { wrap.classList.add('fade'); setTimeout(() => wrap.remove(), 700); }
+  };
+  raf = requestAnimationFrame(frame);
+  wrap.addEventListener('click', () => { cancelAnimationFrame(raf); wrap.remove(); });
+}
+
+// konami code anywhere on the desktop
+const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let konamiPos = 0;
+function watchKonami(e) {
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  konamiPos = key === KONAMI[konamiPos] ? konamiPos + 1 : (key === KONAMI[0] ? 1 : 0);
+  if (konamiPos === KONAMI.length) { konamiPos = 0; findEgg('konami'); }
+}
+
 /* ---------- i18n shortcuts ---------- */
 
 const t = (k) => (typeof I18N !== 'undefined' ? I18N.t(k) : k);
@@ -603,6 +705,7 @@ function setupPythonUI() {
 /* ---------- terminal ---------- */
 
 const cmdHistory = [];
+let vimOpen = false;
 let historyPos = 0;
 
 function print(text, cls = 'out') {
@@ -631,12 +734,15 @@ const COMMANDS = {
       '  echo <txt>  say it back',
       '  clear       clear the screen',
       '  exit        close this window',
+      '  keys        keyboard shortcuts',
+      '  eggs        the easter-egg hunt',
+      '  … and a few commands that are not listed.',
     ].join('\n')
   ),
 
   whoami: () => print('Khalil Almwakeh (volcinator8000). Epitech, 2nd year. C / Linux / Python / Bash. Currently web & SEO engineering at Remoters.'),
 
-  ls: () => print('readme.txt  experience.md  projects/  navigate.py  script.js  style.css  .bashrc  .secrets  (nice try)'),
+  ls: (args) => print(args[0] === '-a' ? '.  ..  .bashrc  .secrets  readme.txt  experience.md  projects/  navigate.py  script.js  style.css' : 'readme.txt  experience.md  projects/  navigate.py  script.js  style.css'),
 
   cat: (args) => {
     const f = args[0];
@@ -649,7 +755,7 @@ const COMMANDS = {
       openWindow('experience-window');
       return print('opening experience.md…');
     }
-    if (f === '.secrets') return print('cat: .secrets: Permission denied', 'err');
+    if (f === '.secrets') return print(`# ${t('eggs.title')}\n` + EGG_IDS.map((id) => `- ${eggsFound.has(id) ? '[x] ' + t('egg.' + id + '.name') : '[ ] ' + t('egg.' + id + '.hint')}`).join('\n'));
     if (f === '.bashrc') return print('alias please="sudo"\nexport EDITOR=vim\nPS1="\\u@\\h:\\w$ "');
     return print(`cat: ${f}: No such file or directory`, 'err');
   },
@@ -701,10 +807,54 @@ const COMMANDS = {
   exit: () => { closeWindow('terminal-window'); },
 
   // easter eggs
-  sudo: () => print('volcinator8000 is not in the sudoers file. This incident will be reported.', 'err'),
-  rm: (args) => (args.join(' ').includes('-rf') ? print("I'm going to pretend you didn't type that.") : print('rm: nothing removed (this is a portfolio, not a filesystem)')),
-  vim: () => print('you are now stuck in vim. type :q to leave (just kidding, type anything)'),
-  ':q': () => print('phew.'),
+  sudo: () => { print('volcinator8000 is not in the sudoers file. This incident will be reported.', 'err'); findEgg('sudo'); },
+  rm: (args) => { if (args.join(' ').includes('-rf')) { print("I'm going to pretend you didn't type that."); findEgg('rmrf'); } else print('rm: nothing removed (this is a portfolio, not a filesystem)'); },
+  vim: () => { print('you are now stuck in vim. type :q to leave'); vimOpen = true; },
+  ':q': () => { print(vimOpen ? 'phew. you escaped vim.' : 'not in vim.'); if (vimOpen) findEgg('vim'); vimOpen = false; },
+  ':wq': () => COMMANDS[':q'](),
+  sl: () => {
+    print([
+      '      ====        ________                ___________',
+      '  _D _|  |_______/        \\__I_I_____===__|_________|',
+      '   |(_)---  |   H\\________/ |   |        =|___ ___|',
+      '   /     |  |   H  |  |     |   |         ||_| |_||',
+      '  |      |  |   H  |__--------------------| [___] |',
+      '  | ________|___H__/__|_____/[][]~\\_______|       |',
+      '  |/ |   |-----------I_____I [][] []  D   |=======|__',
+      '__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__',
+      ' |/-=|___|=    ||    ||    ||    |_____/~\\___/',
+      '  \\_/      \\_O=====O=====O=====O_/      \\_/',
+      '',
+      "you typed sl instead of ls. the train has left.",
+    ].join('\n'));
+    findEgg('sl');
+  },
+  cowsay: (args) => {
+    const msg = args.join(' ') || 'moo';
+    const line = '-'.repeat(msg.length + 2);
+    print(` ${line}\n< ${msg} >\n ${line}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`);
+    findEgg('cow');
+  },
+  matrix: () => { matrixRain(); findEgg('matrix'); },
+  eggs: (args) => {
+    if (args[0] === 'reset') { resetEggs(); return print('eggs reset.'); }
+    $('#eggs').classList.add('open');
+    print(`${eggsFound.size}/${EGG_IDS.length} ${t('eggs.found')}. ${t('eggs.hint')}`);
+  },
+  keys: () => print(
+    [
+      'keyboard shortcuts:',
+      '  Esc            close the focused window',
+      '  Alt+1 … Alt+5  open readme / projects / terminal / experience / navigate.py',
+      '  Alt+Q          close every window',
+      '  Tab            complete a command or file name in the terminal',
+      '  ↑ / ↓          walk the terminal history',
+      '  m              toggle sound (outside the terminal)',
+    ].join('\n')
+  ),
+  shortcuts: () => COMMANDS.keys(),
+  fortune: () => print(['segfaults build character.', 'it works on my machine.', 'there are 10 kinds of people…', 'a maze is just a graph with attitude.', 'rm -rf is not a backup strategy.'][Math.floor(Math.random() * 5)]),
+  uptime: () => print(`up ${Math.round((performance.now() / 1000))}s, load average: ${(Math.random() * 0.5).toFixed(2)}, 1 user (you)`),
   python: (args) => {
     if (args[0] === 'navigate.py') { openWindow('python-window'); return print('running navigate.py in the browser…'); }
     print('>>> import this\nThe Zen of Python, by Tim Peters\n\nBeautiful is better than ugly.\n...\n(try: python3 navigate.py)');
@@ -715,6 +865,55 @@ const COMMANDS = {
   pwd: () => print('/home/khalil'),
   uname: () => print('Linux arch 6.x x86_64 GNU/Linux'),
 };
+
+function matrixRain() {
+  const win = $('#terminal-window');
+  if (win.querySelector('canvas.matrix')) return;
+  const canvas = document.createElement('canvas');
+  canvas.className = 'matrix';
+  canvas.style.top = `${win.querySelector('.title-bar').offsetHeight}px`;
+  win.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width = win.clientWidth, h = canvas.height = win.clientHeight - win.querySelector('.title-bar').offsetHeight;
+  const cols = Math.floor(w / 14), drops = Array.from({ length: cols }, () => Math.random() * -40);
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF';
+  const start = performance.now();
+  let raf = 0;
+  const frame = (now) => {
+    ctx.fillStyle = 'rgba(17,17,27,0.12)'; ctx.fillRect(0, 0, w, h);
+    ctx.font = '13px monospace';
+    drops.forEach((y, i) => {
+      ctx.fillStyle = Math.random() < 0.08 ? '#cdd6f4' : '#a6e3a1';
+      ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 14, y * 14);
+      drops[i] = y * 14 > h && Math.random() > 0.975 ? 0 : y + 0.5;
+    });
+    if (now - start < 4500) raf = requestAnimationFrame(frame);
+    else { canvas.style.opacity = '0'; setTimeout(() => canvas.remove(), 500); print('wake up, neo.'); }
+  };
+  raf = requestAnimationFrame(frame);
+  canvas.addEventListener('click', () => { cancelAnimationFrame(raf); canvas.remove(); });
+}
+
+function completeCommand(input) {
+  const value = input.value;
+  const parts = value.split(/\s+/);
+  const files = ['readme.txt', 'experience.md', 'navigate.py', 'projects/', '.bashrc', '.secrets'];
+  const windows = ['readme', 'projects', 'terminal', 'navigate', 'experience'];
+  let pool, prefix;
+  if (parts.length <= 1) { pool = Object.keys(COMMANDS).filter((k) => /^[a-z]/.test(k)); prefix = parts[0] || ''; }
+  else if (parts[0] === 'cat') { pool = files; prefix = parts[parts.length - 1]; }
+  else if (parts[0] === 'open') { pool = windows; prefix = parts[parts.length - 1]; }
+  else if (parts[0] === 'projects') { pool = Object.keys(CATEGORIES).filter((k) => k !== 'all'); prefix = parts[parts.length - 1]; }
+  else return;
+  const hits = pool.filter((k) => k.startsWith(prefix));
+  if (hits.length === 1) { parts[parts.length - 1] = hits[0]; input.value = parts.join(' ') + (hits[0].endsWith('/') ? '' : ' '); }
+  else if (hits.length > 1) {
+    let common = hits[0];
+    hits.forEach((h) => { while (!h.startsWith(common)) common = common.slice(0, -1); });
+    parts[parts.length - 1] = common; input.value = parts.join(' ');
+    print(hits.join('  '), 'out');
+  }
+}
 
 function runCommand(raw) {
   const line = raw.trim();
@@ -742,6 +941,7 @@ function setupTerminal() {
 
   input.addEventListener('keydown', (e) => {
     if (e.key.length === 1 || e.key === 'Backspace') SFX.tick();
+    if (e.key === 'Tab') { e.preventDefault(); completeCommand(input); return; }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (historyPos > 0) input.value = cmdHistory[--historyPos];
@@ -787,12 +987,35 @@ document.addEventListener('DOMContentLoaded', () => {
     win.addEventListener('pointerdown', () => focusWindow(win));
   });
 
-  // Esc closes the focused window
+  // keyboard: Esc closes, Alt+1..5 open, Alt+Q closes all, m toggles sound
+  const ALT_WINDOWS = ['about-window', 'projects-window', 'terminal-window', 'experience-window', 'python-window'];
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && openOrder.length) {
-      closeWindow(openOrder[openOrder.length - 1].id);
-    }
+    watchKonami(e);
+    if (e.key === 'Escape' && openOrder.length) { closeWindow(openOrder[openOrder.length - 1].id); return; }
+    if (e.altKey && /^[1-5]$/.test(e.key)) { e.preventDefault(); openWindow(ALT_WINDOWS[+e.key - 1]); return; }
+    if (e.altKey && e.key.toLowerCase() === 'q') { e.preventDefault(); [...openOrder].forEach((w) => closeWindow(w.id)); return; }
+    const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+    if (!typing && e.key === 'm' && !e.altKey && !e.ctrlKey && !e.metaKey) { $('#sound-toggle')?.click(); }
   });
+
+  // clock: three clicks in a row
+  let clockClicks = 0, clockTimer = 0;
+  $('#clock').addEventListener('click', () => {
+    clockClicks += 1; clearTimeout(clockTimer); clockTimer = setTimeout(() => { clockClicks = 0; }, 1500);
+    if (clockClicks >= 3) { clockClicks = 0; findEgg('clock'); toast(`uptime ${Math.round(performance.now() / 1000)}s`); }
+  });
+  // the Arch logo in the readme
+  const art = $('.fetch-art');
+  if (art) { art.style.cursor = 'pointer'; art.addEventListener('click', () => { art.classList.add('glow'); findEgg('arch'); }); }
+
+  // easter-egg widget
+  const eggs = $('#eggs');
+  if (eggs) {
+    $('#eggs-head').addEventListener('click', () => { eggs.classList.toggle('open'); SFX.blip(); });
+    renderEggs();
+    document.addEventListener('langchange', renderEggs);
+    try { if (localStorage.getItem('eggsDone') === '1') document.body.classList.add('all-eggs'); } catch (e) { /* ignore */ }
+  }
 
   window.addEventListener('resize', () => $$('.window.open').forEach(keepOnScreen));
 

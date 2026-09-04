@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>404 · Khalil Almwakeh</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e1e2e'/%3E%3Ctext x='12' y='44' font-family='monospace' font-size='30' fill='%23a6e3a1'%3E%3E_%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap" />
+  <link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+  <div class="room">
+    <div class="monitor">
+      <div class="screen on">
+        <div class="glass" aria-hidden="true"></div>
+        <div class="scanlines" aria-hidden="true"></div>
+        <div class="rollbar" aria-hidden="true"></div>
+        <main class="term">
+          <pre class="hdr" id="hdr">volcinator8000@arch:~$ cat <span id="path"></span>
+cat: <span id="path2"></span>: No such file or directory
+
+> ERROR 404. THE FILE YOU ASKED FOR IS NOT ON THIS DISK.
+> IT MAY HAVE MOVED, OR NEVER EXISTED.</pre>
+          <nav class="choices" aria-label="Where to go">
+            <a class="choice sel" href="/">
+              <span class="c-label">[1] START OVER</span>
+              <span class="c-desc">Back to the landing terminal.</span>
+            </a>
+            <a class="choice" href="/read.html">
+              <span class="c-label">[2] QUICK READ</span>
+              <span class="c-desc">Everything on one page.</span>
+            </a>
+          </nav>
+          <p class="foot"><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
+        </main>
+      </div>
+      <div class="chin" aria-hidden="true"><span class="led lit"></span><span class="brand">VOLCINATOR 8000</span></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var p = location.pathname.replace(/^\//, '') || '?';
+      document.getElementById('path').textContent = p;
+      document.getElementById('path2').textContent = p;
+      var links = Array.prototype.slice.call(document.querySelectorAll('.choice')), cur = 0;
+      function sel(i) { cur = (i + links.length) % links.length; links.forEach(function (a, k) { a.classList.toggle('sel', k === cur); }); }
+      links.forEach(function (a, k) { a.addEventListener('mouseenter', function () { sel(k); }); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') sel(cur + 1);
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') sel(cur - 1);
+        else if (e.key === '1') sel(0); else if (e.key === '2') sel(1);
+        else if (e.key === 'Enter') links[cur].click();
+      });
+    })();
+  </script>
+</body>
+</html>

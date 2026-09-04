@@ -34,6 +34,7 @@ const PREVIEW_NOTES = {
   'Music visualizer': 'This is the real site, embedded. Click inside to play; sound comes from the embed.',
   'MAX Finder': 'This is the real app, embedded from its live site.',
   'Bug Break': 'An Unreal Engine project cannot run here; this is the gameplay loop from the README.',
+  'Tardis': 'The pipeline from the README: notebooks clean the SNCF data, three models are trained, a Streamlit dashboard predicts a journey\'s delay.',
 };
 
 // same notes in French
@@ -56,6 +57,7 @@ const PREVIEW_NOTES_FR = {
   'Music visualizer': "C'est le vrai site, intégré. Cliquez dedans pour jouer ; le son vient de l'intégration.",
   'MAX Finder': "C'est la vraie application, intégrée depuis son site en ligne.",
   'Bug Break': "Un projet Unreal Engine ne peut pas tourner ici ; voici la boucle de jeu du README.",
+  'Tardis': "Le pipeline du README : des notebooks nettoient les données SNCF, trois modèles sont entraînés, un tableau de bord Streamlit prédit le retard d'un trajet.",
 };
 
 function previewNote(name) {
@@ -66,7 +68,7 @@ function previewNote(name) {
 
 const PV_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const PV = {
-  base: '#1e1e2e', crust: '#11111b', surface: '#313244', surface1: '#45475a', text: '#cdd6f4', sub: '#a6adc8',
+  base: '#1e1e2e', mantle: '#181825', crust: '#11111b', surface: '#313244', surface1: '#45475a', text: '#cdd6f4', sub: '#a6adc8',
   overlay: '#6c7086', green: '#a6e3a1', blue: '#89b4fa', yellow: '#f9e2af', peach: '#fab387', red: '#f38ba8',
   mauve: '#cba6f7', teal: '#94e2d5', pink: '#f5c2e7', sky: '#89dceb',
 };
@@ -258,7 +260,8 @@ PREVIEWS['Amazed'] = (stage) => {
     ctx.fillStyle = PV.yellow; ctx.fillRect(ox + cell + 2, oy + cell + 2, cell - 4, cell - 4);
     ctx.fillStyle = PV.red; const [gx, gy] = goal(); ctx.fillRect(ox + gx * cell + 2, oy + gy * cell + 2, cell - 4, cell - 4);
   });
-  const cap = caption(stage, 'BFS frontier in blue, shortest path in green');
+  const cap = caption(stage, 'BFS frontier in blue, shortest path in green · click for a new maze');
+  ctx.canvas.addEventListener('click', build);
   return () => { cancel(); stop(); };
 };
 
@@ -318,6 +321,7 @@ PREVIEWS['Count Islands'] = (stage) => {
     cap.textContent = `islands found: ${count}${phase === 'done' ? '  ✓' : ''}`;
   });
   const cap = caption(stage, 'islands found: 0');
+  ctx.canvas.addEventListener('click', () => { build(); sx = 0; sy = 0; });
   return () => { cancel(); stop(); };
 };
 
@@ -325,13 +329,17 @@ PREVIEWS['Count Islands'] = (stage) => {
 PREVIEWS['Star'] = (stage) => {
   const { ctx, stop } = makeCanvas(stage);
   const stars = Array.from({ length: 260 }, () => ({ x: rnd(-1, 1), y: rnd(-1, 1), z: rnd(0.05, 1) }));
+  let warp = false;
+  ctx.canvas.addEventListener('pointerdown', () => { warp = true; });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => ctx.canvas.addEventListener(ev, () => { warp = false; }));
+  caption(stage, 'hold to warp');
   const cancel = animate((t, dt) => {
     const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
     ctx.fillStyle = 'rgba(17,17,27,0.5)'; ctx.fillRect(0, 0, w, h);
     const f = Math.min(w, h) * 0.9;
     for (const s of stars) {
       const pz = s.z;
-      s.z -= dt * 0.35;
+      s.z -= dt * (warp ? 1.6 : 0.35);
       if (s.z <= 0.02) { s.x = rnd(-1, 1); s.y = rnd(-1, 1); s.z = 1; continue; }
       const x1 = w / 2 + (s.x / pz) * f, y1 = h / 2 + (s.y / pz) * f;
       const x2 = w / 2 + (s.x / s.z) * f, y2 = h / 2 + (s.y / s.z) * f;
@@ -373,22 +381,24 @@ PREVIEWS['My World'] = (stage) => {
 /* ---------- 106 Bombyx: bifurcation diagram ---------- */
 PREVIEWS['106 Bombyx'] = (stage) => {
   const { ctx, stop } = makeCanvas(stage);
-  let col = 0, w = 0, h = 0;
+  let col = 0, w = 0, h = 0, r0 = 2.4, r1 = 4;
   const reset = () => { w = ctx.canvas.clientWidth; h = ctx.canvas.clientHeight; col = 0; ctx.fillStyle = PV.crust; ctx.fillRect(0, 0, w, h); };
   reset();
+  ctx.canvas.addEventListener('click', () => { [r0, r1] = r0 === 2.4 ? [3.5, 4] : [2.4, 4]; reset(); });
+  caption(stage, 'click to zoom in / out');
   const cancel = animate(() => {
     if (w !== ctx.canvas.clientWidth) reset();
     if (col > w) { if (!PV_REDUCED) return; }
     const per = PV_REDUCED ? w : 4;
     for (let k = 0; k < per && col <= w; k++, col++) {
-      const r = 2.4 + (col / w) * 1.6;
+      const r = r0 + (col / w) * (r1 - r0);
       let x = 0.5;
       for (let i = 0; i < 100; i++) x = r * x * (1 - x);
       ctx.fillStyle = 'rgba(166,227,161,0.35)';
       for (let i = 0; i < 120; i++) { x = r * x * (1 - x); ctx.fillRect(col, h - 8 - x * (h - 30), 1, 1); }
     }
     ctx.fillStyle = PV.overlay; ctx.font = '11px monospace';
-    ctx.fillText('r = 2.4', 6, h - 4); ctx.fillText('r = 4', w - 40, h - 4);
+    ctx.fillText(`r = ${r0}`, 6, h - 4); ctx.fillText(`r = ${r1}`, w - 40, h - 4);
     ctx.fillText('population x', 6, 14);
   });
   return () => { cancel(); stop(); };
@@ -545,8 +555,15 @@ PREVIEWS['Fourier workshop'] = (stage) => {
   const f1 = 3, f2 = 5, T = 4, N = 600;
   const sig = (t) => Math.cos(2 * Math.PI * f1 * t) + Math.cos(2 * Math.PI * f2 * t);
   const mags = [];
+  let manual = null, offset = 0, lastT = 0;
+  const scrub = (e) => { const rect = ctx.canvas.getBoundingClientRect(); manual = Math.max(0, Math.min(10, ((e.clientX - rect.left - 14) / (rect.width * (rect.width < 560 ? 0.55 : 0.55))) * 10)); };
+  ctx.canvas.addEventListener('pointerdown', (e) => { scrub(e); ctx.canvas.setPointerCapture(e.pointerId); });
+  ctx.canvas.addEventListener('pointermove', (e) => { if (manual !== null) scrub(e); });
+  ['pointerup', 'pointercancel'].forEach((ev) => ctx.canvas.addEventListener(ev, () => { if (manual !== null) { offset = manual - (lastT * 1.2) % 10; manual = null; } }));
+  caption(stage, 'drag left/right to scrub the frequency');
   const cancel = animate((t) => {
-    const fSweep = PV_REDUCED ? 10 : (t * 1.2) % 10;
+    lastT = t;
+    const fSweep = PV_REDUCED ? 10 : manual !== null ? manual : (((t * 1.2 + offset) % 10) + 10) % 10;
     const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
     const narrow = w < 560;
     ctx.fillStyle = PV.crust; ctx.fillRect(0, 0, w, h);
@@ -799,8 +816,13 @@ PREVIEWS['Organized'] = (stage) => {
 PREVIEWS['Chocolatine'] = (stage) => {
   const { ctx, stop } = makeCanvas(stage);
   const steps = ['push', 'checkout', 'check_coding_style', 'check_program_compilation', 'run_tests', 'push_to_mirror'];
+  let t0 = 0;
+  ctx.canvas.addEventListener('click', () => { t0 = lastT; });
+  let lastT = 0;
+  caption(stage, 'click to push again');
   const cancel = animate((t) => {
-    const local = PV_REDUCED ? 99 : t % 11;
+    lastT = t;
+    const local = PV_REDUCED ? 99 : (t - t0) % 11;
     const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
     ctx.fillStyle = PV.crust; ctx.fillRect(0, 0, w, h);
     ctx.font = '12px monospace';
@@ -830,6 +852,53 @@ PREVIEWS['Bug Break'] = (stage) => emptyStage(stage, 'Unreal Engine 5.4, C++ + B
   'A spider hunts you (WANDER / CHASE / SEARCH state machine). Hide in closets or under desks.',
   'Reach the coffee machine to win. Get caught and you wake up without coffee.',
 ]);
+
+/* ---------- Tardis: the pipeline from the README ---------- */
+PREVIEWS['Tardis'] = (stage) => {
+  const { ctx, stop } = makeCanvas(stage);
+  const nodes = [
+    { label: 'dataset.csv', sub: 'SNCF delays' },
+    { label: 'tardis_eda.ipynb', sub: 'cleaning + EDA' },
+    { label: '3 models', sub: 'RF · HistGB · XGBoost' },
+    { label: 'Streamlit', sub: 'delay predictor' },
+  ];
+  const cancel = animate((t) => {
+    const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    const narrow = w < 520;
+    ctx.fillStyle = PV.crust; ctx.fillRect(0, 0, w, h);
+    ctx.font = '11px monospace';
+    const n = nodes.length;
+    const boxW = narrow ? w - 40 : Math.min(150, (w - 40) / n - 14), boxH = 40;
+    const pos = nodes.map((_, i) => narrow
+      ? [20, 14 + i * ((h - 28 - boxH) / (n - 1))]
+      : [20 + i * ((w - 40 - boxW) / (n - 1)), h / 2 - boxH / 2 - 10]);
+    // flow dots
+    const phase = (t * 0.35) % 1;
+    for (let i = 0; i < n - 1; i++) {
+      const [x0, y0] = pos[i], [x1, y1] = pos[i + 1];
+      const ax = narrow ? x0 + boxW / 2 : x0 + boxW, ay = narrow ? y0 + boxH : y0 + boxH / 2;
+      const bx = narrow ? x1 + boxW / 2 : x1, by = narrow ? y1 : y1 + boxH / 2;
+      ctx.strokeStyle = PV.surface1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+      for (let k = 0; k < 3; k++) {
+        const f = (phase + k / 3) % 1;
+        ctx.fillStyle = PV.teal; ctx.beginPath(); ctx.arc(ax + (bx - ax) * f, ay + (by - ay) * f, 2.5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    nodes.forEach((nd, i) => {
+      const [x, y] = pos[i];
+      const active = Math.floor((t * 0.35) % n) === i;
+      ctx.fillStyle = PV.mantle; ctx.strokeStyle = active ? PV.blue : PV.surface1; ctx.lineWidth = active ? 2 : 1;
+      ctx.beginPath(); ctx.roundRect(x, y, boxW, boxH, 6); ctx.fill(); ctx.stroke(); ctx.lineWidth = 1;
+      ctx.fillStyle = PV.text; ctx.fillText(fit(ctx, nd.label, boxW - 12), x + 8, y + 16);
+      ctx.fillStyle = PV.sub; ctx.fillText(fit(ctx, nd.sub, boxW - 12), x + 8, y + 31);
+    });
+    if (!narrow) {
+      ctx.fillStyle = PV.overlay;
+      ctx.fillText('predict arrival delay from: stations, month, journey time, scheduled trains, departure delay', 20, h - 14);
+    }
+  });
+  return () => { cancel(); stop(); };
+};
 
 /* ---------- live sites ---------- */
 PREVIEWS['Music visualizer'] = (stage) => iframeStage(stage, PREVIEW_LIVE['Music visualizer']);
