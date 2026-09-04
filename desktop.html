@@ -17,6 +17,11 @@
   <meta name="twitter:description" content="Epitech student building systems and simulations in C, Python and Bash. A tiny Linux desktop you can click around, or a one-page read." />
   <meta name="twitter:image" content="https://khalil-almwakeh.github.io/og.png" />
   <meta property="og:url" content="https://khalil-almwakeh.github.io/desktop.html" />
+  <link rel="canonical" href="https://khalil-almwakeh.github.io/desktop.html" />
+  <meta name="author" content="Khalil Almwakeh" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="fr_FR" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Khalil Almwakeh", "alternateName": "volcinator8000", "url": "https://khalil-almwakeh.github.io/", "image": "https://khalil-almwakeh.github.io/og.png", "jobTitle": "Computer science student, web & SEO engineer", "affiliation": {"@type": "EducationalOrganization", "name": "Epitech"}, "worksFor": {"@type": "Organization", "name": "Remoters", "url": "https://www.remoters.io"}, "knowsAbout": ["C", "Linux", "Python", "Bash", "technical SEO", "Cloudflare Workers", "Webflow"], "knowsLanguage": ["fr", "en"], "sameAs": ["https://github.com/volcinator8000", "https://www.linkedin.com/in/khalil-almwakeh-1432b436a/"]}</script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e1e2e'/%3E%3Ctext x='12' y='44' font-family='monospace' font-size='30' fill='%23a6e3a1'%3E%3E_%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -81,6 +86,7 @@
       <div class="title-bar">
         <span id="about-title">vim ~/readme.txt</span>
         <div class="window-controls">
+          <button class="min-btn" type="button" data-min="about-window" aria-label="Minimise">–</button>
           <button class="close-btn" type="button" data-close="about-window" aria-label="Close">×</button>
         </div>
       </div>
@@ -106,6 +112,7 @@
             <p><span class="key" data-i18n="readme.stack">Stack</span>C · Linux · Python · Bash</p>
             <p><span class="key" data-i18n="readme.doing">Doing</span><span data-i18n="readme.doing.v">building systems and simulations</span></p>
             <p><span class="key">GitHub</span><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
+            <p><span class="key">LinkedIn</span><a href="https://www.linkedin.com/in/khalil-almwakeh-1432b436a/" target="_blank" rel="noopener">khalil-almwakeh</a></p>
             <div class="swatches" aria-hidden="true">
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
             </div>
@@ -117,6 +124,7 @@
         <p class="tip" data-i18n-html="readme.tip"></p>
         <p class="blink">_</p>
       </div>
+      <div class="resize-handle" aria-hidden="true"></div>
     </section>
 
     <!-- PROJECTS -->
@@ -124,6 +132,7 @@
       <div class="title-bar">
         <span id="projects-title">~/projects</span>
         <div class="window-controls">
+          <button class="min-btn" type="button" data-min="projects-window" aria-label="Minimise">–</button>
           <button class="close-btn" type="button" data-close="projects-window" aria-label="Close">×</button>
         </div>
       </div>
@@ -133,6 +142,7 @@
         <p id="project-count" class="count"></p>
         <div id="project-list" class="project-list"></div>
       </div>
+      <div class="resize-handle" aria-hidden="true"></div>
     </section>
 
     <!-- TERMINAL -->
@@ -140,6 +150,7 @@
       <div class="title-bar">
         <span id="terminal-title">bash — ~</span>
         <div class="window-controls">
+          <button class="min-btn" type="button" data-min="terminal-window" aria-label="Minimise">–</button>
           <button class="close-btn" type="button" data-close="terminal-window" aria-label="Close">×</button>
         </div>
       </div>
@@ -151,6 +162,7 @@
           <input id="shell-input" type="text" spellcheck="false" autocapitalize="off" aria-label="Terminal input" />
         </form>
       </div>
+      <div class="resize-handle" aria-hidden="true"></div>
     </section>
 
     <!-- PROJECT PREVIEW -->
@@ -158,6 +170,7 @@
       <div class="title-bar">
         <span id="preview-title">preview</span>
         <div class="window-controls">
+          <button class="min-btn" type="button" data-min="preview-window" aria-label="Minimise">–</button>
           <button class="close-btn" type="button" data-close="preview-window" aria-label="Close">×</button>
         </div>
       </div>
@@ -178,6 +191,7 @@
         <div id="preview-stage" class="stage"></div>
         <p id="preview-note" class="stage-note"></p>
       </div>
+      <div class="resize-handle" aria-hidden="true"></div>
     </section>
 
 
@@ -186,11 +200,13 @@
       <div class="title-bar">
         <span id="xp-title">less ~/experience.md</span>
         <div class="window-controls">
+          <button class="min-btn" type="button" data-min="experience-window" aria-label="Minimise">–</button>
           <button class="close-btn" type="button" data-close="experience-window" aria-label="Close">×</button>
         </div>
       </div>
 
       <div class="content xp-content" id="xp-root"></div>
+      <div class="resize-handle" aria-hidden="true"></div>
     </section>
 
     <!-- NAVIGATE.PY (real Python, runs in the browser) -->
@@ -198,6 +214,7 @@
       <div class="title-bar">
         <span id="python-title">python3 navigate.py</span>
         <div class="window-controls">
+          <button class="min-btn" type="button" data-min="python-window" aria-label="Minimise">–</button>
           <button class="close-btn" type="button" data-close="python-window" aria-label="Close">×</button>
         </div>
       </div>
@@ -218,6 +235,7 @@
         </div>
         <p class="stage-note" data-i18n-html="py.note"></p>
       </div>
+      <div class="resize-handle" aria-hidden="true"></div>
     </section>
 
     <!-- SNAKE (unlocked by the secrets) -->
@@ -225,6 +243,7 @@
       <div class="title-bar">
         <span id="snake-title">snake</span>
         <div class="window-controls">
+          <button class="min-btn" type="button" data-min="snake-window" aria-label="Minimise">–</button>
           <button class="close-btn" type="button" data-close="snake-window" aria-label="Close">×</button>
         </div>
       </div>
@@ -236,6 +255,7 @@
         <canvas id="snake-canvas" tabindex="0" aria-label="snake game"></canvas>
         <p class="stage-note" data-i18n="snake.help">arrow keys or WASD, swipe on a phone · space pauses</p>
       </div>
+      <div class="resize-handle" aria-hidden="true"></div>
     </section>
 
     <!-- easter-egg hunt -->

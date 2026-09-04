@@ -1497,3 +1497,68 @@ canvas.matrix {
   color: var(--yellow);
   border-color: var(--yellow);
 }
+
+/* ---------- window polish: minimise, maximise, resize ---------- */
+.window-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.min-btn {
+  background: var(--yellow);
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #111;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.min-btn:hover {
+  filter: brightness(1.15);
+}
+
+.window.minimized {
+  display: none;
+}
+
+.window.maximized {
+  left: 12px !important;
+  top: calc(var(--bar-h) + 8px) !important;
+  width: calc(100vw - 24px) !important;
+  height: calc(100vh - var(--bar-h) - 20px) !important;
+  border-radius: 8px;
+}
+
+.resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 50%, var(--surface1) 50%, var(--surface1) 60%, transparent 60%, transparent 75%, var(--surface1) 75%, var(--surface1) 85%, transparent 85%);
+  opacity: 0.7;
+}
+
+.window.maximized .resize-handle {
+  display: none;
+}
+
+.task-btn.minimized {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .resize-handle,
+  .min-btn {
+    display: none;
+  }
+}

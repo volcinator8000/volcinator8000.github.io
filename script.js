@@ -382,7 +382,10 @@ function openWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
 
-  if (!win.classList.contains('open')) {
+  if (win.classList.contains('minimized')) {
+    win.classList.remove('minimized');
+    SFX.open();
+  } else if (!win.classList.contains('open')) {
     win.classList.add('open');
     placeWindow(win);
     requestAnimationFrame(() => win.classList.add('active'));
@@ -401,11 +404,67 @@ function openWindow(id) {
   }
 }
 
+function minimizeWindow(id) {
+  const win = document.getElementById(id);
+  if (!win || !win.classList.contains('open')) return;
+  win.classList.add('minimized');
+  win.classList.remove('focused');
+  SFX.close();
+  const idx = openOrder.indexOf(win);
+  if (idx > -1) openOrder.splice(idx, 1);
+  const next = openOrder[openOrder.length - 1];
+  if (next) focusWindow(next); else updateTaskbar();
+}
+
+function toggleMaximize(win) {
+  if (isMobile()) return;
+  if (win.classList.contains('maximized')) {
+    win.classList.remove('maximized');
+    const r = win.dataset.restore ? JSON.parse(win.dataset.restore) : null;
+    if (r) { win.style.left = r.left; win.style.top = r.top; win.style.width = r.width; win.style.height = r.height; }
+  } else {
+    win.dataset.restore = JSON.stringify({ left: win.style.left, top: win.style.top, width: win.style.width, height: win.style.height });
+    win.classList.add('maximized');
+  }
+  SFX.blip();
+  window.dispatchEvent(new Event('resize'));
+}
+
+function enableResizing() {
+  $$('.resize-handle').forEach((handle) => {
+    handle.addEventListener('pointerdown', (e) => {
+      if (isMobile()) return;
+      const win = handle.parentElement;
+      if (win.classList.contains('maximized')) return;
+      e.preventDefault();
+      focusWindow(win);
+      const rect = win.getBoundingClientRect();
+      const startX = e.clientX, startY = e.clientY, w0 = rect.width, h0 = rect.height;
+      handle.setPointerCapture(e.pointerId);
+      win.classList.add('dragging');
+      const onMove = (ev) => {
+        win.style.width = `${Math.max(320, Math.min(window.innerWidth - rect.left - 8, w0 + ev.clientX - startX))}px`;
+        win.style.height = `${Math.max(200, Math.min(window.innerHeight - rect.top - 8, h0 + ev.clientY - startY))}px`;
+      };
+      const stop = () => {
+        handle.removeEventListener('pointermove', onMove);
+        handle.removeEventListener('pointerup', stop);
+        handle.removeEventListener('pointercancel', stop);
+        win.classList.remove('dragging');
+        window.dispatchEvent(new Event('resize'));
+      };
+      handle.addEventListener('pointermove', onMove);
+      handle.addEventListener('pointerup', stop);
+      handle.addEventListener('pointercancel', stop);
+    });
+  });
+}
+
 function closeWindow(id) {
   const win = document.getElementById(id);
   if (!win || !win.classList.contains('open')) return;
 
-  win.classList.remove('active', 'focused');
+  win.classList.remove('active', 'focused', 'minimized', 'maximized');
   SFX.close();
   if (id === 'preview-window') stopPreview();
   const idx = openOrder.indexOf(win);
@@ -459,7 +518,7 @@ function placeWindow(win) {
 }
 
 function keepOnScreen(win) {
-  if (!win.classList.contains('open')) return;
+  if (!win.classList.contains('open') || win.classList.contains('maximized')) return;
   if (isMobile()) {
     win.style.left = '';
     win.style.top = '';
@@ -521,7 +580,7 @@ function updateTaskbar() {
   open.forEach((win) => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'task-btn' + (win.classList.contains('focused') ? ' focused' : '');
+    btn.className = 'task-btn' + (win.classList.contains('focused') ? ' focused' : '') + (win.classList.contains('minimized') ? ' minimized' : '');
     btn.textContent = win.dataset.title || win.id;
     btn.addEventListener('click', () => openWindow(win.id));
     bar.appendChild(btn);
@@ -901,6 +960,7 @@ const COMMANDS = {
       '  neofetch    system info',
       '  open <win>  readme | projects | terminal',
       '  github      open my GitHub',
+      '  linkedin    open my LinkedIn',
       '  python3 navigate.py   run my Python navigator (real Python)',
       '  date        current time',
       '  echo <txt>  say it back',
@@ -965,6 +1025,10 @@ const COMMANDS = {
     print(`opening ${args[0]}...`);
   },
 
+  linkedin: () => {
+    window.open('https://www.linkedin.com/in/khalil-almwakeh-1432b436a/', '_blank', 'noopener');
+    print('opening linkedin');
+  },
   github: () => {
     window.open(GITHUB, '_blank', 'noopener');
     print(`opening ${GITHUB}`);
@@ -1160,6 +1224,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.closest('.icon') && !opener) SFX.blip(); // the github link icon
     const closer = e.target.closest('[data-close]');
     if (closer) closeWindow(closer.dataset.close);
+    const minner = e.target.closest('[data-min]');
+    if (minner) minimizeWindow(minner.dataset.min);
   });
 
   // clicking a window brings it to the front
@@ -1201,6 +1267,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => $$('.window.open').forEach(keepOnScreen));
 
   enableDragging();
+  enableResizing();
+  $$('.title-bar').forEach((bar) => bar.addEventListener('dblclick', (e) => { if (!e.target.closest('button')) toggleMaximize(bar.parentElement); }));
   renderFilters();
   renderProjects();
   setupTerminal();
