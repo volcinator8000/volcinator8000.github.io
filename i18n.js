@@ -159,7 +159,7 @@ const I18N = (function () {
       'read.contact.p': 'Write to me on <a href="https://www.linkedin.com/in/khalil-almwakeh-1432b436a/" target="_blank" rel="noopener">LinkedIn</a>, or on GitHub: <a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a>, where an issue on any repo reaches me.',
       'read.print': 'Print / save as PDF',
       'read.open.desktop': 'Open the desktop version',
-      'read.foot': 'Built by hand: HTML, CSS and JavaScript, no framework. <a href="https://github.com/volcinator8000/khalil-almwakeh.github.io" target="_blank" rel="noopener">Source on GitHub</a>.',
+      'read.foot': 'Built by hand: HTML, CSS and JavaScript, no framework. <a href="https://github.com/volcinator8000/volcinator8000.github.io" target="_blank" rel="noopener">Source on GitHub</a>.',
     },
 
     fr: {
@@ -304,7 +304,7 @@ const I18N = (function () {
       'read.contact.p': 'Écrivez-moi sur <a href="https://www.linkedin.com/in/khalil-almwakeh-1432b436a/" target="_blank" rel="noopener">LinkedIn</a>, ou sur GitHub : <a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a>, où une issue sur n\'importe quel dépôt me parvient.',
       'read.print': 'Imprimer / enregistrer en PDF',
       'read.open.desktop': 'Ouvrir la version bureau',
-      'read.foot': 'Fait à la main : HTML, CSS et JavaScript, sans framework. <a href="https://github.com/volcinator8000/khalil-almwakeh.github.io" target="_blank" rel="noopener">Code source sur GitHub</a>.',
+      'read.foot': 'Fait à la main : HTML, CSS et JavaScript, sans framework. <a href="https://github.com/volcinator8000/volcinator8000.github.io" target="_blank" rel="noopener">Code source sur GitHub</a>.',
     },
   };
 
