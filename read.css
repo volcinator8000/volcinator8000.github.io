@@ -418,3 +418,81 @@ body.read {
     break-inside: avoid;
   }
 }
+
+/* ---------- calmer layout: more air, folded themes ---------- */
+.read-main {
+  max-width: 780px;
+  padding-top: 44px;
+}
+
+.read-main h2 {
+  margin-top: 64px;
+}
+
+.read-main section > p.dim {
+  margin-bottom: 18px;
+}
+
+.glance {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px 24px;
+}
+
+.xp-grid-folds {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.read-cat {
+  margin: 30px 0 12px;
+}
+
+.fold {
+  border: 1px solid var(--surface0);
+  border-radius: 10px;
+  background: var(--mantle);
+  margin-bottom: 10px;
+}
+
+.fold summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--blue);
+  font-weight: bold;
+}
+
+.fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.fold summary span:first-child::before {
+  content: '▸ ';
+  color: var(--overlay);
+  font-weight: normal;
+}
+
+.fold[open] summary span:first-child::before {
+  content: '▾ ';
+}
+
+.fold .pv-grid {
+  padding: 4px 12px 12px;
+}
+
+.read-nav-side {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.read-nav .bar-btn {
+  margin: 0;
+}
+
+.tag.star {
+  padding: 1px 6px;
+}

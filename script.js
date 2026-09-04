@@ -9,6 +9,11 @@
 
 // PROJECTS, CATEGORIES, EXPERIENCE and GITHUB come from content.js
 
+/* ---------- i18n shortcuts ---------- */
+
+const t = (k) => (typeof I18N !== 'undefined' ? I18N.t(k) : k);
+const L = (obj, f) => (typeof I18N !== 'undefined' ? I18N.field(obj, f) : obj[f]);
+
 /* ---------- sound hooks (sound.js) ---------- */
 
 const SFX = new Proxy({}, { get: (_, name) => (...args) => { try { if (typeof Sound !== 'undefined' && Sound[name]) return Sound[name](...args); } catch (e) { /* ignore */ } } });
@@ -16,7 +21,8 @@ const SFX = new Proxy({}, { get: (_, name) => (...args) => { try { if (typeof So
 function setupSoundToggle() {
   const btn = $('#sound-toggle');
   if (!btn || typeof Sound === 'undefined') return;
-  const paint = () => { btn.textContent = `sound: ${Sound.enabled ? 'on' : 'off'}`; btn.setAttribute('aria-pressed', String(Sound.enabled)); };
+  const paint = () => { btn.textContent = t(Sound.enabled ? 'bar.sound.on' : 'bar.sound.off'); btn.setAttribute('aria-pressed', String(Sound.enabled)); };
+  document.addEventListener('langchange', paint);
   btn.addEventListener('click', () => { Sound.setEnabled(!Sound.enabled); paint(); if (Sound.enabled) Sound.tryUnlock().then(() => SFX.blip()); });
   paint();
   Sound.tryUnlock(); // works right away when the visitor clicked their way here from the landing
@@ -271,7 +277,7 @@ function renderFilters() {
     chip.className = 'chip';
     chip.setAttribute('role', 'tab');
     chip.setAttribute('aria-selected', String(key === activeFilter));
-    chip.textContent = `${label} ${n}`;
+    chip.textContent = `${categoryLabel(key)} ${n}`;
     chip.addEventListener('click', () => {
       SFX.blip();
       activeFilter = key;
@@ -287,7 +293,7 @@ function renderProjects() {
   list.innerHTML = '';
 
   const shown = PROJECTS.filter((p) => activeFilter === 'all' || p.cat === activeFilter);
-  $('#project-count').textContent = `${shown.length} item${shown.length === 1 ? '' : 's'}`;
+  $('#project-count').textContent = `${shown.length} ${t(shown.length === 1 ? 'projects.item' : 'projects.items')}`;
 
   shown.forEach((p) => {
     const el = document.createElement('div');
@@ -310,7 +316,7 @@ function renderProjects() {
     if (hasPreview(p)) {
       const play = document.createElement('span');
       play.className = 'play';
-      play.textContent = p.name === 'Navigate' ? 'run' : 'preview';
+      play.textContent = t(p.name === 'Navigate' ? 'card.run' : 'card.preview');
       name.appendChild(play);
     }
     if (p.link) {
@@ -326,7 +332,7 @@ function renderProjects() {
 
     const blurb = document.createElement('p');
     blurb.className = 'project-blurb';
-    blurb.textContent = p.blurb;
+    blurb.textContent = L(p, 'blurb');
 
     const tags = document.createElement('div');
     tags.className = 'tags';
@@ -362,12 +368,13 @@ function fileBadge(ext) {
 function renderExperience() {
   const root = $('#xp-root');
   if (!root || typeof EXPERIENCE === 'undefined') return;
-  root.innerHTML = renderExperienceHTML(EXPERIENCE);
+  root.innerHTML = renderExperienceHTML(currentExperience());
 }
 
 /* ---------- project preview window ---------- */
 
 let previewCleanup = null;
+let previewProject = null;
 
 function hasPreview(p) {
   return p.name === 'Navigate' || typeof PREVIEWS[p.name] === 'function';
@@ -377,12 +384,13 @@ function openPreview(p) {
   if (p.name === 'Navigate') { openWindow('python-window'); return; }
 
   stopPreview();
+  previewProject = p;
   $('#preview-title').textContent = `~/projects/${p.name.toLowerCase().replace(/\s+/g, '-')}`;
   const iconSlot = $('#preview-icon');
   iconSlot.innerHTML = '';
   iconSlot.appendChild(fileBadge(p.ext));
   $('#preview-name').textContent = p.name;
-  $('#preview-blurb').textContent = p.blurb;
+  $('#preview-blurb').textContent = L(p, 'blurb');
 
   const tags = $('#preview-tags');
   tags.innerHTML = '';
@@ -395,16 +403,18 @@ function openPreview(p) {
 
   const link = $('#preview-link');
   link.hidden = !p.link;
+  link.textContent = t('preview.github');
   if (p.link) link.href = p.link;
 
   const live = $('#preview-live');
   const liveUrl = PREVIEW_LIVE[p.name];
   live.hidden = !liveUrl;
+  live.textContent = t('preview.live');
   if (liveUrl) live.href = liveUrl;
 
   const stage = $('#preview-stage');
   stage.innerHTML = '';
-  $('#preview-note').textContent = PREVIEW_NOTES[p.name] || '';
+  $('#preview-note').textContent = previewNote(p.name);
 
   openWindow('preview-window');
 
@@ -417,13 +427,11 @@ function openPreview(p) {
         previewCleanup = run(stage) || null;
       } catch (err) {
         console.error('preview failed', p.name, err);
-        emptyStage(stage, 'preview crashed', [String(err.message || err)]);
+        emptyStage(stage, t('preview.crashed'), [String(err.message || err)]);
       }
     });
   } else {
-    emptyStage(stage, 'no preview yet', [
-      p.link ? 'the code is on GitHub, link above' : 'this one lives in a private Epitech repo',
-    ]);
+    emptyStage(stage, t('preview.none'), [t(p.link ? 'preview.none.link' : 'preview.none.private')]);
     $('#preview-note').textContent = '';
   }
 }
@@ -433,6 +441,7 @@ function stopPreview() {
     try { previewCleanup(); } catch (e) { /* ignore */ }
     previewCleanup = null;
   }
+  previewProject = null;
   $('#preview-stage').innerHTML = '';
 }
 
@@ -486,7 +495,7 @@ async function setupPython() {
     return; // already loading
   }
 
-  pyStatus('loading Python runtime, about 10 MB, first time only…', 'yellow');
+  pyStatus(t('py.status.loading'), 'yellow');
   pyPrint('loading pyodide…', 'y');
   try {
     const py = await loadPyodideOnce();
@@ -503,12 +512,12 @@ async function setupPython() {
     to.value = 'Aéroport';
     from.disabled = to.disabled = false;
     $('#py-run').disabled = false;
-    pyStatus('ready', 'green');
+    pyStatus(t('py.status.ready'), 'green');
     SFX.granted();
     drawMap();
     runRoute();
   } catch (err) {
-    pyStatus('failed: ' + err.message, 'red');
+    pyStatus(t('py.status.failed') + err.message, 'red');
     pyPrint('error: ' + err.message, 'r');
     pyPrint('you can still read the source with "view source", or run it locally: python3 navigate.py "Gare Nord" Parc', 'd');
     pyodideReady = null; // so reopening the window retries the download
@@ -752,6 +761,18 @@ function setupTerminal() {
 /* ---------- wiring ---------- */
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof I18N !== 'undefined') {
+    I18N.apply();
+    const lt = $('#lang-toggle');
+    if (lt) lt.addEventListener('click', () => { I18N.toggle(); SFX.blip(); });
+    document.addEventListener('langchange', () => {
+      renderFilters();
+      renderProjects();
+      renderExperience();
+      if (previewProject && $('#preview-window').classList.contains('open')) openPreview(previewProject);
+    });
+  }
+
   // open / close buttons anywhere in the page
   document.addEventListener('click', (e) => {
     const opener = e.target.closest('[data-open]');

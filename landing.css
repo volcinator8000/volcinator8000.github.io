@@ -368,10 +368,18 @@ body {
   box-shadow: 0 0 8px var(--phosphor);
 }
 
-.sound {
+.top-btns {
   position: absolute;
   top: 14px;
   right: 18px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.sound {
+  min-width: 11ch;
+  text-align: center;
   background: transparent;
   border: 1px solid var(--phosphor-dim);
   color: var(--phosphor-dim);
@@ -391,6 +399,10 @@ body {
 
 .sound[aria-pressed="false"] {
   opacity: 0.6;
+}
+
+.sound.lang {
+  min-width: 4ch;
 }
 
 .hdr {
@@ -427,8 +439,14 @@ body {
     min-height: 0;
   }
 
-  .sound {
+  .top-btns {
     position: static;
     margin-bottom: 12px;
+    justify-content: flex-end;
+  }
+
+  .sound {
+    font-size: 0.7em;
+    min-width: 10ch;
   }
 }

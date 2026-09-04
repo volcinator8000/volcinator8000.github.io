@@ -36,6 +36,32 @@ const PREVIEW_NOTES = {
   'Bug Break': 'An Unreal Engine project cannot run here; this is the gameplay loop from the README.',
 };
 
+// same notes in French
+const PREVIEW_NOTES_FR = {
+  'Amazed': "Refait en JavaScript : un labyrinthe est généré, puis un parcours en largeur l'inonde jusqu'à trouver la sortie.",
+  'Count Islands': "Refait en JavaScript : un remplissage par diffusion colore chaque bloc de terre connexe.",
+  'Star': "Refait en JavaScript : la même idée de champ d'étoiles que l'original en CSFML.",
+  'My World': "Refait en JavaScript : une carte de hauteurs isométrique, projection calculée à la main.",
+  '106 Bombyx': "Refait en JavaScript : l'application logistique x → r·x·(1−x), une colonne par taux de croissance r.",
+  '110 Borwein': "Refait en JavaScript : l'intégrande de Borwein pour chaque n, intégrée numériquement.",
+  '109 Titration': "Refait en JavaScript : une courbe acide fort / base forte ; le pic de la dérivée marque le point d'équivalence.",
+  '108 Trigo': "Refait en JavaScript : exp d'une matrice par sa série entière ; cos et sin marchent pareil avec des signes alternés.",
+  '107 Transfer': "Refait en JavaScript : deux fonctions de transfert à partir de coefficients, et le système en chaîne.",
+  'Fourier workshop': "Refait en JavaScript d'après sim.py : deux cosinus, la machine à enrouler, et l'amplitude quand la fréquence balaye.",
+  'Obsidian console': "Une rediffusion des conclusions de l'audit du dépôt, pas le vrai binaire.",
+  '42sh': "Un lexer en JavaScript : tapez une ligne de commande et voyez comment un shell la découpe avant de l'exécuter.",
+  'My printf': "Un printf en JavaScript : modifiez la chaîne de format, les arguments restent fixes.",
+  'Organized': "Refait en JavaScript : des fichiers rangés dans des dossiers par extension, l'idée du script.",
+  'Chocolatine': "Une animation générique de pipeline CI ; le vrai workflow tourne sur GitHub Actions.",
+  'Music visualizer': "C'est le vrai site, intégré. Cliquez dedans pour jouer ; le son vient de l'intégration.",
+  'MAX Finder': "C'est la vraie application, intégrée depuis son site en ligne.",
+  'Bug Break': "Un projet Unreal Engine ne peut pas tourner ici ; voici la boucle de jeu du README.",
+};
+
+function previewNote(name) {
+  return (typeof I18N !== 'undefined' && I18N.lang === 'fr' && PREVIEW_NOTES_FR[name]) || PREVIEW_NOTES[name] || '';
+}
+
 /* ---------- helpers ---------- */
 
 const PV_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -138,6 +164,23 @@ function termPlayback(stage, steps, loop = true) {
   };
   next();
   return () => { alive = false; clearTimeout(timer); };
+}
+
+// small text with a dark backdrop so it stays readable over a drawing
+function label(ctx, text, x, y, color) {
+  const w = ctx.measureText(text).width;
+  ctx.fillStyle = 'rgba(17,17,27,0.8)';
+  ctx.fillRect(x - 3, y - 10, w + 6, 13);
+  ctx.fillStyle = color || PV.sub;
+  ctx.fillText(text, x, y);
+}
+
+// truncate text to a pixel width
+function fit(ctx, text, maxW) {
+  if (ctx.measureText(text).width <= maxW) return text;
+  let s = text;
+  while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
+  return s + '…';
 }
 
 const rnd = (a, b) => a + Math.random() * (b - a);
@@ -505,18 +548,28 @@ PREVIEWS['Fourier workshop'] = (stage) => {
   const cancel = animate((t) => {
     const fSweep = PV_REDUCED ? 10 : (t * 1.2) % 10;
     const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    const narrow = w < 560;
     ctx.fillStyle = PV.crust; ctx.fillRect(0, 0, w, h);
+    ctx.font = '11px monospace';
+
+    // layout: wide = signal + magnitude on the left, circle on the right
+    //         narrow = signal across the top, magnitude bottom-left, circle bottom-right
+    const sx0 = 14, sw = narrow ? w - 28 : w * 0.55;
+    const sy = narrow ? h * 0.2 : h * 0.27, sa = narrow ? h * 0.07 : h * 0.08;
+    const r = narrow ? Math.min(w * 0.17, h * 0.2) : Math.min(w * 0.16, h * 0.3);
+    const cx = narrow ? w - r - 16 : w * 0.8, cy = narrow ? h * 0.66 : h * 0.42;
+    const bx0 = 14, bw = narrow ? w - r * 2 - 50 : w * 0.55, by = h - 16, bh = narrow ? h * 0.3 : h * 0.42;
+
     // top: signal
-    const sx0 = 14, sw = w * 0.55, sy = h * 0.27, sa = h * 0.08;
     ctx.strokeStyle = PV.mauve; ctx.lineWidth = 1.5; ctx.beginPath();
     for (let i = 0; i <= N; i++) { const tt = (i / N) * T; const x = sx0 + (i / N) * sw, y = sy - sig(tt) * sa; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
     ctx.stroke();
-    ctx.font = '11px monospace'; ctx.fillStyle = PV.sub; ctx.fillText(`signal = cos(2π·${f1}t) + cos(2π·${f2}t)`, sx0, 14);
-    // right: winding machine
-    const cx = w * 0.8, cy = h * 0.42, r = Math.min(w * 0.16, h * 0.3);
-    ctx.strokeStyle = PV.surface1; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    label(ctx, narrow ? `cos(2π·${f1}t) + cos(2π·${f2}t)` : `signal = cos(2π·${f1}t) + cos(2π·${f2}t)`, sx0, 14);
+
+    // winding machine
+    ctx.strokeStyle = PV.surface1; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
     let mx = 0, my = 0;
-    ctx.strokeStyle = PV.yellow; ctx.lineWidth = 1; ctx.beginPath();
+    ctx.strokeStyle = PV.yellow; ctx.beginPath();
     for (let i = 0; i <= N; i++) {
       const tt = (i / N) * T, a = -2 * Math.PI * fSweep * tt, v = sig(tt);
       const x = cx + Math.cos(a) * v * r * 0.45, y = cy + Math.sin(a) * v * r * 0.45;
@@ -524,17 +577,17 @@ PREVIEWS['Fourier workshop'] = (stage) => {
     }
     ctx.stroke(); mx /= N + 1; my /= N + 1;
     ctx.fillStyle = PV.red; ctx.beginPath(); ctx.arc(mx, my, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = PV.sub; ctx.fillText(`winding at ${fSweep.toFixed(2)} Hz`, cx - r, cy + r + 16);
-    // bottom: magnitude vs frequency
+    label(ctx, narrow ? `${fSweep.toFixed(1)} Hz` : `winding at ${fSweep.toFixed(2)} Hz`, cx - r, cy + r + 14);
+
+    // magnitude vs frequency
     const mag = Math.hypot(mx - cx, my - cy) / (r * 0.45);
     const idx = Math.round(fSweep * 50); mags[idx] = mag;
-    const bx0 = 14, bw = w * 0.55, by = h - 16, bh = h * 0.42;
     ctx.strokeStyle = PV.surface1; ctx.beginPath(); ctx.moveTo(bx0, by); ctx.lineTo(bx0 + bw, by); ctx.stroke();
     ctx.strokeStyle = PV.green; ctx.lineWidth = 2; ctx.beginPath();
     let started = false;
     for (let i = 0; i <= 500; i++) { if (mags[i] == null) continue; const x = bx0 + (i / 500) * bw, y = by - Math.min(1, mags[i]) * bh; started ? ctx.lineTo(x, y) : ctx.moveTo(x, y); started = true; }
     ctx.stroke(); ctx.lineWidth = 1;
-    ctx.fillStyle = PV.sub; ctx.fillText('|centre of mass| vs frequency  (peaks at 3 and 5 Hz)', bx0, by - bh - 6);
+    label(ctx, narrow ? '|X(f)|  peaks at 3, 5 Hz' : '|centre of mass| vs frequency  (peaks at 3 and 5 Hz)', bx0, by - bh - 6);
     [f1, f2].forEach((f) => { ctx.fillStyle = PV.overlay; ctx.fillText(`${f}`, bx0 + (f / 10) * bw - 3, by + 12); });
     ctx.fillStyle = PV.red; ctx.fillRect(bx0 + (fSweep / 10) * bw - 1, by - bh, 2, bh);
   });
@@ -691,37 +744,53 @@ PREVIEWS['Organized'] = (stage) => {
   const kinds = { images: ['jpg', 'png', 'gif'], docs: ['pdf', 'txt', 'md'], code: ['c', 'py', 'sh'], music: ['mp3', 'wav'] };
   const folders = Object.keys(kinds);
   const names = ['photo', 'notes', 'main', 'song', 'cat', 'report', 'utils', 'beat', 'logo', 'todo', 'lib', 'intro', 'meme', 'readme', 'server', 'loop'];
-  let files, t0;
+  let files, t0, layout;
+
+  function measure() {
+    const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    const small = w < 520 || h < 240;
+    const font = small ? 10 : 12, rowH = font + 2;
+    const gx = w * 0.52, gw = w * 0.44, top = 30, gh = (h - top - 12) / folders.length;
+    const cols = gw >= 200 ? 2 : 1;
+    const rowsFit = Math.max(1, Math.floor((gh - 8 - 22) / rowH));
+    const perFolder = Math.min(4, rowsFit * cols);
+    return { w, h, font, rowH, gx, gw, top, gh, cols, perFolder, colW: gw / cols - 12 };
+  }
+
   const reset = () => {
-    files = names.map((n, i) => { const folder = folders[i % folders.length]; const ext = kinds[folder][i % kinds[folder].length]; return { name: `${n}.${ext}`, folder, i }; });
+    layout = measure();
+    const total = layout.perFolder * folders.length;
+    files = names.slice(0, total).map((n, i) => { const folder = folders[i % folders.length]; const ext = kinds[folder][i % kinds[folder].length]; return { name: `${n}.${ext}`, folder, i }; });
     t0 = null;
   };
   reset();
+
   const cancel = animate((t) => {
     if (t0 == null) t0 = t;
     const local = t - t0;
-    if (local > 9) reset();
-    const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    if (local > 9 || layout.w !== ctx.canvas.clientWidth) reset();
+    const { w, h, font, rowH, gx, gw, top, gh, cols, colW } = layout;
     ctx.fillStyle = PV.crust; ctx.fillRect(0, 0, w, h);
-    ctx.font = '12px monospace';
-    ctx.fillStyle = PV.overlay; ctx.fillText('~/Downloads (messy)', 16, 18);
-    const fx = 16, fy = 36, fh = Math.min(14, (h - 50) / files.length);
-    const gx = w * 0.55, gw = w * 0.4, gh = (h - 50) / folders.length;
+    ctx.font = `${font}px monospace`;
+    ctx.fillStyle = PV.overlay; ctx.fillText(fit(ctx, '~/Downloads (messy)', gx - 24), 14, 18);
+    const fx = 14, fy = top + 8, fh = Math.min(rowH, (h - top - 30) / files.length);
     folders.forEach((f, i) => {
-      const y = 30 + i * gh;
+      const y = top + i * gh;
       ctx.strokeStyle = PV.surface1; ctx.strokeRect(gx, y, gw, gh - 8);
-      ctx.fillStyle = PV.yellow; ctx.fillText(`${f}/`, gx + 8, y + 14);
+      ctx.fillStyle = PV.yellow; ctx.fillText(`${f}/`, gx + 8, y + font + 2);
     });
     files.forEach((f, i) => {
       const start = 1 + i * 0.35, p = PV_REDUCED ? 1 : Math.max(0, Math.min(1, (local - start) / 0.6));
       const e = p * p * (3 - 2 * p);
       const fi = folders.indexOf(f.folder);
       const nInFolder = files.filter((o) => o.folder === f.folder && o.i < f.i).length;
-      const tx = gx + 14 + (nInFolder % 2) * (gw / 2), ty = 30 + fi * gh + 30 + Math.floor(nInFolder / 2) * 13;
+      const tx = gx + 10 + (nInFolder % cols) * (gw / cols), ty = top + fi * gh + font + 4 + rowH * (1 + Math.floor(nInFolder / cols));
       const x = fx + (tx - fx) * e, y = fy + i * fh + (ty - (fy + i * fh)) * e;
-      ctx.fillStyle = p >= 1 ? PV.green : PV.text; ctx.fillText(f.name, x, y);
+      ctx.fillStyle = p >= 1 ? PV.green : PV.text; ctx.fillText(fit(ctx, f.name, p >= 1 ? colW : gx - 30), x, y);
     });
-    ctx.fillStyle = PV.sub; ctx.fillText(local < 1 ? '$ ./organized.sh ~/Downloads' : `sorted ${files.filter((f, i) => local >= 1 + i * 0.35 + 0.6).length}/${files.length} files by extension`, 16, h - 10);
+    ctx.fillStyle = PV.sub;
+    const sorted = files.filter((f, i) => local >= 1 + i * 0.35 + 0.6).length;
+    ctx.fillText(fit(ctx, local < 1 ? '$ ./organized.sh ~/Downloads' : `sorted ${sorted}/${files.length} by extension`, gx - 24), 14, h - 8);
   });
   return () => { cancel(); stop(); };
 };

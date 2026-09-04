@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap" />
   <link rel="stylesheet" href="landing.css" />
   <script src="sound.js"></script>
+  <script src="i18n.js"></script>
 </head>
 <body>
   <div class="room">
@@ -23,23 +24,26 @@
 
         <!-- state 1: terminal -->
         <main class="term" id="term">
-          <button id="sound" class="sound" type="button" aria-pressed="true" title="Toggle sound">SOUND: ON</button>
+          <div class="top-btns">
+            <button id="lang" class="sound lang" type="button" data-i18n="lang.other" data-i18n-attr="title:lang.other.title">FR</button>
+            <button id="sound" class="sound" type="button" aria-pressed="true" title="Toggle sound">SOUND: ON</button>
+          </div>
           <pre id="hdr" class="hdr"></pre>
 
           <nav id="choices" class="choices" aria-label="Choose a version of the portfolio">
             <a class="choice" href="desktop.html" data-choice="desktop">
-              <span class="c-label">[1] FULL EXPERIENCE</span>
-              <span class="c-desc">Boot a small Linux desktop. Windows to drag, a terminal to type in, project demos that actually run.</span>
-              <span class="c-meta">A couple of minutes. Works on a phone too.</span>
+              <span class="c-label" data-i18n="landing.c1.label">[1] FULL EXPERIENCE</span>
+              <span class="c-desc" data-i18n="landing.c1.desc">Boot a small Linux desktop. Windows to drag, a terminal to type in, project demos that actually run.</span>
+              <span class="c-meta" data-i18n="landing.c1.meta">A couple of minutes. Works on a phone too.</span>
             </a>
             <a class="choice" href="read.html" data-choice="read">
-              <span class="c-label">[2] QUICK READ</span>
-              <span class="c-desc">Everything on one page. Scroll, done. No windows, no boot screen, nothing to click except links.</span>
-              <span class="c-meta">One minute. Prints fine.</span>
+              <span class="c-label" data-i18n="landing.c2.label">[2] QUICK READ</span>
+              <span class="c-desc" data-i18n="landing.c2.desc">Everything on one page. Scroll, done. No windows, no boot screen, nothing to click except links.</span>
+              <span class="c-meta" data-i18n="landing.c2.meta">One minute. Prints fine.</span>
             </a>
           </nav>
 
-          <p id="hint" class="hint">&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
+          <p id="hint" class="hint" data-i18n="landing.hint">&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
           <p class="foot"><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
         </main>
       </div>
@@ -65,7 +69,7 @@
 
       function setSound(on) {
         Sound.setEnabled(on);
-        soundBtn.textContent = 'SOUND: ' + (on ? 'ON' : 'OFF');
+        soundBtn.textContent = I18N.t(on ? 'landing.sound.on' : 'landing.sound.off');
         soundBtn.setAttribute('aria-pressed', String(on));
         if (on) Sound.tryUnlock().then(function (ok) { if (ok) Sound.hum(true); });
       }
@@ -79,35 +83,39 @@
 
       /* ---------- the script that types itself ---------- */
       // each step: [text, kind]  kind: 'line' typed, 'pw' typed as dots, 'pause', 'bar' progress, 'ok' access granted
-      var script = [
-        ['KHALIL ALMWAKEH (TM) PERSONAL TERMINAL', 'line'],
-        ['COPYRIGHT 2026 VOLCINATOR8000. ALL RIGHTS RESERVED.', 'line'],
-        ['-EPITECH, YEAR 2-  -C / LINUX / PYTHON / BASH-', 'line'],
-        ['', 'line'],
-        ['> LOGIN: visitor', 'line'],
-        ['> PASSWORD: ', 'pw'],
-        ['> AUTHENTICATING ', 'bar'],
-        ['> ACCESS GRANTED. WELCOME, VISITOR.', 'ok'],
-        ['', 'line'],
-        ['> TWO WAYS TO LOOK AROUND. PICK ONE:', 'line']
-      ];
+      var KINDS = ['line', 'line', 'line', 'line', 'line', 'pw', 'bar', 'ok', 'line', 'line'];
+      function buildScript() { return I18N.t('landing.lines').map(function (text, i) { return [text, KINDS[i] || 'line']; }); }
+      var script = buildScript();
+
       var done = false;
       var CPS = 220;            // characters per second while typing
       var BAR = '██████████', DOTS = '••••••••';
 
       // build a timeline: every step gets a start time and a duration, so the
       // intro takes the same time on every machine (no setTimeout chains)
-      var timeline = [], t = 0;
-      script.forEach(function (st) {
-        var text = st[0], kind = st[1], dur;
-        if (kind === 'pw') dur = 8 * 0.035;
-        else if (kind === 'bar') dur = 11 * 0.03;
-        else dur = text.length / CPS;
-        var pause = kind === 'ok' ? 0.22 : text ? 0.05 : 0.04;
-        timeline.push({ text: text, kind: kind, start: t, dur: dur });
-        t += dur + pause;
+      var timeline = [], TOTAL = 0;
+      function buildTimeline() {
+        timeline = []; var t = 0;
+        script.forEach(function (st) {
+          var text = st[0], kind = st[1], dur;
+          if (kind === 'pw') dur = 8 * 0.035;
+          else if (kind === 'bar') dur = 11 * 0.03;
+          else dur = text.length / CPS;
+          var pause = kind === 'ok' ? 0.22 : text ? 0.05 : 0.04;
+          timeline.push({ text: text, kind: kind, start: t, dur: dur });
+          t += dur + pause;
+        });
+        TOTAL = t;
+      }
+      buildTimeline();
+
+      I18N.apply();
+      $('lang').addEventListener('click', function (e) { e.stopPropagation(); I18N.toggle(); blip(); });
+      document.addEventListener('langchange', function () {
+        script = buildScript(); buildTimeline();
+        setSound(Sound.enabled);
+        if (done) renderAt(TOTAL);
       });
-      var TOTAL = t;
 
       function finalText(st) {
         if (st.kind === 'pw') return st.text + DOTS;

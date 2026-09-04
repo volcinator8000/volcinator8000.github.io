@@ -23,9 +23,9 @@
     <header id="top-bar">
       <span class="bar-left"><span class="green">volcinator8000</span>@<span class="blue">arch</span></span>
       <nav id="taskbar" class="bar-center" aria-label="Open windows">
-        <span id="bar-hint">click an icon to open it</span>
+        <span id="bar-hint" data-i18n="bar.hint">click an icon to open it</span>
       </nav>
-      <span class="bar-right"><button id="sound-toggle" class="bar-btn" type="button" aria-pressed="true">sound: on</button><a class="bar-link" href="read.html">quick read</a> <span id="clock">--:--</span></span>
+      <span class="bar-right"><button id="lang-toggle" class="bar-btn" type="button" data-i18n="lang.other" data-i18n-attr="title:lang.other.title">FR</button><button id="sound-toggle" class="bar-btn" type="button" aria-pressed="true">sound: on</button><a class="bar-link" href="read.html" data-i18n="bar.read">quick read</a> <span id="clock">--:--</span></span>
     </header>
 
     <div class="icon-container">
@@ -84,11 +84,11 @@
           <div class="fetch-info">
             <p class="fetch-head"><span class="green">khalil</span>@<span class="blue">epitech</span></p>
             <p class="fetch-rule">----------------</p>
-            <p><span class="key">Name</span>Khalil Almwakeh</p>
-            <p><span class="key">Role</span>Epitech student, 2nd year</p>
-            <p><span class="key">Work</span><button type="button" class="link-btn" data-open="experience-window">Remoters, web &amp; SEO engineering (2026)</button></p>
-            <p><span class="key">Stack</span>C · Linux · Python · Bash</p>
-            <p><span class="key">Doing</span>building systems and simulations</p>
+            <p><span class="key" data-i18n="readme.name">Name</span>Khalil Almwakeh</p>
+            <p><span class="key" data-i18n="readme.role">Role</span><span data-i18n="readme.role.v">Epitech student, 2nd year</span></p>
+            <p><span class="key" data-i18n="readme.work">Work</span><button type="button" class="link-btn" data-open="experience-window" data-i18n="readme.work.v">Remoters, web &amp; SEO engineering (2026)</button></p>
+            <p><span class="key" data-i18n="readme.stack">Stack</span>C · Linux · Python · Bash</p>
+            <p><span class="key" data-i18n="readme.doing">Doing</span><span data-i18n="readme.doing.v">building systems and simulations</span></p>
             <p><span class="key">GitHub</span><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
             <div class="swatches" aria-hidden="true">
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
@@ -96,13 +96,9 @@
           </div>
         </div>
 
-        <p class="intro">Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things.</p>
+        <p class="intro" data-i18n="readme.intro">Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things.</p>
 
-        <p class="tip">
-          Try: <button type="button" class="link-btn" data-open="projects-window">open projects/</button>,
-          <button type="button" class="link-btn" data-open="python-window">run navigate.py</button>
-          or <button type="button" class="link-btn" data-open="terminal-window">type <code>help</code> in the terminal</button>.
-        </p>
+        <p class="tip" data-i18n-html="readme.tip"></p>
         <p class="blink">_</p>
       </div>
     </section>
@@ -192,11 +188,11 @@
 
       <div class="content python-content">
         <div class="py-toolbar">
-          <label>from <select id="py-from" disabled></select></label>
-          <label>to <select id="py-to" disabled></select></label>
-          <button id="py-run" type="button" class="btn" disabled>find route</button>
-          <button id="py-source" type="button" class="btn ghost" aria-pressed="false">view source</button>
-          <span id="py-status" class="dim">python runtime not loaded yet</span>
+          <label><span data-i18n="py.from">from</span> <select id="py-from" disabled></select></label>
+          <label><span data-i18n="py.to">to</span> <select id="py-to" disabled></select></label>
+          <button id="py-run" type="button" class="btn" disabled data-i18n="py.run">find route</button>
+          <button id="py-source" type="button" class="btn ghost" aria-pressed="false" data-i18n="py.source">view source</button>
+          <span id="py-status" class="dim" data-i18n="py.status.idle">python runtime not loaded yet</span>
         </div>
         <div class="py-body">
           <canvas id="py-map" class="py-map" aria-label="Transit map"></canvas>
@@ -204,12 +200,13 @@
 </pre>
           <pre id="py-code" class="py-code" hidden></pre>
         </div>
-        <p class="stage-note">A real Python file, <code>navigate.py</code>, running in your browser through Pyodide. It does the Dijkstra search; the page only draws the result.</p>
+        <p class="stage-note" data-i18n-html="py.note"></p>
       </div>
     </section>
   </div>
 
   <script src="sound.js"></script>
+  <script src="i18n.js"></script>
   <script src="content.js"></script>
   <script src="previews.js"></script>
   <script src="script.js"></script>

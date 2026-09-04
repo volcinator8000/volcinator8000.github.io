@@ -12,63 +12,66 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="read.css" />
+  <script src="i18n.js"></script>
 </head>
 <body class="read">
   <nav class="read-nav" aria-label="Page">
-    <a class="read-nav-side" href="index.html">&larr; start</a>
+    <a class="read-nav-side" href="index.html" data-i18n="read.start">&larr; start</a>
     <div class="read-nav-mid">
-      <a href="#about">About</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
+      <a href="#about" data-i18n="read.nav.about">About</a>
+      <a href="#experience" data-i18n="read.nav.xp">Experience</a>
+      <a href="#projects" data-i18n="read.nav.projects">Projects</a>
+      <a href="#contact" data-i18n="read.nav.contact">Contact</a>
     </div>
-    <a class="read-nav-side" href="desktop.html">full experience &rarr;</a>
+    <span class="read-nav-side">
+      <button id="lang-toggle" class="bar-btn" type="button" data-i18n="lang.other" data-i18n-attr="title:lang.other.title">FR</button>
+      <a href="desktop.html" data-i18n="read.full">full experience &rarr;</a>
+    </span>
   </nav>
 
   <main class="read-main">
     <header class="read-head">
       <p class="read-kicker">volcinator8000@arch:~$ cat khalil.md</p>
       <h1>Khalil Almwakeh</h1>
-      <p class="read-sub">Systems-minded student who likes C, Linux and things that simulate other things.</p>
+      <p class="read-sub" data-i18n="read.sub">Systems-minded student who likes C, Linux and things that simulate other things.</p>
 
       <dl class="glance">
-        <div><dt>School</dt><dd>Epitech, 2nd year</dd></div>
-        <div><dt>Stack</dt><dd>C · Linux · Python · Bash</dd></div>
-        <div><dt>Currently</dt><dd>Web &amp; SEO engineering at <a href="https://www.remoters.io" target="_blank" rel="noopener">Remoters</a></dd></div>
-        <div><dt>Languages</dt><dd>French, English</dd></div>
-        <div><dt>Code</dt><dd><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></dd></div>
-        <div><dt>Daily driver</dt><dd>Arch Linux, vim</dd></div>
+        <div><dt data-i18n="read.g.school">School</dt><dd data-i18n="read.g.school.v">Epitech, 2nd year</dd></div>
+        <div><dt data-i18n="read.g.stack">Stack</dt><dd>C · Linux · Python · Bash</dd></div>
+        <div><dt data-i18n="read.g.now">Currently</dt><dd data-i18n-html="read.g.now.v">Web &amp; SEO engineering at <a href="https://www.remoters.io" target="_blank" rel="noopener">Remoters</a></dd></div>
+        <div><dt data-i18n="read.g.code">Code</dt><dd><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></dd></div>
       </dl>
     </header>
 
     <section id="about">
-      <h2>About</h2>
-      <p>Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things: shells, maze solvers, isometric worlds, population models. In my second year at Epitech, and doing web and SEO engineering for Remoters on the side.</p>
-      <p>Prefer to poke at things? The <a href="desktop.html">full experience</a> is a little desktop with a terminal and running previews of most projects, including a real Python file that runs in the browser.</p>
+      <h2 data-i18n="read.about.h">About</h2>
+      <p data-i18n="read.about.p1">Hi, I'm Khalil. I spend most of my time in C and a Linux terminal, building things that simulate other things: shells, maze solvers, isometric worlds, population models. In my second year at Epitech, and doing web and SEO engineering for Remoters on the side.</p>
+      <p data-i18n-html="read.about.p2">Prefer to poke at things? The <a href="desktop.html">full experience</a> is a little desktop with a terminal and running previews of most projects, including a real Python file that runs in the browser.</p>
     </section>
 
     <section id="experience">
-      <h2>Experience</h2>
+      <h2 data-i18n="read.xp.h">Experience</h2>
+      <p class="dim" data-i18n="read.xp.hint">Open a card to see the details.</p>
       <div id="xp-root"></div>
     </section>
 
     <section id="projects">
-      <h2>Projects</h2>
-      <p class="dim">Most of these run right here: the animations are small rebuilds of each project, the two web apps are embedded live, and the shell and printf boxes take input. Epitech projects live in private repos; the ones with a link are public.</p>
+      <h2 data-i18n="read.projects.h">Projects</h2>
+      <p class="dim" data-i18n="read.projects.p">Four favourites first, running right here. The rest is folded by theme: open a theme to see its projects and their previews.</p>
       <div id="projects-root"></div>
     </section>
 
     <section id="contact">
-      <h2>Contact</h2>
-      <p>The quickest way to reach me is GitHub: <a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a>. Open an issue on any repo and I will see it.</p>
+      <h2 data-i18n="read.contact.h">Contact</h2>
+      <p data-i18n-html="read.contact.p">The quickest way to reach me is GitHub: <a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a>. Open an issue on any repo and I will see it.</p>
       <p class="read-actions">
-        <button type="button" class="btn" id="print-btn">Print / save as PDF</button>
-        <a class="btn ghost" href="desktop.html">Open the desktop version</a>
+        <button type="button" class="btn" id="print-btn" data-i18n="read.print">Print / save as PDF</button>
+        <a class="btn ghost" href="desktop.html" data-i18n="read.open.desktop">Open the desktop version</a>
       </p>
     </section>
 
     <footer class="read-foot">
-      <p>Built by hand: HTML, CSS and JavaScript, no framework. <a href="https://github.com/volcinator8000/khalil-almwakeh.github.io" target="_blank" rel="noopener">Source on GitHub</a>.</p>
+      <p data-i18n-html="read.foot">Built by hand: HTML, CSS and JavaScript, no framework. <a href="https://github.com/volcinator8000/khalil-almwakeh.github.io" target="_blank" rel="noopener">Source on GitHub</a>.</p>
     </footer>
   </main>
 

@@ -1093,3 +1093,69 @@ a.project:hover {
 .bar-btn[aria-pressed="false"] {
   opacity: 0.6;
 }
+
+/* ---------- collapsible experience cards ---------- */
+.xp-fold {
+  padding: 0;
+}
+
+.xp-fold summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.xp-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.xp-fold-title {
+  color: var(--blue);
+  font-weight: bold;
+  font-size: 13.5px;
+}
+
+.xp-fold-title::before {
+  content: '▸ ';
+  color: var(--overlay);
+}
+
+.xp-fold[open] .xp-fold-title::before {
+  content: '▾ ';
+}
+
+.xp-peek {
+  color: var(--overlay);
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.xp-fold[open] .xp-peek {
+  display: none;
+}
+
+.xp-fold ul {
+  padding: 0 14px 14px 32px;
+}
+
+/* folded cards must be allowed to shrink; the peek line ellipsizes instead of widening the grid */
+.xp-grid-folds {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.xp-fold,
+.xp-fold summary {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.xp-peek {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
