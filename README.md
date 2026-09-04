@@ -68,6 +68,10 @@ It serves the folder on port 8765, drives Chrome over the DevTools protocol and 
 - `robots.txt`, `sitemap.xml`, `og.png`, `404.html` and `navigate.py` are served;
 - the console shows no exceptions.
 
+## Analytics (off by default)
+
+`analytics.js` can count page views with GoatCounter, a free, open-source, cookie-less counter that needs no consent banner. It loads nothing until you create an account at goatcounter.com and put your code in the `GOATCOUNTER` constant at the top of the file. Do Not Track and Global Privacy Control are respected, hashes and query strings are never sent, and two events are counted: which door was chosen on the landing and language switches.
+
 ## SEO bits
 
 Every page carries a canonical link, Open Graph and Twitter tags pointing at `og.png`, and a JSON-LD `Person` block (name, GitHub, LinkedIn, school, employer). `sitemap.xml` lists the three pages and `robots.txt` points to it. The `<html lang>` attribute follows the language toggle.

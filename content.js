@@ -212,6 +212,15 @@ function currentExperience() {
   return typeof I18N !== 'undefined' && I18N.lang === 'fr' ? EXPERIENCE_FR : EXPERIENCE;
 }
 
+// URL-safe slug for deep links: 'My printf' -> 'my-printf'
+function projectSlug(p) {
+  return String(p.name).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function projectBySlug(slug) {
+  return PROJECTS.find((p) => projectSlug(p) === slug) || null;
+}
+
 // Shared renderer for the experience block (used by both pages).
 function escapeHTML(str) {
   return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

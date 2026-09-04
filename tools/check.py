@@ -243,6 +243,19 @@ try:
     check('read: no console errors', not errors_since(mark), '; '.join(errors_since(mark)))
     shot('read.png')
 
+    # deep links
+    mark = len(events)
+    call('Page.navigate', url=BASE + 'desktop.html#amazed')
+    sleep(1.4)
+    check('deep link: desktop.html#amazed opens the preview', ev("document.getElementById('preview-window').classList.contains('open') && document.getElementById('preview-name').textContent === 'Amazed'"))
+    ev("document.getElementById('preview-copy').click()")
+    sleep(0.3)
+    check('deep link: copy button shows a toast', ev("document.getElementById('toast')?.classList.contains('show')"))
+    call('Page.navigate', url=BASE + 'read.html#organized')
+    sleep(1.6)
+    check('deep link: read.html#organized opens its fold', ev("document.getElementById('organized').closest('details.fold').open"))
+    check('deep link: no console errors', not errors_since(mark), '; '.join(errors_since(mark)))
+
     # phone widths
     mark = len(events)
     mobile(True)

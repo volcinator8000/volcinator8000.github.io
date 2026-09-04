@@ -542,3 +542,24 @@ body.read {
     height: 200px;
   }
 }
+
+/* deep-link anchor on each card + arrival flash */
+.pv-anchor {
+  margin-left: auto;
+  color: var(--overlay);
+  text-decoration: none;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.pv-card:hover .pv-anchor,
+.pv-anchor:focus-visible {
+  opacity: 1;
+}
+
+.pv-card.flash {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 3px rgba(249, 226, 175, 0.25);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}

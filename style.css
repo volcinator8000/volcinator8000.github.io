@@ -1562,3 +1562,11 @@ canvas.matrix {
     display: none;
   }
 }
+
+.link-btn-plain {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}

@@ -18,10 +18,10 @@
   const hasPreview = (p) => typeof PREVIEWS !== 'undefined' && typeof PREVIEWS[p.name] === 'function';
 
   const cardFor = (p) => `
-    <article class="pv-card${hasPreview(p) ? '' : ' no-stage'}" data-name="${escapeHTML(p.name)}">
+    <article class="pv-card${hasPreview(p) ? '' : ' no-stage'}" data-name="${escapeHTML(p.name)}" id="${projectSlug(p)}">
       ${hasPreview(p) ? '<div class="stage pv-stage" aria-label="' + escapeHTML(p.name) + '"></div>' : ''}
       <div class="pv-body">
-        <div class="pv-top">${badge(p.ext)}<span class="read-name">${escapeHTML(p.name)}</span></div>
+        <div class="pv-top">${badge(p.ext)}<span class="read-name">${escapeHTML(p.name)}</span><a class="pv-anchor" href="#${projectSlug(p)}" title="${escapeHTML(p.name)}">#</a></div>
         <p class="read-blurb">${escapeHTML(I18N.field(p, 'blurb'))}</p>
         ${tags(p)}
         ${links(p)}
@@ -76,7 +76,22 @@
   }
 
   render();
-  document.addEventListener('langchange', render);
+  document.addEventListener('langchange', () => { render(); revealHash(); });
+
+  // #<project-slug> opens the fold it lives in and scrolls to the card
+  function revealHash() {
+    const p = projectBySlug(location.hash.slice(1));
+    if (!p) return;
+    const card = document.getElementById(projectSlug(p));
+    if (!card) return;
+    const fold = card.closest('details.fold');
+    if (fold) fold.open = true;
+    card.classList.add('flash');
+    setTimeout(() => card.classList.remove('flash'), 1600);
+    setTimeout(() => card.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50);
+  }
+  window.addEventListener('hashchange', revealHash);
+  setTimeout(revealHash, 300);
 
   I18N.apply();
   document.getElementById('lang-toggle').addEventListener('click', () => I18N.toggle());

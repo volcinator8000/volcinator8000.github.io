@@ -53,6 +53,8 @@ const I18N = (function () {
       'preview.crashed': 'preview crashed',
       'preview.github': 'github ↗',
       'preview.live': 'live site ↗',
+      'preview.copy': 'copy link',
+      'preview.copied': 'link copied',
       'py.from': 'from',
       'py.to': 'to',
       'py.run': 'find route',
@@ -198,6 +200,8 @@ const I18N = (function () {
       'preview.crashed': 'aperçu planté',
       'preview.github': 'github ↗',
       'preview.live': 'site en ligne ↗',
+      'preview.copy': 'copier le lien',
+      'preview.copied': 'lien copié',
       'py.from': 'de',
       'py.to': 'à',
       'py.run': "trouver l'itinéraire",
@@ -334,6 +338,7 @@ const I18N = (function () {
     lang = l === 'fr' ? 'fr' : 'en';
     try { localStorage.setItem('lang', lang); } catch (e) { /* ignore */ }
     apply();
+    if (window.trackEvent) window.trackEvent('lang-' + lang);
     document.dispatchEvent(new CustomEvent('langchange', { detail: lang }));
   }
 

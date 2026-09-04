@@ -330,9 +330,13 @@ function finishBoot() {
 
   document.removeEventListener('keydown', finishBoot);
 
-  // #navigate, #projects, #experience, #terminal deep-link straight to a window
-  const wanted = { navigate: 'python-window', projects: 'projects-window', experience: 'experience-window', terminal: 'terminal-window', readme: 'about-window' }[location.hash.slice(1)];
+  // #navigate, #projects, #experience, #terminal deep-link straight to a window;
+  // #<project-slug> opens that project's preview
+  const hash = location.hash.slice(1);
+  const wanted = { navigate: 'python-window', projects: 'projects-window', experience: 'experience-window', terminal: 'terminal-window', readme: 'about-window' }[hash];
   if (wanted) { setTimeout(() => openWindow(wanted), 250); return; }
+  const linked = hash && projectBySlug(hash);
+  if (linked) { setTimeout(() => { openWindow('projects-window'); openPreview(linked); }, 250); return; }
 
   // Give the visitor something to read right away (desktop only —
   // on a phone a full-screen window would hide the icons).
@@ -718,6 +722,7 @@ function openPreview(p) {
 
   stopPreview();
   previewProject = p;
+  try { history.replaceState(null, '', '#' + projectSlug(p)); } catch (e) { /* ignore */ }
   $('#preview-title').textContent = `~/projects/${p.name.toLowerCase().replace(/\s+/g, '-')}`;
   const iconSlot = $('#preview-icon');
   iconSlot.innerHTML = '';
@@ -776,6 +781,25 @@ function stopPreview() {
   }
   previewProject = null;
   $('#preview-stage').innerHTML = '';
+  if (location.hash && projectBySlug(location.hash.slice(1))) { try { history.replaceState(null, '', location.pathname); } catch (e) { /* ignore */ } }
+}
+
+function copyPreviewLink() {
+  if (!previewProject) return;
+  const url = `${location.origin}${location.pathname}#${projectSlug(previewProject)}`;
+  const done = () => { toast(t('preview.copied')); SFX.blip(); };
+  const fallback = () => {
+    // no clipboard permission: try the old selection trick, else just show the link
+    const tmp = document.createElement('textarea');
+    tmp.value = url; tmp.setAttribute('readonly', ''); tmp.style.position = 'fixed'; tmp.style.opacity = '0';
+    document.body.appendChild(tmp); tmp.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    tmp.remove();
+    if (ok) done(); else toast(url);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, fallback);
+  else fallback();
 }
 
 /* ---------- navigate.py: real Python through Pyodide ---------- */
@@ -1263,6 +1287,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try { if (sessionStorage.getItem('eggsDone') === '1') { document.body.classList.add('all-eggs'); unlockSnake(); } } catch (e) { /* ignore */ }
   }
   setupSnake();
+  $('#preview-copy')?.addEventListener('click', copyPreviewLink);
+  window.addEventListener('hashchange', () => { const p = projectBySlug(location.hash.slice(1)); if (p && previewProject !== p) { openWindow('projects-window'); openPreview(p); } });
 
   window.addEventListener('resize', () => $$('.window.open').forEach(keepOnScreen));
 

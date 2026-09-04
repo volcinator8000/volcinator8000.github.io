@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="landing.css" />
   <script src="sound.js"></script>
   <script src="i18n.js"></script>
+  <script src="analytics.js" defer></script>
 </head>
 <body>
   <div class="room">
@@ -214,6 +215,7 @@
         a.addEventListener('mouseenter', function () { select(k, false); });
         a.addEventListener('focus', function () { select(k, false); });
         a.addEventListener('click', function (e) {
+          if (window.trackEvent) window.trackEvent('choice-' + a.dataset.choice);
           if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return; // let new-tab clicks through
           if (a.dataset.choice === 'desktop') {
             try { sessionStorage.setItem('fromLanding', '1'); } catch (e2) { /* ignore */ }
