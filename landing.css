@@ -450,3 +450,69 @@ body {
     min-width: 10ch;
   }
 }
+
+/* ---------- plain-text profile under the monitor ---------- */
+.profile {
+  margin: 18px auto 0;
+  max-width: 860px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #9a9aa4;
+}
+
+.profile summary {
+  cursor: pointer;
+  color: #6f6f78;
+  list-style: none;
+  padding: 6px 0;
+}
+
+.profile summary::-webkit-details-marker {
+  display: none;
+}
+
+.profile summary::before {
+  content: '+ ';
+}
+
+.profile details[open] summary::before {
+  content: '− ';
+}
+
+.profile summary:hover {
+  color: #c8c8d0;
+}
+
+.profile-body {
+  background: #101014;
+  border: 1px solid #26262c;
+  border-radius: 10px;
+  padding: 18px 22px;
+  color: #b8b8c2;
+}
+
+.profile-body h2,
+.profile-body h3,
+.profile-body h4 {
+  color: #e6e6ee;
+  margin: 18px 0 8px;
+  font-size: 14px;
+}
+
+.profile-body h2 {
+  font-size: 16px;
+  margin-top: 0;
+}
+
+.profile-body a {
+  color: #8bb4f0;
+}
+
+.profile-body ul {
+  padding-left: 20px;
+}
+
+.profile-body li {
+  margin: 4px 0;
+}

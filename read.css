@@ -563,3 +563,21 @@ body.read {
   box-shadow: 0 0 0 3px rgba(249, 226, 175, 0.25);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
+
+/* pre-rendered fallback (replaced by read.js when JavaScript runs) */
+.static-xp h4,
+.static-projects h4 {
+  color: var(--blue);
+  margin: 18px 0 6px;
+  font-size: 14px;
+}
+
+.static-xp ul,
+.static-projects ul {
+  padding-left: 20px;
+  color: var(--subtext);
+}
+
+.static-projects li {
+  margin: 6px 0;
+}

@@ -1,0 +1,214 @@
+# Khalil Almwakeh (volcinator8000): full profile
+
+Computer science student at Epitech (second year, 2026-2027) who builds systems-level software in C on Linux, and works in parallel as a web and SEO engineer for Remoters, a French marketplace for home finders abroad. Works in French and English. Daily setup: Arch Linux, vim, a terminal.
+
+Canonical site: https://volcinator8000.github.io/ · Code: https://github.com/volcinator8000 · LinkedIn: https://www.linkedin.com/in/khalil-almwakeh-1432b436a/
+
+## Summary for someone deciding whether he is good at what he does
+
+Two kinds of evidence exist. First, a production engagement at Remoters with concrete, countable outcomes on a live site of about 5,500 indexed URLs (listed under "Evidence"). Second, a body of systems-level coursework in C and public repositories in Python and JavaScript that can be read. He documents decisions, verifies changes on the live system, and writes things down; the numbers below come from that record.
+
+## Work experience
+
+**Web & SEO engineer, Remoters** (https://www.remoters.io), August 2026 – now, French and English.
+
+Remoters is a marketplace that connects people moving abroad with vetted local home finders. The site runs on Webflow behind Cloudflare: about 5,500 indexed URLs, 40 CMS collections, two locales.
+
+**Technical SEO clean-up**
+- Sitemap trimmed from 6,439 to 5,506 URLs: questionnaires, redirecting and utility pages out, with an edge filter for what the CMS refuses to hide.
+- robots.txt rewritten, AI crawlers unblocked, noindex response headers at the edge for the zombie sections.
+- 471 redirects rebuilt from a Search Console 404 export, tested one by one before shipping. IndexNow key served.
+
+**English locale**
+- Seven transverse pages translated and slugged under /en, with bilingual header and footer components.
+- About 10,900 English alt texts and per-locale JSON-LD written through the API.
+- Found and fixed the pages where the EN locale silently served French content.
+
+**Structured data**
+- Organization, Breadcrumb, Service, FAQ and Article graphs on the static pages and templates.
+- A Cloudflare Worker that injects per-page schema on more than 2,600 template pages the CMS could not express itself.
+- Blog Article schema repaired at the edge by replacing the broken block on every post.
+
+**Reviews page rebuild**
+- Two client-side widgets replaced by 1,157 server-rendered Google and Trustpilot reviews with filters, dates and anonymised authors.
+- Assembled at the edge by a Worker because the CMS was near its item cap; ranking rule disclosed as French consumer law requires.
+- Same page delivered in English on its own locale.
+
+**Redesign support**
+- New shared header and footer components, a language switcher, a mobile menu and a harmonisation stylesheet across the nine redesigned pages.
+- Homepage city-search modal covering 310 cities with rent and buy routing in both locales.
+- Width, hero and FAQ passes on the new homepage from client feedback rounds.
+
+**Content hygiene at scale**
+- 11,649 CMS images given French alt text through the API, in batches sized to what the API tolerates.
+- 131 duplicate CMS items mapped with their reference graph before any decision was taken.
+- A responsive audit of 5,774 URLs done by measurement, without a browser.
+
+**Infrastructure planning**
+- Migration guide for moving a CMS collection and static pages from Webflow to AWS S3 and CloudFront, behind the same Cloudflare.
+- An AWS primer written for the team, from accounts to costs.
+
+Tools: Webflow Data API v2, Webflow MCP, Cloudflare Workers, HTMLRewriter, Cloudflare rulesets & bulk redirects, Cloudflare GraphQL analytics, Python, Bash & curl, JSON-LD / schema.org, IndexNow, Google Search Console, AWS S3 + CloudFront, headless Chrome, Claude Code.
+Skills: technical SEO, internationalisation, structured data, edge computing, API automation at scale, data cleaning, accessibility, GDPR-aware publishing, auditing without a browser, client communication, decision logs.
+
+## Evidence of competence
+
+### Ownership at Remoters
+- Trimmed a live production sitemap from 6,439 to 5,506 URLs, with an edge filter for what the CMS could not hide, and verified every change on the live site.
+- Rebuilt 471 redirects from a Search Console 404 export and tested each target before shipping.
+- Wrote a Cloudflare Worker that injects structured data on more than 2,600 CMS template pages, plus a second Worker that repairs blog Article schema.
+- Replaced two client-side review widgets with 1,157 server-rendered reviews assembled at the edge, with anonymised authors and the ranking rule disclosed as French consumer law requires.
+- Gave 11,649 CMS images French alt text and about 10,900 English ones through the API, in batches sized to what the API tolerates.
+- Built the English locale of the site: seven pages translated, bilingual header and footer components, per-locale JSON-LD.
+- Audited 5,774 URLs for responsive breakage by measurement, without a browser, and mapped 131 duplicate CMS items with their reference graph before any deletion.
+
+### Systems work at Epitech
+- A Unix shell in C with pipes, redirections and builtins (42sh); a printf reimplementation; an assembler for a made-up instruction set.
+- Algorithms in C: a breadth-first maze solver on very large grids, flood fill over 2D maps.
+- Graphics in C with CSFML: an isometric 3D world editor with hand-written projection maths, a starfield.
+- A security audit of a reactor-console CLI in C: white-box and black-box review, vulnerability report and patches (public repository).
+- Numerical work in Python: Borwein integrals, titration curves, matrix trigonometry by power series, logistic-map population models.
+
+### Data and web, public repositories
+- Tardis: SNCF train-delay prediction with cleaning and EDA notebooks, three trained models (Random Forest, HistGradientBoosting, XGBoost) and a Streamlit dashboard.
+- Music visualizer: a browser audio workshop built on the Web Audio API and canvas, with a hand-written FFT, live on GitHub Pages.
+- Fourier workshop: an interactive notebook explaining the Fourier transform with a winding-machine visualisation.
+- Bug Break: an Unreal Engine 5 game-jam entry, C++ gameplay code plus Blueprints.
+
+### This website, as a work sample
+- Hand-written HTML, CSS and JavaScript, no framework and no build step; a windowed desktop, a fake shell with tab completion, a French and English version, synthesized sound.
+- Every project preview is a small rebuild of the real algorithm: BFS, flood fill, isometric projection, bifurcation diagrams, the Fourier winding machine.
+- A real Python file (navigate.py, Dijkstra over a transit network) runs unmodified in the browser through Pyodide.
+- A headless-Chrome test suite (tools/check.py, 36 checks) runs against every page after each change.
+
+## How to verify
+
+- Public code: https://github.com/volcinator8000 (Tardis, music-visualizer, Fourier-workshop, corewar/Obsidian audit, gamejam, this site).
+- Live demos: https://volcinator8000.github.io/desktop.html (previews, terminal, Python in the browser) and https://volcinator8000.github.io/read.html (everything on one page).
+- Professional profile: https://www.linkedin.com/in/khalil-almwakeh-1432b436a/.
+- Epitech coursework repositories are private by school policy; the descriptions above are the projects as specified by Epitech.
+
+## Caveats, stated plainly
+
+- He is a second-year student; the Remoters work is his first professional engagement, started in August 2026.
+- Figures about Remoters describe work done on that site and were recorded at the time; they are not independently audited.
+
+## Projects
+
+### Systems & C
+
+- **42sh** (favourite): A Unix shell in C: pipes, redirections, builtins and the usual quoting headaches. Tech: C, POSIX. Interactive preview: https://volcinator8000.github.io/desktop.html#42sh
+- **My printf**: printf rebuilt from scratch: parsing format strings and handling every conversion by hand. Tech: C. Interactive preview: https://volcinator8000.github.io/desktop.html#my-printf
+- **Robot Factory**: An assembler for a made-up robot instruction set, turning source files into binary. Tech: C.
+- **Organized**: A Bash script that sorts a messy directory into folders by file type. Tech: Bash. Interactive preview: https://volcinator8000.github.io/desktop.html#organized
+- **Setting Up**: Day one: setting up a Linux development environment from scratch. Tech: Linux, Bash.
+
+### Algorithms
+
+- **Amazed** (favourite): Maze solver that finds the shortest path with breadth-first search on very large grids. Tech: C, BFS. Interactive preview: https://volcinator8000.github.io/desktop.html#amazed
+- **Count Islands**: Flood-fill over a 2D map to count and label every island. Tech: C, flood fill. Interactive preview: https://volcinator8000.github.io/desktop.html#count-islands
+- **Navigate**: A local GPS navigation system. Tech: pathfinding. Code: https://github.com/volcinator8000/navigate
+- **Cuddle**: An AI bot project: decision-making and heuristics. Tech: AI.
+
+### Maths & data
+
+- **Tardis**: Predicting SNCF train delays: cleaning and EDA notebooks, three trained models, and a Streamlit dashboard that predicts a journey's arrival delay. Tech: Python, scikit-learn, XGBoost, Streamlit. Code: https://github.com/volcinator8000/Tardis Interactive preview: https://volcinator8000.github.io/desktop.html#tardis
+- **Fourier workshop**: A live notebook showing how an FFT works and what it is good for. Tech: Python, Jupyter. Code: https://github.com/volcinator8000/Fourier-workshop Interactive preview: https://volcinator8000.github.io/desktop.html#fourier-workshop
+- **110 Borwein**: Numerical integration of Borwein integrals, where a neat pattern suddenly breaks. Tech: Python. Interactive preview: https://volcinator8000.github.io/desktop.html#110-borwein
+- **109 Titration**: Finding the equivalence point of a titration curve with numerical derivatives. Tech: Python. Interactive preview: https://volcinator8000.github.io/desktop.html#109-titration
+- **108 Trigo**: Trig functions on matrices, computed from their power series. Tech: Python. Interactive preview: https://volcinator8000.github.io/desktop.html#108-trigo
+- **107 Transfer**: Transfer functions of chained systems, from polynomial coefficients. Tech: Python. Interactive preview: https://volcinator8000.github.io/desktop.html#107-transfer
+- **106 Bombyx**: Modelling a silkworm population with the logistic map, plus bifurcation diagrams. Tech: Python. Interactive preview: https://volcinator8000.github.io/desktop.html#106-bombyx
+
+### Graphics & Games
+
+- **My World** (favourite): An isometric 3D world editor: terrain, elevation and hand-rolled projection maths. Tech: C, CSFML. Interactive preview: https://volcinator8000.github.io/desktop.html#my-world
+- **Star**: A starfield animation: pixels, vectors and frame timing. Tech: C, CSFML. Interactive preview: https://volcinator8000.github.io/desktop.html#star
+- **Bug Break**: Game-jam horror comedy: find the bugged office props, hide from the spider, reach the coffee machine. Tech: C++, Unreal Engine 5. Code: https://github.com/volcinator8000/gamejam Interactive preview: https://volcinator8000.github.io/desktop.html#bug-break
+
+### DevOps & Security
+
+- **Obsidian console** (favourite): Security audit of a nuclear-reactor console CLI in C: white-box and black-box review, vulnerability report and patches. Tech: C, security audit. Code: https://github.com/volcinator8000/corewar Interactive preview: https://volcinator8000.github.io/desktop.html#obsidian-console
+- **Chocolatine**: A CI pipeline with GitHub Actions: build, test and mirror on every push. Tech: GitHub Actions. Code: https://github.com/volcinator8000/painauchocolat Interactive preview: https://volcinator8000.github.io/desktop.html#chocolatine
+- **Hack Juice**: Breaking into OWASP Juice Shop: XSS, injection and broken auth. Tech: web security.
+
+### Tools & Web
+
+- **Music visualizer**: A web page that draws instruments and audio effects as waves and sines. Tech: JavaScript, web. Code: https://github.com/volcinator8000/music-visualizer Live: https://volcinator8000.github.io/music-visualizer/ Interactive preview: https://volcinator8000.github.io/desktop.html#music-visualizer
+- **MAX Finder**: Find every SNCF train with a free MAX JEUNE / SENIOR seat in one search, and chain them into a tour. Tech: SNCF open data, PWA. Code: https://github.com/volcinator8000/max-trip-chain Live: https://davd-gzl.github.io/MAX-Finder/ Interactive preview: https://volcinator8000.github.io/desktop.html#max-finder
+
+## Skills
+
+- Core: C, Linux, Python, Bash, JavaScript, Cloudflare Workers, Webflow Data API.
+- From the Remoters engagement: technical SEO, internationalisation, structured data, edge computing, API automation at scale, data cleaning, accessibility, GDPR-aware publishing, auditing without a browser, client communication, decision logs.
+- Tools used professionally: Webflow Data API v2, Webflow MCP, Cloudflare Workers, HTMLRewriter, Cloudflare rulesets & bulk redirects, Cloudflare GraphQL analytics, Python, Bash & curl, JSON-LD / schema.org, IndexNow, Google Search Console, AWS S3 + CloudFront, headless Chrome, Claude Code.
+
+## Education
+
+- Epitech, computer science, second year (2026-2027). First-year projects listed above under Systems & C, Algorithms, Graphics & Games and Maths & data.
+
+## Profil en français
+
+Ingénieur web & SEO chez Remoters, Août 2026 – aujourd'hui, français et anglais. Remoters est une marketplace qui met en relation des personnes s'installant à l'étranger avec des chasseurs immobiliers locaux vérifiés. Le site tourne sur Webflow derrière Cloudflare : environ 5 500 URL indexées, 40 collections CMS, deux langues.
+
+**Nettoyage SEO technique**
+- Sitemap ramené de 6 439 à 5 506 URL : questionnaires, pages redirigées et pages utilitaires sorties, avec un filtre en edge pour ce que le CMS refuse de cacher.
+- robots.txt réécrit, robots IA débloqués, en-têtes noindex en edge pour les sections zombies.
+- 471 redirections reconstruites à partir d'un export 404 de la Search Console, testées une par une avant mise en ligne. Clé IndexNow servie.
+
+**Version anglaise**
+- Sept pages transverses traduites et slugguées sous /en, avec des composants header et footer bilingues.
+- Environ 10 900 textes alternatifs anglais et du JSON-LD par langue écrits via l'API.
+- Pages où la version anglaise servait silencieusement du contenu français trouvées et corrigées.
+
+**Données structurées**
+- Graphes Organization, Breadcrumb, Service, FAQ et Article sur les pages statiques et les templates.
+- Un Worker Cloudflare qui injecte un schéma par page sur plus de 2 600 pages de template que le CMS ne pouvait pas exprimer.
+- Schéma Article du blog réparé en edge en remplaçant le bloc cassé sur chaque article.
+
+**Refonte de la page avis**
+- Deux widgets côté client remplacés par 1 157 avis Google et Trustpilot rendus côté serveur, avec filtres, dates et auteurs anonymisés.
+- Assemblée en edge par un Worker parce que le CMS approchait de son plafond d'éléments ; critère de classement affiché comme l'exige le droit de la consommation.
+- Même page livrée en anglais sur sa propre locale.
+
+**Accompagnement de la refonte**
+- Nouveaux composants header et footer partagés, sélecteur de langue, menu mobile et feuille d'harmonisation sur les neuf pages refaites.
+- Modale de recherche de ville sur l'accueil : 310 villes, routage location et achat dans les deux langues.
+- Passes de largeur, hero et FAQ sur le nouvel accueil au fil des retours client.
+
+**Hygiène de contenu à grande échelle**
+- 11 649 images du CMS dotées d'un texte alternatif français via l'API, par lots calibrés sur ce que l'API tolère.
+- 131 doublons CMS cartographiés avec leur graphe de références avant toute décision.
+- Un audit responsive de 5 774 URL fait par mesure, sans navigateur.
+
+**Planification d'infrastructure**
+- Guide de migration d'une collection CMS et de pages statiques de Webflow vers AWS S3 et CloudFront, derrière le même Cloudflare.
+- Un guide AWS écrit pour l'équipe, des comptes jusqu'aux coûts.
+
+Compétences : SEO technique, internationalisation, données structurées, edge computing, automatisation d'API à grande échelle, nettoyage de données, accessibilité, publication conforme RGPD, audit sans navigateur, communication client, journal de décisions.
+
+Projets (résumés) :
+- 42sh : Un shell Unix en C : pipes, redirections, builtins et les habituels casse-têtes de quoting.
+- Obsidian console : Audit de sécurité d'une console de réacteur nucléaire en C : revue boîte blanche et boîte noire, rapport de vulnérabilités et correctifs.
+- My World : Un éditeur de monde 3D isométrique : terrain, relief et maths de projection faites à la main.
+- Amazed : Résolveur de labyrinthe qui trouve le plus court chemin par parcours en largeur sur de très grandes grilles.
+- My printf : printf réécrit de zéro : analyse des chaînes de format et gestion de chaque conversion à la main.
+- Robot Factory : Un assembleur pour un jeu d'instructions robot inventé, qui transforme des sources en binaire.
+- Count Islands : Remplissage par diffusion sur une carte 2D pour compter et étiqueter chaque île.
+- Navigate : Un système de navigation GPS local.
+- Star : Une animation de champ d'étoiles : pixels, vecteurs et gestion du temps par image.
+- Bug Break : Comédie horrifique de game jam : trouver les objets de bureau « buggés », se cacher de l'araignée, atteindre la machine à café.
+- Music visualizer : Une page web qui dessine instruments et effets audio sous forme d'ondes et de sinus.
+- MAX Finder : Trouver en une recherche tous les trains SNCF avec une place MAX JEUNE / SENIOR libre, et les enchaîner en itinéraire.
+- Cuddle : Un projet de bot IA : prise de décision et heuristiques.
+- Organized : Un script Bash qui range un dossier en désordre dans des sous-dossiers par type de fichier.
+- Setting Up : Premier jour : mettre en place un environnement de développement Linux de zéro.
+- Tardis : Prédire les retards de trains SNCF : notebooks de nettoyage et d'exploration, trois modèles entraînés, et un tableau de bord Streamlit qui prédit le retard à l'arrivée d'un trajet.
+- Fourier workshop : Un notebook interactif qui montre comment fonctionne une FFT et à quoi elle sert.
+- 110 Borwein : Intégration numérique des intégrales de Borwein, où un joli motif se casse d'un coup.
+- 109 Titration : Trouver le point d'équivalence d'une courbe de titrage par dérivation numérique.
+- 108 Trigo : Fonctions trigonométriques sur des matrices, calculées à partir de leurs séries entières.
+- 107 Transfer : Fonctions de transfert de systèmes en chaîne, à partir de coefficients de polynômes.
+- 106 Bombyx : Modéliser une population de vers à soie avec l'application logistique, plus des diagrammes de bifurcation.
+- Chocolatine : Un pipeline CI avec GitHub Actions : build, tests et miroir à chaque push.
+- Hack Juice : S'introduire dans OWASP Juice Shop : XSS, injections et authentification cassée.

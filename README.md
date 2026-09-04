@@ -68,6 +68,14 @@ It serves the folder on port 8765, drives Chrome over the DevTools protocol and 
 - `robots.txt`, `sitemap.xml`, `og.png`, `404.html` and `navigate.py` are served;
 - the console shows no exceptions.
 
+## Plain text for agents and people in a hurry
+
+`tools/build.py` renders `content.js` into `llms.txt` (short), `llms-full.txt` (everything, with an evidence section and how to verify it), a collapsed plain-text profile under the monitor on the landing, and pre-rendered experience and projects blocks in `read.html`. Anything that fetches the site without running JavaScript, an AI agent, a scraper, a text browser, gets the substance instead of a description of the UI. Run it after editing `content.js`:
+
+```bash
+python3 tools/build.py
+```
+
 ## Analytics (off by default)
 
 `analytics.js` can count page views with GoatCounter, a free, open-source, cookie-less counter that needs no consent banner. It loads nothing until you create an account at goatcounter.com and put your code in the `GOATCOUNTER` constant at the top of the file. Do Not Track and Global Privacy Control are respected, hashes and query strings are never sent, and two events are counted: which door was chosen on the landing and language switches.

@@ -1,0 +1,18 @@
+# Khalil Almwakeh (volcinator8000)
+
+> Computer science student at Epitech (second year, 2026-2027) who builds systems-level software in C on Linux, and works in parallel as a web and SEO engineer for Remoters, a French marketplace for home finders abroad. Works in French and English.
+
+This site is a portfolio. The interactive versions need JavaScript; the plain versions below do not.
+
+## Read this first
+- [Full profile in plain text](https://volcinator8000.github.io/llms-full.txt): bio, work experience with measurable outcomes, every project, skills, and how to verify the claims.
+- [One-page HTML profile](https://volcinator8000.github.io/read.html): the same content as HTML.
+
+## Quick facts
+- Student at Epitech, second year. Builds systems software in C on Linux; also Python, Bash, JavaScript.
+- Web and SEO engineer for Remoters (www.remoters.io) since August 2026: technical SEO, Cloudflare Workers, Webflow Data API automation, an English locale, structured data, a reviews page rebuilt at the edge.
+- Public code: https://github.com/volcinator8000. Professional profile: https://www.linkedin.com/in/khalil-almwakeh-1432b436a/.
+- Languages: French, English.
+
+## Optional
+- [Interactive desktop](https://volcinator8000.github.io/desktop.html): live previews of the projects, a terminal, real Python in the browser (JavaScript required).
