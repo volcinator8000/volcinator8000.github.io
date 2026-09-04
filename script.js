@@ -332,7 +332,7 @@ function finishBoot() {
 
   // #navigate, #projects, #experience, #terminal deep-link straight to a window;
   // #<project-slug> opens that project's preview
-  const hash = location.hash.slice(1);
+  const hash = location.hash.slice(1).toLowerCase();
   const wanted = { navigate: 'python-window', projects: 'projects-window', experience: 'experience-window', terminal: 'terminal-window', readme: 'about-window' }[hash];
   if (wanted) { setTimeout(() => openWindow(wanted), 250); return; }
   const linked = hash && projectBySlug(hash);
@@ -1288,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   setupSnake();
   $('#preview-copy')?.addEventListener('click', copyPreviewLink);
-  window.addEventListener('hashchange', () => { const p = projectBySlug(location.hash.slice(1)); if (p && previewProject !== p) { openWindow('projects-window'); openPreview(p); } });
+  window.addEventListener('hashchange', () => { const h = location.hash.slice(1).toLowerCase(); const p = projectBySlug(h); if (p && previewProject !== p) { openWindow('projects-window'); openPreview(p); return; } const w = { navigate: 'python-window', projects: 'projects-window', experience: 'experience-window', terminal: 'terminal-window', readme: 'about-window' }[h]; if (w) openWindow(w); });
 
   window.addEventListener('resize', () => $$('.window.open').forEach(keepOnScreen));
 

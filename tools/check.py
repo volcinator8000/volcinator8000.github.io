@@ -254,6 +254,12 @@ try:
     call('Page.navigate', url=BASE + 'read.html#organized')
     sleep(1.6)
     check('deep link: read.html#organized opens its fold', ev("document.getElementById('organized').closest('details.fold').open"))
+    call('Page.navigate', url=BASE + 'index.html#amazed')
+    sleep(1.6)
+    check('deep link: landing forwards #amazed to the desktop', ev("location.pathname.endsWith('desktop.html') && document.getElementById('preview-name').textContent === 'Amazed'"))
+    call('Page.navigate', url=BASE + '404.html')
+    sleep(0.6)
+    check('deep link: 404 page renders', ev("document.querySelectorAll('.choice').length") == 2)
     check('deep link: no console errors', not errors_since(mark), '; '.join(errors_since(mark)))
 
     # phone widths

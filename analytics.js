@@ -15,7 +15,7 @@
 
 'use strict';
 
-const GOATCOUNTER = '';
+const GOATCOUNTER = 'volcinator';
 
 (function () {
   if (!GOATCOUNTER) return;

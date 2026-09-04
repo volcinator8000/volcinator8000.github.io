@@ -10,6 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap" />
   <link rel="stylesheet" href="landing.css" />
+  <script src="content.js"></script>
+  <script>
+    (function () {
+      var seg = location.pathname.replace(/\/+$/, "").split("/").pop().toLowerCase();
+      var slug = seg.replace(/\.html?$/, "");
+      if (typeof projectBySlug === "function" && projectBySlug(slug)) location.replace("/desktop.html#" + slug);
+    })();
+  </script>
 </head>
 <body>
   <div class="room">

@@ -29,6 +29,15 @@
   <link rel="stylesheet" href="landing.css" />
   <script src="sound.js"></script>
   <script src="i18n.js"></script>
+  <script src="content.js"></script>
+  <script>
+    (function () {
+      var h = location.hash.slice(1).toLowerCase();
+      if (!h) return;
+      var windows = ["navigate", "projects", "experience", "terminal", "readme"];
+      if (windows.indexOf(h) > -1 || (typeof projectBySlug === "function" && projectBySlug(h))) location.replace("desktop.html#" + h);
+    })();
+  </script>
   <script src="analytics.js" defer></script>
 </head>
 <body>
