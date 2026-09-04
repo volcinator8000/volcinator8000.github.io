@@ -11,15 +11,16 @@
 
 /* ---------- easter eggs ---------- */
 
-// id -> hint keys live in i18n.js ('egg.<id>.name' / 'egg.<id>.hint')
+// id -> hint keys live in i18n.js ('egg.<id>.name' / 'egg.<id>.h1..h3')
+// progress lives in sessionStorage on purpose: a new tab starts the hunt from zero
 const EGG_IDS = ['sudo', 'rmrf', 'vim', 'cow', 'matrix', 'sl', 'konami', 'clock', 'arch'];
 let eggsFound = new Set();
-try { eggsFound = new Set(JSON.parse(localStorage.getItem('eggsFound') || '[]').filter((id) => EGG_IDS.includes(id))); } catch (e) { /* ignore */ }
+try { eggsFound = new Set(JSON.parse(sessionStorage.getItem('eggsFound') || '[]').filter((id) => EGG_IDS.includes(id))); } catch (e) { /* ignore */ }
 
 function findEgg(id) {
   if (!EGG_IDS.includes(id) || eggsFound.has(id)) return;
   eggsFound.add(id);
-  try { localStorage.setItem('eggsFound', JSON.stringify([...eggsFound])); } catch (e) { /* ignore */ }
+  try { sessionStorage.setItem('eggsFound', JSON.stringify([...eggsFound])); } catch (e) { /* ignore */ }
   SFX.granted();
   toast(`${t('eggs.found')}: ${t('egg.' + id + '.name')}  (${eggsFound.size}/${EGG_IDS.length})`);
   renderEggs();
@@ -28,16 +29,16 @@ function findEgg(id) {
 
 function resetEggs() {
   eggsFound = new Set();
-  try { localStorage.removeItem('eggsFound'); localStorage.removeItem('eggsDone'); } catch (e) { /* ignore */ }
+  try { sessionStorage.removeItem('eggsFound'); sessionStorage.removeItem('eggsDone'); } catch (e) { /* ignore */ }
   document.body.classList.remove('all-eggs');
   hintLevel = {};
-  try { localStorage.removeItem('eggHints'); } catch (e) { /* ignore */ }
+  try { sessionStorage.removeItem('eggHints'); } catch (e) { /* ignore */ }
   $('#snake-icon').hidden = true;
   renderEggs();
 }
 
 let hintLevel = {};
-try { hintLevel = JSON.parse(localStorage.getItem('eggHints') || '{}'); } catch (e) { hintLevel = {}; }
+try { hintLevel = JSON.parse(sessionStorage.getItem('eggHints') || '{}'); } catch (e) { hintLevel = {}; }
 
 function renderEggs() {
   const box = $('#eggs');
@@ -69,7 +70,7 @@ function renderEggs() {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         hintLevel[id] = level + 1;
-        try { localStorage.setItem('eggHints', JSON.stringify(hintLevel)); } catch (err) { /* ignore */ }
+        try { sessionStorage.setItem('eggHints', JSON.stringify(hintLevel)); } catch (err) { /* ignore */ }
         SFX.blip();
         renderEggs();
       });
@@ -109,7 +110,7 @@ function unlockSnake() {
 }
 
 function celebrate() {
-  try { localStorage.setItem('eggsDone', '1'); } catch (e) { /* ignore */ }
+  try { sessionStorage.setItem('eggsDone', '1'); } catch (e) { /* ignore */ }
   document.body.classList.add('all-eggs');
   if ($('#celebrate')) return;
   const wrap = document.createElement('div');
@@ -1179,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#eggs-head').addEventListener('click', () => { eggs.classList.toggle('open'); SFX.blip(); });
     renderEggs();
     document.addEventListener('langchange', renderEggs);
-    try { if (localStorage.getItem('eggsDone') === '1') { document.body.classList.add('all-eggs'); unlockSnake(); } } catch (e) { /* ignore */ }
+    try { if (sessionStorage.getItem('eggsDone') === '1') { document.body.classList.add('all-eggs'); unlockSnake(); } } catch (e) { /* ignore */ }
   }
   setupSnake();
 
