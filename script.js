@@ -1076,6 +1076,12 @@ function completeCommand(input) {
 
 function runCommand(raw) {
   const line = raw.trim();
+  if (line.length > 200) {
+    print(`volcinator8000@arch:~$ ${line.slice(0, 60)}… (${line.length} characters)`, 'cmd');
+    print('i think you need to either check your keyboard, or seek a therapist', 'err');
+    SFX.error();
+    return;
+  }
   print(`volcinator8000@arch:~$ ${line}`, 'cmd');
   if (!line) return;
 
