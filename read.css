@@ -496,3 +496,49 @@ body.read {
 .tag.star {
   padding: 1px 6px;
 }
+
+/* ---------- projects: wider than the text column, 3–4 cards per row ---------- */
+.read-main {
+  max-width: 1160px;
+}
+
+.read-head,
+#about,
+#experience,
+#contact,
+.read-foot,
+#projects > h2,
+#projects > p {
+  max-width: 780px;
+}
+
+#projects .pv-grid {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+#projects .pv-stage {
+  height: 170px;
+}
+
+#projects .pv-body {
+  padding: 10px 12px 12px;
+}
+
+#projects .read-blurb {
+  font-size: 12.5px;
+}
+
+#projects .pv-note {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  #projects .pv-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #projects .pv-stage {
+    height: 200px;
+  }
+}
