@@ -1480,3 +1480,15 @@ canvas.matrix {
   outline: none;
   touch-action: none;
 }
+
+/* hidden icons stay hidden; the column wraps into a second column on short screens */
+.icon[hidden] {
+  display: none;
+}
+
+.icon-container {
+  flex-wrap: wrap;
+  max-height: calc(100vh - var(--bar-h) - 28px);
+  align-content: flex-start;
+  column-gap: 6px;
+}
