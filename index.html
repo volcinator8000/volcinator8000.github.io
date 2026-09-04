@@ -44,7 +44,7 @@
           </nav>
 
           <p id="hint" class="hint" data-i18n="landing.hint" hidden>&#8593;&#8595; or 1 / 2 to select &middot; Enter to confirm</p>
-          <p class="foot"><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
+          <p class="foot" id="foot" hidden><a href="https://github.com/volcinator8000" target="_blank" rel="noopener">github.com/volcinator8000</a></p>
         </main>
       </div>
       <div class="chin" aria-hidden="true">
@@ -167,6 +167,7 @@
       function showChoices() {
         choices.hidden = false;
         hint.hidden = false;
+        $('foot').hidden = false;
         if (!links.some(function (a) { return a.classList.contains('sel'); })) select(0, false);
       }
 
