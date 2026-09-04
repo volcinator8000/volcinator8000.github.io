@@ -1492,3 +1492,8 @@ canvas.matrix {
   align-content: flex-start;
   column-gap: 6px;
 }
+
+.eggs-hint-btn.confirm {
+  color: var(--yellow);
+  border-color: var(--yellow);
+}

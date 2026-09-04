@@ -38,6 +38,7 @@ function resetEggs() {
 }
 
 let hintLevel = {};
+let confirmAnswer = null, confirmTimer = 0;
 try { hintLevel = JSON.parse(sessionStorage.getItem('eggHints') || '{}'); } catch (e) { hintLevel = {}; }
 
 function renderEggs() {
@@ -65,10 +66,23 @@ function renderEggs() {
     if (!found && level < 3) {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'eggs-hint-btn';
-      btn.textContent = level === 0 ? t('eggs.hint') : `${t('eggs.more')} (${level}/3)`;
+      btn.className = 'eggs-hint-btn' + (confirmAnswer === id ? ' confirm' : '');
+      btn.textContent = level === 0 ? t('eggs.hint')
+        : level === 1 ? `${t('eggs.more')} (${level}/3)`
+        : confirmAnswer === id ? t('eggs.confirm') : t('eggs.answer');
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        // the answer needs a second click
+        if (level === 2 && confirmAnswer !== id) {
+          confirmAnswer = id;
+          clearTimeout(confirmTimer);
+          confirmTimer = setTimeout(() => { confirmAnswer = null; renderEggs(); }, 5000);
+          SFX.blip();
+          renderEggs();
+          return;
+        }
+        confirmAnswer = null;
+        clearTimeout(confirmTimer);
         hintLevel[id] = level + 1;
         try { sessionStorage.setItem('eggHints', JSON.stringify(hintLevel)); } catch (err) { /* ignore */ }
         SFX.blip();
