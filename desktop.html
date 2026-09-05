@@ -26,6 +26,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e1e2e'/%3E%3Ctext x='12' y='44' font-family='monospace' font-size='30' fill='%23a6e3a1'%3E%3E_%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
   <link rel="stylesheet" href="style.css" />
   <script src="analytics.js" defer></script>
@@ -71,6 +72,9 @@
         <div class="icon-img python-icon" aria-hidden="true">py</div>
         <span>navigate.py</span>
       </button>
+
+      <!-- web apps, filled by script.js from the projects that have a live site -->
+      <div id="app-icons" class="app-icons"></div>
 
       <button class="icon" type="button" data-open="snake-window" id="snake-icon" hidden>
         <div class="icon-img snake-icon" aria-hidden="true">~</div>
@@ -238,6 +242,27 @@
         </div>
         <p class="stage-note" data-i18n-html="py.note"></p>
       </div>
+      <div class="resize-handle" aria-hidden="true"></div>
+    </section>
+
+    <!-- BROWSER: the web projects run inside it, one tab each -->
+    <section id="browser-window" class="window window-wide window-browser" data-title="browser" aria-labelledby="browser-title">
+      <div class="title-bar">
+        <span id="browser-title">browser</span>
+        <div class="window-controls">
+          <button class="min-btn" type="button" data-min="browser-window" aria-label="Minimise">–</button>
+          <button class="close-btn" type="button" data-close="browser-window" aria-label="Close">×</button>
+        </div>
+      </div>
+      <div class="browser-chrome">
+        <div id="browser-tabs" class="browser-tabs" role="tablist"></div>
+        <div class="browser-bar">
+          <button id="browser-reload" class="browser-btn" type="button" title="Reload">↻</button>
+          <span id="browser-url" class="browser-url"></span>
+          <a id="browser-ext" class="browser-btn" href="#" target="_blank" rel="noopener" data-i18n-attr="title:browser.newtab">↗</a>
+        </div>
+      </div>
+      <div id="browser-frames" class="browser-frames"></div>
       <div class="resize-handle" aria-hidden="true"></div>
     </section>
 

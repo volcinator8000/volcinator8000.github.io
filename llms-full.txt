@@ -14,6 +14,11 @@ Two kinds of evidence exist. First, a production engagement at Remoters with con
 
 Remoters is a marketplace that connects people moving abroad with vetted local home finders. The site runs on Webflow behind Cloudflare: about 5,500 indexed URLs, 40 CMS collections, two locales.
 
+In short:
+- Took over the technical side of a 5,500-URL Webflow site: SEO clean-up, an English locale, structured data, and a reviews page rebuilt from 1,157 reviews.
+- Built the edge layer in front of it: six Cloudflare Workers, redirect and header rules, IndexNow, and files that make the site readable by AI agents.
+- Halved the monthly bandwidth, audited accessibility and responsiveness by measurement, and left an operations repository so the work survives without me.
+
 **Technical SEO clean-up**
 - Sitemap trimmed from 6,439 to 5,506 URLs: questionnaires, redirecting and utility pages out, with an edge filter for what the CMS refuses to hide.
 - robots.txt rewritten, AI crawlers unblocked, noindex response headers at the edge for the zombie sections.

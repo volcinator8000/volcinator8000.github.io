@@ -516,3 +516,23 @@ body {
 .profile-body li {
   margin: 4px 0;
 }
+
+/* ---------- phones: fewer effects, same look ---------- */
+@media (max-width: 720px) {
+  .term {
+    animation: none;
+    text-shadow: 0 0 3px rgba(76, 255, 122, 0.4);
+  }
+
+  .screen.on .term {
+    animation: turnon 0.7s cubic-bezier(0.25, 0.8, 0.3, 1) both;
+  }
+
+  .rollbar {
+    display: none;
+  }
+
+  .glass {
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.5) 100%);
+  }
+}

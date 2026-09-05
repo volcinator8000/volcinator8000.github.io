@@ -469,6 +469,7 @@ function closeWindow(id) {
   if (!win || !win.classList.contains('open')) return;
 
   win.classList.remove('active', 'focused', 'minimized', 'maximized');
+  if (id === 'browser-window') { browserTabs.splice(0).forEach((tb) => { tb.frame.src = 'about:blank'; tb.frame.remove(); }); browserActive = null; }
   SFX.close();
   if (id === 'preview-window') stopPreview();
   const idx = openOrder.indexOf(win);
@@ -653,7 +654,7 @@ function renderProjects() {
     if (hasPreview(p)) {
       const play = document.createElement('span');
       play.className = 'play';
-      play.textContent = t(p.name === 'Navigate' ? 'card.run' : 'card.preview');
+      play.textContent = t(p.name === 'Navigate' ? 'card.run' : (typeof APPS !== 'undefined' && APPS.some((a) => a.project === p.name)) ? 'browser.open' : 'card.preview');
       name.appendChild(play);
     }
     if (p.link) {
@@ -708,6 +709,96 @@ function renderExperience() {
   root.innerHTML = renderExperienceHTML(currentExperience());
 }
 
+/* ---------- browser app: tabs, one iframe per tab ---------- */
+
+const browserTabs = []; // { id, title, url, frame }
+let browserActive = null;
+
+function renderAppIcons() {
+  const box = $('#app-icons');
+  if (!box || typeof APPS === 'undefined') return;
+  box.innerHTML = '';
+  APPS.forEach((app) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'icon';
+    btn.innerHTML = `<div class="icon-img app-icon-img" aria-hidden="true">${escapeHTML(app.label)}</div><span>${escapeHTML(app.id)}</span>`;
+    btn.addEventListener('click', () => openApp(app));
+    box.appendChild(btn);
+  });
+}
+
+function openApp(app) {
+  openBrowser(app.url, app.title, app.id);
+}
+
+function openBrowser(url, title, id) {
+  id = id || url;
+  let tab = browserTabs.find((t) => t.id === id);
+  if (!tab) {
+    const frame = document.createElement('iframe');
+    frame.src = url;
+    frame.title = title;
+    frame.setAttribute('allow', 'autoplay');
+    frame.loading = 'eager';
+    $('#browser-frames').appendChild(frame);
+    tab = { id, title, url, frame };
+    browserTabs.push(tab);
+  }
+  browserActive = tab;
+  renderBrowser();
+  openWindow('browser-window');
+}
+
+function closeBrowserTab(id) {
+  const i = browserTabs.findIndex((t) => t.id === id);
+  if (i < 0) return;
+  const [tab] = browserTabs.splice(i, 1);
+  tab.frame.src = 'about:blank';
+  tab.frame.remove();
+  if (browserActive === tab) browserActive = browserTabs[Math.max(0, i - 1)] || null;
+  renderBrowser();
+  if (!browserTabs.length) closeWindow('browser-window');
+}
+
+function renderBrowser() {
+  const tabs = $('#browser-tabs');
+  if (!tabs) return;
+  tabs.innerHTML = '';
+  browserTabs.forEach((t) => {
+    const el = document.createElement('div');
+    el.className = 'browser-tab' + (t === browserActive ? ' active' : '');
+    el.setAttribute('role', 'tab');
+    el.setAttribute('aria-selected', String(t === browserActive));
+    const name = document.createElement('span');
+    name.textContent = t.title;
+    const x = document.createElement('button');
+    x.type = 'button'; x.className = 'tab-close'; x.textContent = '×'; x.setAttribute('aria-label', 'close tab');
+    x.addEventListener('click', (e) => { e.stopPropagation(); closeBrowserTab(t.id); SFX.close(); });
+    el.append(name, x);
+    el.addEventListener('click', () => { browserActive = t; renderBrowser(); SFX.blip(); });
+    tabs.appendChild(el);
+    t.frame.hidden = t !== browserActive;
+  });
+  let empty = $('#browser-frames .browser-empty');
+  if (!browserTabs.length) {
+    if (!empty) { empty = document.createElement('div'); empty.className = 'browser-empty'; $('#browser-frames').appendChild(empty); }
+    empty.textContent = t('browser.empty');
+  } else if (empty) empty.remove();
+  $('#browser-url').textContent = browserActive ? browserActive.url : '';
+  $('#browser-title').textContent = browserActive ? `browser — ${browserActive.title}` : 'browser';
+  $('#browser-ext').href = browserActive ? browserActive.url : '#';
+  updateTaskbar();
+}
+
+function setupBrowser() {
+  if (!$('#browser-window')) return;
+  renderAppIcons();
+  $('#browser-reload').addEventListener('click', () => { if (browserActive) { const u = browserActive.url; browserActive.frame.src = 'about:blank'; setTimeout(() => { browserActive.frame.src = u; }, 30); SFX.blip(); } });
+  renderBrowser();
+  document.addEventListener('langchange', renderBrowser);
+}
+
 /* ---------- project preview window ---------- */
 
 let previewCleanup = null;
@@ -719,6 +810,8 @@ function hasPreview(p) {
 
 function openPreview(p) {
   if (p.name === 'Navigate') { openWindow('python-window'); return; }
+  const app = typeof APPS !== 'undefined' && APPS.find((a) => a.project === p.name);
+  if (app) { openApp(app); return; }
 
   stopPreview();
   previewProject = p;
@@ -1042,9 +1135,11 @@ const COMMANDS = {
   ),
 
   open: (args) => {
-    const map = { readme: 'about-window', projects: 'projects-window', terminal: 'terminal-window', navigate: 'python-window', experience: 'experience-window' };
+    const map = { readme: 'about-window', projects: 'projects-window', terminal: 'terminal-window', navigate: 'python-window', experience: 'experience-window', browser: 'browser-window' };
+    const app = typeof APPS !== 'undefined' && APPS.find((a) => a.id === args[0]);
+    if (app) { openApp(app); return print(`opening ${app.title} in the browser…`); }
     const id = map[args[0]];
-    if (!id) return print('open: readme | projects | terminal | navigate | experience', 'err');
+    if (!id) return print('open: readme | projects | terminal | navigate | experience | browser | ' + (typeof APPS !== 'undefined' ? APPS.map((a) => a.id).join(' | ') : ''), 'err');
     openWindow(id);
     print(`opening ${args[0]}...`);
   },
@@ -1164,7 +1259,7 @@ function completeCommand(input) {
   let pool, prefix;
   if (parts.length <= 1) { pool = Object.keys(COMMANDS).filter((k) => /^[a-z]/.test(k)); prefix = parts[0] || ''; }
   else if (parts[0] === 'cat') { pool = files; prefix = parts[parts.length - 1]; }
-  else if (parts[0] === 'open') { pool = windows; prefix = parts[parts.length - 1]; }
+  else if (parts[0] === 'open') { pool = windows.concat(typeof APPS !== 'undefined' ? APPS.map((a) => a.id) : []); prefix = parts[parts.length - 1]; }
   else if (parts[0] === 'projects') { pool = Object.keys(CATEGORIES).filter((k) => k !== 'all'); prefix = parts[parts.length - 1]; }
   else return;
   const hits = pool.filter((k) => k.startsWith(prefix));
@@ -1287,6 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try { if (sessionStorage.getItem('eggsDone') === '1') { document.body.classList.add('all-eggs'); unlockSnake(); } } catch (e) { /* ignore */ }
   }
   setupSnake();
+  setupBrowser();
   $('#preview-copy')?.addEventListener('click', copyPreviewLink);
   window.addEventListener('hashchange', () => { const h = location.hash.slice(1).toLowerCase(); const p = projectBySlug(h); if (p && previewProject !== p) { openWindow('projects-window'); openPreview(p); return; } const w = { navigate: 'python-window', projects: 'projects-window', experience: 'experience-window', terminal: 'terminal-window', readme: 'about-window' }[h]; if (w) openWindow(w); });
 

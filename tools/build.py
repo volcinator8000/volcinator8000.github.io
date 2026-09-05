@@ -124,6 +124,10 @@ def md_projects():
 
 def md_experience(xp):
     out = [f"**{xp['role']}, {xp['company']}** ({xp['url']}), {xp['dates']}, {xp['langs']}.", '', xp['about'], '']
+    if xp.get('summary'):
+        out.append('In short:')
+        out += [f'- {l}' for l in xp['summary']]
+        out.append('')
     for sec in xp['sections']:
         out.append(f"**{sec['title']}**")
         out += [f'- {b}' for b in sec['bullets']]
@@ -212,6 +216,8 @@ def esc(s):
 def html_experience(xp):
     out = [f"<p><strong>{esc(xp['role'])}</strong> at <a href=\"{esc(xp['url'])}\">{esc(xp['company'])}</a>, {esc(xp['dates'])}, {esc(xp['langs'])}.</p>",
            f"<p>{esc(xp['about'])}</p>"]
+    if xp.get('summary'):
+        out.append('<p><strong>In short</strong></p><ul>' + ''.join(f'<li>{esc(l)}</li>' for l in xp['summary']) + '</ul>')
     for sec in xp['sections']:
         out.append(f"<h4>{esc(sec['title'])}</h4><ul>" + ''.join(f'<li>{esc(b)}</li>' for b in sec['bullets']) + '</ul>')
     out.append(f"<p>Tools: {esc(', '.join(xp['tools']))}.</p><p>Skills: {esc(', '.join(xp['skills']))}.</p>")

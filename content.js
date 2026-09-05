@@ -121,6 +121,12 @@ const EXPERIENCE = {
   dates: 'July 2026 – now',
   langs: 'French and English',
   about: 'Remoters is a marketplace that connects people moving abroad with vetted local home finders. The site runs on Webflow behind Cloudflare: about 5,500 indexed URLs, 40 CMS collections, two locales.',
+  // the short version, shown above the detailed sections
+  summary: [
+    'Took over the technical side of a 5,500-URL Webflow site: SEO clean-up, an English locale, structured data, and a reviews page rebuilt from 1,157 reviews.',
+    'Built the edge layer in front of it: six Cloudflare Workers, redirect and header rules, IndexNow, and files that make the site readable by AI agents.',
+    'Halved the monthly bandwidth, audited accessibility and responsiveness by measurement, and left an operations repository so the work survives without me.',
+  ],
   sections: [
     { title: 'Technical SEO clean-up', bullets: [
       'Sitemap trimmed from 6,439 to 5,506 URLs: questionnaires, redirecting and utility pages out, with an edge filter for what the CMS refuses to hide.',
@@ -190,6 +196,11 @@ const EXPERIENCE_FR = {
   dates: "Juillet 2026 – aujourd'hui",
   langs: 'français et anglais',
   about: "Remoters est une marketplace qui met en relation des personnes s'installant à l'étranger avec des chasseurs immobiliers locaux vérifiés. Le site tourne sur Webflow derrière Cloudflare : environ 5 500 URL indexées, 40 collections CMS, deux langues.",
+  summary: [
+    "Repris la partie technique d'un site Webflow de 5 500 URL : nettoyage SEO, version anglaise, données structurées, et une page avis reconstruite à partir de 1 157 avis.",
+    "Construit la couche edge devant le site : six Workers Cloudflare, règles de redirection et d'en-têtes, IndexNow, et les fichiers qui rendent le site lisible par les agents IA.",
+    "Divisé la bande passante mensuelle par deux, audité l'accessibilité et le responsive par mesure, et laissé un dépôt d'exploitation pour que le travail me survive.",
+  ],
   sections: [
     { title: 'Nettoyage SEO technique', bullets: [
       'Sitemap ramené de 6 439 à 5 506 URL : questionnaires, pages redirigées et pages utilitaires sorties, avec un filtre en edge pour ce que le CMS refuse de cacher.',
@@ -256,6 +267,13 @@ function currentExperience() {
   return typeof I18N !== 'undefined' && I18N.lang === 'fr' ? EXPERIENCE_FR : EXPERIENCE;
 }
 
+// Web apps shown as icons on the desktop; they open inside the browser window.
+const APPS = [
+  { id: 'music-visualizer', label: 'music', title: 'Music visualizer', url: 'https://volcinator8000.github.io/music-visualizer/', project: 'Music visualizer' },
+  { id: 'max-finder', label: 'max', title: 'MAX Finder', url: 'https://davd-gzl.github.io/MAX-Finder/', project: 'MAX Finder' },
+  { id: 'remoters', label: 'remoters', title: 'remoters.io', url: 'https://www.remoters.io/', project: null },
+];
+
 // URL-safe slug for deep links: 'My printf' -> 'my-printf'
 function projectSlug(p) {
   return String(p.name).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -289,6 +307,7 @@ function renderExperienceHTML(xp, opts) {
       <div class="xp-meta">${escapeHTML(xp.dates)} · ${escapeHTML(xp.langs)}</div>
       <p class="xp-about">${escapeHTML(xp.about)}</p>
     </header>
+    ${xp.summary ? `<ul class="xp-summary">${xp.summary.map((l) => `<li>${escapeHTML(l)}</li>`).join('')}</ul>` : ''}
     <h3 class="xp-h">${T('xp.did')}</h3>
     <div class="xp-grid${opts.collapsible ? ' xp-grid-folds' : ''}">${cards}</div>
     <h3 class="xp-h">${T('xp.tools')}</h3>
