@@ -125,7 +125,9 @@ const EXPERIENCE = {
     { title: 'Technical SEO clean-up', bullets: [
       'Sitemap trimmed from 6,439 to 5,506 URLs: questionnaires, redirecting and utility pages out, with an edge filter for what the CMS refuses to hide.',
       'robots.txt rewritten, AI crawlers unblocked, noindex response headers at the edge for the zombie sections.',
-      '471 redirects rebuilt from a Search Console 404 export, tested one by one before shipping. IndexNow key served.',
+      '471 redirects rebuilt from a Search Console 404 export, tested one by one before shipping; the Cloudflare redirect list now holds 170 entries, with the 32 that carry a decision kept apart from the 138 mechanical ones.',
+      'Stopped a replacement sitemap before it went live: it was generated from a crawl older than the migration and would have reintroduced 144 dead URLs. Wrote the note that explained why.',
+      'IndexNow end to end: a Worker serves the key, another reads the served sitemap and submits every URL modified in the last 48 hours, fired by a Webflow publish webhook.',
     ] },
     { title: 'English locale', bullets: [
       'Seven transverse pages translated and slugged under /en, with bilingual header and footer components.',
@@ -136,6 +138,21 @@ const EXPERIENCE = {
       'Organization, Breadcrumb, Service, FAQ and Article graphs on the static pages and templates.',
       'A Cloudflare Worker that injects per-page schema on more than 2,600 template pages the CMS could not express itself.',
       'Blog Article schema repaired at the edge by replacing the broken block on every post.',
+      'Found and fixed a double-markup bug of my own on about 2,100 pages: the Worker added its block instead of replacing Webflow\'s. One line, verified family by family.',
+    ] },
+    { title: 'Edge layer on Cloudflare', bullets: [
+      'Six Workers in production in front of Webflow: sitemap filtering and static files the CMS cannot serve, structured data on twelve page families, blog schema repair, the reviews page, the IndexNow key and the IndexNow submitter.',
+      'Response-header rules for noindex on sections the CMS refuses to hide, a bulk redirect list, cache purges after every publish, crawler health measured through the Cloudflare GraphQL API.',
+      'Every Worker carries a control header so a deploy can be verified with one curl, and the 30-second propagation delay is documented so nobody redeploys over a version that was already live.',
+    ] },
+    { title: 'Making the site readable by AI agents', bullets: [
+      'llms.txt, ai.txt, a W3C TDMRep declaration and a traffic-advice file served at the edge, robots.txt opened to AI crawlers, decided with the company and documented.',
+      'Named crawlers went from thousands of blocked requests to healthy: GoogleBot 85%, BingBot 90% and AppleBot 100% successful responses over a week, measured rather than assumed.',
+    ] },
+    { title: 'Handover and documentation', bullets: [
+      'An operations repository so someone else can run the edge layer: the code of every Worker, the redirect list with its rationale, the Python pipeline that builds the reviews page, and step-by-step operating and access procedures.',
+      'A full offline export of the site as the first migration step: 46 static pages in two languages, 528 location pages, 837 assets rewritten to local paths, four CMS collections exported with references resolved and counts verified against the API.',
+      'Decision logs for the client: open questions with a recommendation each, and a written record of every decision taken, so nothing depends on memory.',
     ] },
     { title: 'Reviews page rebuild', bullets: [
       'Two client-side widgets replaced by 1,157 server-rendered Google and Trustpilot reviews with filters, dates and anonymised authors.',
@@ -146,10 +163,11 @@ const EXPERIENCE = {
       'New shared header and footer components, a language switcher, a mobile menu and a harmonisation stylesheet across the nine redesigned pages.',
       'Homepage city-search modal covering 310 cities with rent and buy routing in both locales.',
       'Width, hero and FAQ passes on the new homepage from client feedback rounds.',
+      'Accessibility audit of the palette: the brand coral measures 2.44:1 against a 4.5:1 requirement, 25 texts on the homepage below threshold. Proposed a fix that keeps the coral and changes only where it is used.',
     ] },
     { title: 'Bandwidth and performance', bullets: [
       'Optimised what the site serves: monthly bandwidth went from about 290 to 300 GB down to 140 to 160 GB, roughly half, for the same traffic.',
-      'Measured before and after on the Cloudflare zone, so the saving is a number rather than a feeling.',
+      'Measured before and after, so the saving is a number rather than a feeling.',
     ] },
     { title: 'Content hygiene at scale', bullets: [
       '11,649 CMS images given French alt text through the API, in batches sized to what the API tolerates.',
@@ -161,7 +179,7 @@ const EXPERIENCE = {
       'An AWS primer written for the team, from accounts to costs.',
     ] },
   ],
-  tools: ['Webflow Data API v2', 'Webflow MCP', 'Cloudflare Workers', 'HTMLRewriter', 'Cloudflare rulesets & bulk redirects', 'Cloudflare GraphQL analytics', 'Python', 'Bash & curl', 'JSON-LD / schema.org', 'IndexNow', 'Google Search Console', 'AWS S3 + CloudFront', 'headless Chrome', 'Claude Code'],
+  tools: ['Webflow Data API v2', 'Webflow MCP', 'Webflow webhooks', 'Cloudflare Workers', 'HTMLRewriter', 'Cloudflare rulesets & bulk redirects', 'Cloudflare GraphQL analytics', 'Python', 'Bash & curl', 'JSON-LD / schema.org', 'IndexNow', 'llms.txt / TDMRep', 'Google Search Console', 'AWS S3 + CloudFront', 'headless Chrome', 'Claude Code'],
   skills: ['technical SEO', 'internationalisation', 'structured data', 'edge computing', 'API automation at scale', 'data cleaning', 'accessibility', 'GDPR-aware publishing', 'auditing without a browser', 'client communication', 'decision logs'],
 };
 
@@ -176,7 +194,9 @@ const EXPERIENCE_FR = {
     { title: 'Nettoyage SEO technique', bullets: [
       'Sitemap ramené de 6 439 à 5 506 URL : questionnaires, pages redirigées et pages utilitaires sorties, avec un filtre en edge pour ce que le CMS refuse de cacher.',
       'robots.txt réécrit, robots IA débloqués, en-têtes noindex en edge pour les sections zombies.',
-      "471 redirections reconstruites à partir d'un export 404 de la Search Console, testées une par une avant mise en ligne. Clé IndexNow servie.",
+      "471 redirections reconstruites à partir d'un export 404 de la Search Console, testées une par une avant mise en ligne ; la liste Cloudflare compte aujourd'hui 170 entrées, les 32 qui portent une décision séparées des 138 mécaniques.",
+      "Un sitemap de remplacement arrêté avant sa mise en ligne : généré depuis un crawl antérieur à la migration, il aurait réintroduit 144 URL mortes. Note écrite pour expliquer pourquoi.",
+      "IndexNow de bout en bout : un Worker sert la clé, un autre lit le sitemap servi et soumet chaque URL modifiée dans les 48 heures, déclenché par un webhook de publication Webflow.",
     ] },
     { title: 'Version anglaise', bullets: [
       'Sept pages transverses traduites et slugguées sous /en, avec des composants header et footer bilingues.',
@@ -187,6 +207,21 @@ const EXPERIENCE_FR = {
       'Graphes Organization, Breadcrumb, Service, FAQ et Article sur les pages statiques et les templates.',
       'Un Worker Cloudflare qui injecte un schéma par page sur plus de 2 600 pages de template que le CMS ne pouvait pas exprimer.',
       'Schéma Article du blog réparé en edge en remplaçant le bloc cassé sur chaque article.',
+      "Un double balisage de mon fait trouvé et corrigé sur environ 2 100 pages : le Worker ajoutait son bloc au lieu de remplacer celui de Webflow. Une ligne, vérifiée famille par famille.",
+    ] },
+    { title: 'Couche edge sur Cloudflare', bullets: [
+      "Six Workers en production devant Webflow : filtrage du sitemap et fichiers statiques que le CMS ne sait pas servir, données structurées sur douze familles de pages, réparation du schéma blog, la page avis, la clé IndexNow et le soumetteur IndexNow.",
+      "Règles d'en-têtes noindex sur les sections que le CMS refuse de cacher, une liste de redirections en masse, purge du cache après chaque publication, santé des robots mesurée via l'API GraphQL de Cloudflare.",
+      "Chaque Worker porte un en-tête de contrôle pour vérifier un déploiement d'un seul curl, et le délai de propagation de 30 secondes est documenté pour que personne ne redéploie par-dessus une version déjà en ligne.",
+    ] },
+    { title: "Rendre le site lisible par les agents IA", bullets: [
+      "llms.txt, ai.txt, une déclaration W3C TDMRep et un fichier traffic-advice servis en edge, robots.txt ouvert aux robots IA, décidé avec l'entreprise et documenté.",
+      "Les robots nommés sont passés de milliers de requêtes bloquées à un état sain : GoogleBot 85 %, BingBot 90 % et AppleBot 100 % de réponses réussies sur une semaine, mesuré plutôt que supposé.",
+    ] },
+    { title: 'Passation et documentation', bullets: [
+      "Un dépôt d'exploitation pour que quelqu'un d'autre puisse faire tourner la couche edge : le code de chaque Worker, la liste de redirections avec ses raisons, la chaîne Python qui construit la page avis, et des procédures d'exploitation et d'accès pas à pas.",
+      "Un export hors ligne complet du site comme première étape de migration : 46 pages statiques en deux langues, 528 pages villes, 837 fichiers réécrits en chemins locaux, quatre collections CMS exportées avec leurs références résolues et des comptes vérifiés contre l'API.",
+      "Des journaux de décision pour le client : questions ouvertes avec une recommandation chacune, et trace écrite de chaque décision prise, pour que rien ne dépende de la mémoire.",
     ] },
     { title: 'Refonte de la page avis', bullets: [
       'Deux widgets côté client remplacés par 1 157 avis Google et Trustpilot rendus côté serveur, avec filtres, dates et auteurs anonymisés.',
@@ -197,10 +232,11 @@ const EXPERIENCE_FR = {
       "Nouveaux composants header et footer partagés, sélecteur de langue, menu mobile et feuille d'harmonisation sur les neuf pages refaites.",
       "Modale de recherche de ville sur l'accueil : 310 villes, routage location et achat dans les deux langues.",
       'Passes de largeur, hero et FAQ sur le nouvel accueil au fil des retours client.',
+      "Audit d'accessibilité de la palette : le corail de la marque mesure 2,44:1 pour une exigence de 4,5:1, 25 textes sous le seuil sur l'accueil. Proposition qui garde le corail et ne change que ses usages.",
     ] },
     { title: 'Bande passante et performance', bullets: [
       'Optimisation de ce que le site sert : la bande passante mensuelle est passée d\'environ 290 à 300 Go à 140 à 160 Go, soit près de moitié, à trafic égal.',
-      'Mesuré avant et après sur la zone Cloudflare, pour que le gain soit un chiffre et pas une impression.',
+      'Mesuré avant et après, pour que le gain soit un chiffre et pas une impression.',
     ] },
     { title: 'Hygiène de contenu à grande échelle', bullets: [
       "11 649 images du CMS dotées d'un texte alternatif français via l'API, par lots calibrés sur ce que l'API tolère.",
@@ -212,8 +248,8 @@ const EXPERIENCE_FR = {
       "Un guide AWS écrit pour l'équipe, des comptes jusqu'aux coûts.",
     ] },
   ],
-  tools: ['Webflow Data API v2', 'Webflow MCP', 'Cloudflare Workers', 'HTMLRewriter', 'Cloudflare rulesets & bulk redirects', 'Cloudflare GraphQL analytics', 'Python', 'Bash & curl', 'JSON-LD / schema.org', 'IndexNow', 'Google Search Console', 'AWS S3 + CloudFront', 'headless Chrome', 'Claude Code'],
-  skills: ['SEO technique', 'internationalisation', 'données structurées', 'edge computing', "automatisation d'API à grande échelle", 'nettoyage de données', 'accessibilité', 'publication conforme RGPD', 'audit sans navigateur', 'communication client', 'journal de décisions'],
+  tools: ['Webflow Data API v2', 'Webflow MCP', 'Webhooks Webflow', 'Cloudflare Workers', 'HTMLRewriter', 'Cloudflare rulesets & bulk redirects', 'Cloudflare GraphQL analytics', 'Python', 'Bash & curl', 'JSON-LD / schema.org', 'IndexNow', 'llms.txt / TDMRep', 'Google Search Console', 'AWS S3 + CloudFront', 'headless Chrome', 'Claude Code'],
+  skills: ['SEO technique', 'internationalisation', 'données structurées', 'edge computing', "automatisation d'API à grande échelle", 'nettoyage de données', 'accessibilité', 'publication conforme RGPD', 'audit sans navigateur', 'communication client', 'journal de décisions', 'documentation de passation', "audit d'accessibilité"],
 };
 
 function currentExperience() {
