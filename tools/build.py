@@ -55,6 +55,7 @@ EVIDENCE = [
         'Rebuilt 471 redirects from a Search Console 404 export and tested each target before shipping.',
         'Wrote a Cloudflare Worker that injects structured data on more than 2,600 CMS template pages, plus a second Worker that repairs blog Article schema.',
         'Replaced two client-side review widgets with 1,157 server-rendered reviews assembled at the edge, with anonymised authors and the ranking rule disclosed as French consumer law requires.',
+        'Roughly halved the site\'s monthly bandwidth, from about 290 to 300 GB to 140 to 160 GB for the same traffic, by optimising what the site serves; measured on the Cloudflare zone before and after.',
         'Gave 11,649 CMS images French alt text and about 10,900 English ones through the API, in batches sized to what the API tolerates.',
         'Built the English locale of the site: seven pages translated, bilingual header and footer components, per-locale JSON-LD.',
         'Audited 5,774 URLs for responsive breakage by measurement, without a browser, and mapped 131 duplicate CMS items with their reference graph before any deletion.',

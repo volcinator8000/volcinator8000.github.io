@@ -147,6 +147,10 @@ const EXPERIENCE = {
       'Homepage city-search modal covering 310 cities with rent and buy routing in both locales.',
       'Width, hero and FAQ passes on the new homepage from client feedback rounds.',
     ] },
+    { title: 'Bandwidth and performance', bullets: [
+      'Optimised what the site serves: monthly bandwidth went from about 290 to 300 GB down to 140 to 160 GB, roughly half, for the same traffic.',
+      'Measured before and after on the Cloudflare zone, so the saving is a number rather than a feeling.',
+    ] },
     { title: 'Content hygiene at scale', bullets: [
       '11,649 CMS images given French alt text through the API, in batches sized to what the API tolerates.',
       '131 duplicate CMS items mapped with their reference graph before any decision was taken.',
@@ -193,6 +197,10 @@ const EXPERIENCE_FR = {
       "Nouveaux composants header et footer partagés, sélecteur de langue, menu mobile et feuille d'harmonisation sur les neuf pages refaites.",
       "Modale de recherche de ville sur l'accueil : 310 villes, routage location et achat dans les deux langues.",
       'Passes de largeur, hero et FAQ sur le nouvel accueil au fil des retours client.',
+    ] },
+    { title: 'Bande passante et performance', bullets: [
+      'Optimisation de ce que le site sert : la bande passante mensuelle est passée d\'environ 290 à 300 Go à 140 à 160 Go, soit près de moitié, à trafic égal.',
+      'Mesuré avant et après sur la zone Cloudflare, pour que le gain soit un chiffre et pas une impression.',
     ] },
     { title: 'Hygiène de contenu à grande échelle', bullets: [
       "11 649 images du CMS dotées d'un texte alternatif français via l'API, par lots calibrés sur ce que l'API tolère.",

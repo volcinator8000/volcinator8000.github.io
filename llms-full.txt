@@ -39,6 +39,10 @@ Remoters is a marketplace that connects people moving abroad with vetted local h
 - Homepage city-search modal covering 310 cities with rent and buy routing in both locales.
 - Width, hero and FAQ passes on the new homepage from client feedback rounds.
 
+**Bandwidth and performance**
+- Optimised what the site serves: monthly bandwidth went from about 290 to 300 GB down to 140 to 160 GB, roughly half, for the same traffic.
+- Measured before and after on the Cloudflare zone, so the saving is a number rather than a feeling.
+
 **Content hygiene at scale**
 - 11,649 CMS images given French alt text through the API, in batches sized to what the API tolerates.
 - 131 duplicate CMS items mapped with their reference graph before any decision was taken.
@@ -58,6 +62,7 @@ Skills: technical SEO, internationalisation, structured data, edge computing, AP
 - Rebuilt 471 redirects from a Search Console 404 export and tested each target before shipping.
 - Wrote a Cloudflare Worker that injects structured data on more than 2,600 CMS template pages, plus a second Worker that repairs blog Article schema.
 - Replaced two client-side review widgets with 1,157 server-rendered reviews assembled at the edge, with anonymised authors and the ranking rule disclosed as French consumer law requires.
+- Roughly halved the site's monthly bandwidth, from about 290 to 300 GB to 140 to 160 GB for the same traffic, by optimising what the site serves; measured on the Cloudflare zone before and after.
 - Gave 11,649 CMS images French alt text and about 10,900 English ones through the API, in batches sized to what the API tolerates.
 - Built the English locale of the site: seven pages translated, bilingual header and footer components, per-locale JSON-LD.
 - Audited 5,774 URLs for responsive breakage by measurement, without a browser, and mapped 131 duplicate CMS items with their reference graph before any deletion.
@@ -175,6 +180,10 @@ Ingénieur web & SEO chez Remoters, Août 2026 – aujourd'hui, français et ang
 - Nouveaux composants header et footer partagés, sélecteur de langue, menu mobile et feuille d'harmonisation sur les neuf pages refaites.
 - Modale de recherche de ville sur l'accueil : 310 villes, routage location et achat dans les deux langues.
 - Passes de largeur, hero et FAQ sur le nouvel accueil au fil des retours client.
+
+**Bande passante et performance**
+- Optimisation de ce que le site sert : la bande passante mensuelle est passée d'environ 290 à 300 Go à 140 à 160 Go, soit près de moitié, à trafic égal.
+- Mesuré avant et après sur la zone Cloudflare, pour que le gain soit un chiffre et pas une impression.
 
 **Hygiène de contenu à grande échelle**
 - 11 649 images du CMS dotées d'un texte alternatif français via l'API, par lots calibrés sur ce que l'API tolère.
