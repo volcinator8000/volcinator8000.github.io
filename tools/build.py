@@ -145,7 +145,7 @@ This site is a portfolio. The interactive versions need JavaScript; the plain ve
 
 ## Quick facts
 - Student at Epitech, second year. Builds systems software in C on Linux; also Python, Bash, JavaScript.
-- Web and SEO engineer for Remoters (www.remoters.io) since August 2026: technical SEO, Cloudflare Workers, Webflow Data API automation, an English locale, structured data, a reviews page rebuilt at the edge.
+- Web and SEO engineer for Remoters (www.remoters.io) since July 2026: technical SEO, Cloudflare Workers, Webflow Data API automation, an English locale, structured data, a reviews page rebuilt at the edge.
 - Public code: {GITHUB}. Professional profile: {LINKEDIN}.
 - Languages: French, English.
 
