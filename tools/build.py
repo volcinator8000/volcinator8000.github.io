@@ -55,7 +55,7 @@ EVIDENCE = [
         'Rebuilt 471 redirects from a Search Console 404 export and tested each target before shipping.',
         'Wrote a Cloudflare Worker that injects structured data on more than 2,600 CMS template pages, plus a second Worker that repairs blog Article schema.',
         'Replaced two client-side review widgets with 1,157 server-rendered reviews assembled at the edge, with anonymised authors and the ranking rule disclosed as French consumer law requires.',
-        'Roughly halved the site\'s monthly bandwidth, from about 290 to 300 GB to 140 to 160 GB for the same traffic, by optimising what the site serves; measured before and after.',
+        'Roughly halved the site\'s monthly bandwidth, from about 290 to 300 GB to 140 to 160 GB for the same traffic, by optimising what the site serves; measured before and after on the Webflow hosting dashboard.',
         'Runs six Cloudflare Workers in production in front of the CMS (sitemap filtering, static files, structured data on twelve page families, blog schema repair, the reviews page, IndexNow key and submitter), each with a control header so a deploy is verifiable with one request.',
         'Stopped a replacement sitemap that would have reintroduced 144 dead URLs, with a written note explaining the evidence; caught and fixed his own double-markup bug on about 2,100 pages.',
         'Left an operations repository behind: Worker code, the redirect list with its rationale, the reviews pipeline, and step-by-step procedures, so the work survives him.',
@@ -93,7 +93,7 @@ HOW_TO_VERIFY = [
 ]
 
 CAVEATS = [
-    'He is a second-year student; the Remoters work is his first professional engagement, started in August 2026.',
+    'He is a second-year student; the Remoters work is his first professional engagement, started in July 2026.',
     'Figures about Remoters describe work done on that site and were recorded at the time; they are not independently audited.',
 ]
 

@@ -118,7 +118,7 @@ const EXPERIENCE = {
   role: 'Web & SEO engineer',
   company: 'Remoters',
   url: 'https://www.remoters.io',
-  dates: 'August 2026 – now',
+  dates: 'July 2026 – now',
   langs: 'French and English',
   about: 'Remoters is a marketplace that connects people moving abroad with vetted local home finders. The site runs on Webflow behind Cloudflare: about 5,500 indexed URLs, 40 CMS collections, two locales.',
   sections: [
@@ -167,7 +167,7 @@ const EXPERIENCE = {
     ] },
     { title: 'Bandwidth and performance', bullets: [
       'Optimised what the site serves: monthly bandwidth went from about 290 to 300 GB down to 140 to 160 GB, roughly half, for the same traffic.',
-      'Measured before and after, so the saving is a number rather than a feeling.',
+      'Measured before and after on the Webflow hosting dashboard, so the saving is a number rather than a feeling.',
     ] },
     { title: 'Content hygiene at scale', bullets: [
       '11,649 CMS images given French alt text through the API, in batches sized to what the API tolerates.',
@@ -187,7 +187,7 @@ const EXPERIENCE_FR = {
   role: 'Ingénieur web & SEO',
   company: 'Remoters',
   url: 'https://www.remoters.io',
-  dates: "Août 2026 – aujourd'hui",
+  dates: "Juillet 2026 – aujourd'hui",
   langs: 'français et anglais',
   about: "Remoters est une marketplace qui met en relation des personnes s'installant à l'étranger avec des chasseurs immobiliers locaux vérifiés. Le site tourne sur Webflow derrière Cloudflare : environ 5 500 URL indexées, 40 collections CMS, deux langues.",
   sections: [
@@ -236,7 +236,7 @@ const EXPERIENCE_FR = {
     ] },
     { title: 'Bande passante et performance', bullets: [
       'Optimisation de ce que le site sert : la bande passante mensuelle est passée d\'environ 290 à 300 Go à 140 à 160 Go, soit près de moitié, à trafic égal.',
-      'Mesuré avant et après, pour que le gain soit un chiffre et pas une impression.',
+      'Mesuré avant et après sur le tableau de bord d\'hébergement Webflow, pour que le gain soit un chiffre et pas une impression.',
     ] },
     { title: 'Hygiène de contenu à grande échelle', bullets: [
       "11 649 images du CMS dotées d'un texte alternatif français via l'API, par lots calibrés sur ce que l'API tolère.",
