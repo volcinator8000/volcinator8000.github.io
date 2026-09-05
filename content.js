@@ -269,9 +269,9 @@ function currentExperience() {
 
 // Web apps shown as icons on the desktop; they open inside the browser window.
 const APPS = [
-  { id: 'music-visualizer', label: 'music', title: 'Music visualizer', url: 'https://volcinator8000.github.io/music-visualizer/', project: 'Music visualizer' },
+  { id: 'music-visualizer', label: 'mv', title: 'Music visualizer', url: 'https://volcinator8000.github.io/music-visualizer/', project: 'Music visualizer' },
   { id: 'max-finder', label: 'max', title: 'MAX Finder', url: 'https://davd-gzl.github.io/MAX-Finder/', project: 'MAX Finder' },
-  { id: 'remoters', label: 'remoters', title: 'remoters.io', url: 'https://www.remoters.io/', project: null },
+  { id: 'remoters', label: 'r.io', title: 'remoters.io', url: 'https://www.remoters.io/', project: null },
 ];
 
 // URL-safe slug for deep links: 'My printf' -> 'my-printf'

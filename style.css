@@ -372,7 +372,7 @@ code {
 .key {
   color: var(--yellow);
   display: inline-block;
-  width: 7ch;
+  width: 9ch;
 }
 
 .swatches {
@@ -1610,8 +1610,8 @@ canvas.matrix {
   background: var(--mantle);
   border: 2px solid var(--sky);
   color: var(--sky);
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-size: 13px;
+  letter-spacing: 0.02em;
 }
 
 .window-browser {
