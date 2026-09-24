@@ -82,4 +82,4 @@ python3 tools/build.py
 
 ## SEO bits
 
-Every page carries a canonical link, Open Graph and Twitter tags pointing at `og.png`, and a JSON-LD `Person` block (name, GitHub, LinkedIn, school, employer). `sitemap.xml` lists the three pages and `robots.txt` points to it. The `<html lang>` attribute follows the language toggle.
+Every page carries a canonical link, Open Graph and Twitter tags pointing at `og.png`, and a JSON-LD `Person` block (name, GitHub, LinkedIn, school, employer). `sitemap.xml` lists the three pages plus `/music-visualizer/`, and `robots.txt` points to it and to `/max-trip-chain/sitemap.xml` (crawlers only read the root `robots.txt`, so the project sites are advertised from here). The `<html lang>` attribute follows the language toggle.
